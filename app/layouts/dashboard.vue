@@ -85,7 +85,7 @@ const groups = computed(() => [{
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">
-        <TeamsMenu :collapsed="collapsed" />
+        <AppBrand :collapsed="collapsed" />
       </template>
 
       <template #default="{ collapsed }">
@@ -116,7 +116,5 @@ const groups = computed(() => [{
     <UDashboardSearch :groups="groups" />
 
     <slot />
-
-    <NotificationsSlideover />
   </UDashboardGroup>
 </template>

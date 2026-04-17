@@ -3,6 +3,7 @@ import { motion } from 'motion-v'
 import type { VariantType } from 'motion-v'
 
 const nuxtApp = useNuxtApp()
+const user = useSupabaseUser()
 const activeSection = ref<string>()
 
 const items = computed(() => [
@@ -72,18 +73,19 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
 
     <template #right>
       <UButton
+        v-if="!user"
         label="Sign in"
         color="neutral"
         variant="ghost"
         class="hidden lg:flex"
-        to="/dashboard"
+        to="/login"
       />
       <UButton
-        label="Get started"
-        color="neutral"
+        v-if="user"
+        label="Dashboard"
+        color="primary"
         class="hidden lg:flex"
-        to="https://ui.nuxt.com"
-        target="_blank"
+        to="/dashboard"
       />
     </template>
 
@@ -150,16 +152,18 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
 
       <div class="mt-4 flex flex-col gap-2">
         <UButton
+          v-if="!user"
           label="Sign in"
           color="neutral"
           variant="soft"
           block
+          to="/login"
         />
         <UButton
-          label="Get started"
+          v-if="user"
+          label="Dashboard"
           block
-          to="https://ui.nuxt.com"
-          target="_blank"
+          to="/dashboard"
         />
       </div>
     </template>
