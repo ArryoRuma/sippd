@@ -13,14 +13,14 @@ const links = [[{
     open.value = false
   }
 },
- {
+{
   label: 'My Sipps',
   to: '/my-sipps',
   icon: 'i-lucide-coffee',
   defaultOpen: true,
   type: 'trigger',
   children: [{
-    label: 'SippLog', 
+    label: 'SippLog',
     to: '/log',
     icon: 'i-lucide-scroll-text',
     exact: true,
@@ -70,8 +70,6 @@ const groups = computed(() => [{
     target: '_blank'
   }]
 }])
-
-
 </script>
 
 <template>
@@ -89,7 +87,10 @@ const groups = computed(() => [{
       </template>
 
       <template #default="{ collapsed }">
-        <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" />
+        <UDashboardSearchButton
+          :collapsed="collapsed"
+          class="bg-transparent ring-default"
+        />
 
         <UNavigationMenu
           :collapsed="collapsed"

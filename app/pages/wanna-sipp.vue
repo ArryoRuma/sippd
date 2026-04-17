@@ -25,9 +25,14 @@ const { data: items, refresh } = await useAsyncData('wanna-sipps', async () => {
 
 async function addItem() {
   if (!newRoaster.value.trim()) return
+  if (!user.value) {
+    toast.add({ title: 'Not authenticated', description: 'Please log in again.', color: 'error' })
+    navigateTo('/login')
+    return
+  }
 
   const { error } = await supabase.from('wanna_sipps').insert({
-    user_id: user.value!.id,
+    user_id: user.value.id,
     roaster: newRoaster.value.trim(),
     notes: newNotes.value.trim() || null
   })
@@ -76,26 +81,62 @@ async function deleteItem(id: string) {
           Coffees you want to try
         </p>
       </div>
-      <UButton label="Add" icon="i-lucide-plus" color="primary" @click="adding = !adding" />
+      <UButton
+        label="Add"
+        icon="i-lucide-plus"
+        color="primary"
+        @click="adding = !adding"
+      />
     </div>
 
-    <div v-if="adding" class="mb-6 p-4 rounded-lg border border-default bg-elevated/50 space-y-3">
-      <UInput v-model="newRoaster" placeholder="Roaster or coffee name" class="w-full" />
-      <UInput v-model="newNotes" placeholder="Notes (optional)" class="w-full" />
+    <div
+      v-if="adding"
+      class="mb-6 p-4 rounded-lg border border-default bg-elevated/50 space-y-3"
+    >
+      <UInput
+        v-model="newRoaster"
+        placeholder="Roaster or coffee name"
+        class="w-full"
+      />
+      <UInput
+        v-model="newNotes"
+        placeholder="Notes (optional)"
+        class="w-full"
+      />
       <div class="flex gap-2">
-        <UButton label="Save" color="primary" size="sm" @click="addItem" />
-        <UButton label="Cancel" color="neutral" variant="ghost" size="sm" @click="adding = false" />
+        <UButton
+          label="Save"
+          color="primary"
+          size="sm"
+          @click="addItem"
+        />
+        <UButton
+          label="Cancel"
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          @click="adding = false"
+        />
       </div>
     </div>
 
-    <div v-if="!items?.length && !adding" class="text-center py-16">
-      <UIcon name="i-lucide-list-todo" class="size-12 text-muted mb-4" />
+    <div
+      v-if="!items?.length && !adding"
+      class="text-center py-16"
+    >
+      <UIcon
+        name="i-lucide-list-todo"
+        class="size-12 text-muted mb-4"
+      />
       <p class="text-muted">
         Your wishlist is empty. Add coffees you want to try!
       </p>
     </div>
 
-    <div v-else class="space-y-2">
+    <div
+      v-else
+      class="space-y-2"
+    >
       <div
         v-for="item in items"
         :key="item.id"
@@ -114,7 +155,10 @@ async function deleteItem(id: string) {
           >
             {{ item.roaster }}
           </span>
-          <p v-if="item.notes" class="text-xs text-muted mt-0.5 truncate">
+          <p
+            v-if="item.notes"
+            class="text-xs text-muted mt-0.5 truncate"
+          >
             {{ item.notes }}
           </p>
         </div>

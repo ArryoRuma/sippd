@@ -58,7 +58,10 @@ const { data: stats } = await useAsyncData('dashboard-stats', async () => {
         <p class="text-lg font-bold text-highlighted mt-1 truncate">
           {{ stats?.topSipp?.roaster ?? '—' }}
         </p>
-        <p v-if="stats?.topSipp" class="text-xs text-muted">
+        <p
+          v-if="stats?.topSipp"
+          class="text-xs text-muted"
+        >
           {{ stats.topSipp.overall }}/50
         </p>
       </div>
@@ -69,7 +72,10 @@ const { data: stats } = await useAsyncData('dashboard-stats', async () => {
         <p class="text-lg font-bold text-highlighted mt-1 truncate">
           {{ stats?.recentSipp?.roaster ?? '—' }}
         </p>
-        <p v-if="stats?.recentSipp" class="text-xs text-muted">
+        <p
+          v-if="stats?.recentSipp"
+          class="text-xs text-muted"
+        >
           {{ stats.recentSipp.origin }}
         </p>
       </div>
@@ -106,4 +112,3 @@ const { data: stats } = await useAsyncData('dashboard-stats', async () => {
     </div>
   </div>
 </template>
-

@@ -13,7 +13,10 @@ async function handleLogout() {
 </script>
 
 <template>
-  <div class="flex items-center" :class="collapsed ? 'justify-center' : 'gap-2 px-2'">
+  <div
+    class="flex items-center"
+    :class="collapsed ? 'justify-center' : 'gap-2 px-2'"
+  >
     <UAvatar
       :label="user?.email?.charAt(0).toUpperCase()"
       size="sm"

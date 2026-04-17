@@ -24,7 +24,6 @@ useSeoMeta({
 
 <template>
   <UApp :toaster="{ expand: false }">
-
     <UMain>
       <NuxtLayout>
         <NuxtPage />

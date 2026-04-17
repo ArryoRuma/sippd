@@ -44,14 +44,23 @@ function getRankColor(index: number) {
       </p>
     </div>
 
-    <div v-if="!sipps?.length" class="text-center py-16">
-      <UIcon name="i-lucide-star" class="size-12 text-muted mb-4" />
+    <div
+      v-if="!sipps?.length"
+      class="text-center py-16"
+    >
+      <UIcon
+        name="i-lucide-star"
+        class="size-12 text-muted mb-4"
+      />
       <p class="text-muted">
         No scores yet. Start rating your coffees in SippLog!
       </p>
     </div>
 
-    <div v-else class="space-y-2">
+    <div
+      v-else
+      class="space-y-2"
+    >
       <div
         v-for="(sipp, index) in sipps"
         :key="sipp.id"
@@ -64,7 +73,10 @@ function getRankColor(index: number) {
             :name="getRankIcon(index)!"
             :class="['size-5', getRankColor(index)]"
           />
-          <span v-else class="text-sm font-mono text-muted">{{ index + 1 }}</span>
+          <span
+            v-else
+            class="text-sm font-mono text-muted"
+          >{{ index + 1 }}</span>
         </div>
 
         <div class="flex-1 min-w-0">

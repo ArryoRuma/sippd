@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { z } from 'zod'
+import * as z from 'zod'
+import type { FormSubmitEvent, FormErrorEvent } from '@nuxt/ui'
 
 const props = defineProps<{
   sipp?: {
@@ -45,12 +46,14 @@ const schema = z.object({
   roast_type: z.string().min(1, 'Roast type is required'),
   origin: z.string().min(1, 'Origin is required'),
   method: z.string().min(1, 'Method is required'),
-  aroma: z.number().min(1).max(10),
-  flavor: z.number().min(1).max(10),
-  acidity: z.number().min(1).max(10),
-  body: z.number().min(1).max(10),
-  aftertaste: z.number().min(1).max(10)
+  aroma: z.coerce.number().min(1).max(10),
+  flavor: z.coerce.number().min(1).max(10),
+  acidity: z.coerce.number().min(1).max(10),
+  body: z.coerce.number().min(1).max(10),
+  aftertaste: z.coerce.number().min(1).max(10)
 })
+
+type Schema = z.output<typeof schema>
 
 const state = reactive({
   roaster: props.sipp?.roaster ?? '',
@@ -66,20 +69,34 @@ const state = reactive({
 
 const overall = computed(() => state.aroma + state.flavor + state.acidity + state.body + state.aftertaste)
 
-async function handleSubmit() {
+function onError(event: FormErrorEvent) {
+  toast.add({
+    title: 'Please fix the form errors',
+    description: event.errors.map(e => e.message).join(', '),
+    color: 'warning'
+  })
+}
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  if (!user.value) {
+    toast.add({ title: 'Not authenticated', description: 'Please log in again.', color: 'error' })
+    navigateTo('/login')
+    return
+  }
+
   loading.value = true
 
   const { error } = await supabase.from('sipps').insert({
-    user_id: user.value!.id,
-    roaster: state.roaster,
-    roast_type: state.roast_type,
-    origin: state.origin,
-    method: state.method,
-    aroma: state.aroma,
-    flavor: state.flavor,
-    acidity: state.acidity,
-    body: state.body,
-    aftertaste: state.aftertaste
+    user_id: user.value.id,
+    roaster: event.data.roaster,
+    roast_type: event.data.roast_type,
+    origin: event.data.origin,
+    method: event.data.method,
+    aroma: event.data.aroma,
+    flavor: event.data.flavor,
+    acidity: event.data.acidity,
+    body: event.data.body,
+    aftertaste: event.data.aftertaste
   })
 
   loading.value = false
@@ -100,23 +117,63 @@ async function handleSubmit() {
       <h2 class="text-xl font-bold text-highlighted">
         {{ readonly ? 'Sipp Details' : 'New Sipp' }}
       </h2>
-      <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="sm" square @click="emit('close')" />
+      <UButton
+        icon="i-lucide-x"
+        color="neutral"
+        variant="ghost"
+        size="sm"
+        square
+        @click="emit('close')"
+      />
     </div>
 
-    <UForm :schema="schema" :state="state" class="space-y-4" @submit="handleSubmit">
-      <UFormField label="Coffee Roaster" name="roaster">
-        <UInput v-model="state.roaster" placeholder="e.g. Counter Culture" :disabled="readonly" class="w-full" />
+    <UForm
+      :schema="schema"
+      :state="state"
+      class="space-y-4"
+      @submit="onSubmit"
+      @error="onError"
+    >
+      <UFormField
+        label="Coffee Roaster"
+        name="roaster"
+      >
+        <UInput
+          v-model="state.roaster"
+          placeholder="e.g. Counter Culture"
+          :disabled="readonly"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField label="Roast Type" name="roast_type">
-        <UInput v-model="state.roast_type" placeholder="e.g. Light, Medium, Dark" :disabled="readonly" class="w-full" />
+      <UFormField
+        label="Roast Type"
+        name="roast_type"
+      >
+        <UInput
+          v-model="state.roast_type"
+          placeholder="e.g. Light, Medium, Dark"
+          :disabled="readonly"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField label="Origin" name="origin">
-        <UInput v-model="state.origin" placeholder="e.g. Ethiopia Yirgacheffe" :disabled="readonly" class="w-full" />
+      <UFormField
+        label="Origin"
+        name="origin"
+      >
+        <UInput
+          v-model="state.origin"
+          placeholder="e.g. Ethiopia Yirgacheffe"
+          :disabled="readonly"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField label="Method" name="method">
+      <UFormField
+        label="Method"
+        name="method"
+      >
         <USelect
           v-model="state.method"
           :items="methods"
@@ -131,24 +188,74 @@ async function handleSubmit() {
           Scores (1–10)
         </h3>
         <div class="grid grid-cols-2 gap-4">
-          <UFormField label="Aroma" name="aroma">
-            <UInput v-model.number="state.aroma" type="number" :min="1" :max="10" :disabled="readonly" class="w-full" />
+          <UFormField
+            label="Aroma"
+            name="aroma"
+          >
+            <UInput
+              v-model.number="state.aroma"
+              type="number"
+              :min="1"
+              :max="10"
+              :disabled="readonly"
+              class="w-full"
+            />
           </UFormField>
 
-          <UFormField label="Flavor" name="flavor">
-            <UInput v-model.number="state.flavor" type="number" :min="1" :max="10" :disabled="readonly" class="w-full" />
+          <UFormField
+            label="Flavor"
+            name="flavor"
+          >
+            <UInput
+              v-model.number="state.flavor"
+              type="number"
+              :min="1"
+              :max="10"
+              :disabled="readonly"
+              class="w-full"
+            />
           </UFormField>
 
-          <UFormField label="Acidity" name="acidity">
-            <UInput v-model.number="state.acidity" type="number" :min="1" :max="10" :disabled="readonly" class="w-full" />
+          <UFormField
+            label="Acidity"
+            name="acidity"
+          >
+            <UInput
+              v-model.number="state.acidity"
+              type="number"
+              :min="1"
+              :max="10"
+              :disabled="readonly"
+              class="w-full"
+            />
           </UFormField>
 
-          <UFormField label="Body" name="body">
-            <UInput v-model.number="state.body" type="number" :min="1" :max="10" :disabled="readonly" class="w-full" />
+          <UFormField
+            label="Body"
+            name="body"
+          >
+            <UInput
+              v-model.number="state.body"
+              type="number"
+              :min="1"
+              :max="10"
+              :disabled="readonly"
+              class="w-full"
+            />
           </UFormField>
 
-          <UFormField label="Aftertaste" name="aftertaste">
-            <UInput v-model.number="state.aftertaste" type="number" :min="1" :max="10" :disabled="readonly" class="w-full" />
+          <UFormField
+            label="Aftertaste"
+            name="aftertaste"
+          >
+            <UInput
+              v-model.number="state.aftertaste"
+              type="number"
+              :min="1"
+              :max="10"
+              :disabled="readonly"
+              class="w-full"
+            />
           </UFormField>
 
           <div class="flex flex-col justify-end">
@@ -158,8 +265,17 @@ async function handleSubmit() {
         </div>
       </div>
 
-      <div v-if="!readonly" class="pt-4">
-        <UButton type="submit" label="Log Sipp" color="primary" block :loading="loading" />
+      <div
+        v-if="!readonly"
+        class="pt-4"
+      >
+        <UButton
+          type="submit"
+          label="Log Sipp"
+          color="primary"
+          block
+          :loading="loading"
+        />
       </div>
     </UForm>
   </div>

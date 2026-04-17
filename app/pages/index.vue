@@ -60,10 +60,10 @@ const { copy, copied } = useClipboard()
 
 <template>
   <AppHeader />
-  
+
   <div v-if="page">
     <!-- Hero -->
-     
+
     <UPageHero
       :ui="{
         root: 'pb-24 sm:pb-32',
@@ -75,8 +75,7 @@ const { copy, copied } = useClipboard()
       }"
     >
       <template #top>
-        <Motion v-bind="staggerMotion(0)">
-        </Motion>
+        <Motion v-bind="staggerMotion(0)" />
 
         <GradientGlow class="top-0 w-2/3 h-1/2" />
       </template>
@@ -343,8 +342,6 @@ const { copy, copied } = useClipboard()
             v-bind="link"
             size="xl"
           />
-
-          
         </Motion>
       </template>
     </UPageCTA>

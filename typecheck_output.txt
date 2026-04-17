@@ -1,0 +1,6 @@
+
+> nuxt-ui-template-landing@ typecheck /Users/larryontruman/Desktop/Coding/5_Experiments/sippd
+> nuxt typecheck
+
+ℹ Nuxt Icon server bundle mode is set to local
+✔ Nuxt Icon discovered local-installed 2 collections: lucide, simple-icons

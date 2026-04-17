@@ -67,17 +67,31 @@ function formatDate(date: string) {
           Your coffee rating history
         </p>
       </div>
-      <UButton label="New Sipp" icon="i-lucide-plus" color="primary" @click="openNew" />
+      <UButton
+        label="New Sipp"
+        icon="i-lucide-plus"
+        color="primary"
+        @click="openNew"
+      />
     </div>
 
-    <div v-if="!sipps?.length" class="text-center py-16">
-      <UIcon name="i-lucide-coffee" class="size-12 text-muted mb-4" />
+    <div
+      v-if="!sipps?.length"
+      class="text-center py-16"
+    >
+      <UIcon
+        name="i-lucide-coffee"
+        class="size-12 text-muted mb-4"
+      />
       <p class="text-muted">
         No sipps yet. Log your first coffee!
       </p>
     </div>
 
-    <div v-else class="space-y-3">
+    <div
+      v-else
+      class="space-y-3"
+    >
       <div
         v-for="sipp in sipps"
         :key="sipp.id"
@@ -87,7 +101,11 @@ function formatDate(date: string) {
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
             <span class="font-semibold text-highlighted truncate">{{ sipp.roaster }}</span>
-            <UBadge :label="sipp.method" variant="subtle" size="xs" />
+            <UBadge
+              :label="sipp.method"
+              variant="subtle"
+              size="xs"
+            />
           </div>
           <div class="text-sm text-muted mt-0.5">
             {{ sipp.origin }} · {{ sipp.roast_type }}

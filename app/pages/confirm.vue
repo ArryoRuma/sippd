@@ -12,6 +12,8 @@ watch(user, () => {
 
 <template>
   <div class="flex min-h-screen items-center justify-center">
-    <p class="text-muted">Signing in...</p>
+    <p class="text-muted">
+      Signing in...
+    </p>
   </div>
 </template>

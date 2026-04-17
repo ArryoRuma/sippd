@@ -12,15 +12,6 @@ export default defineNuxtConfig({
     '@nuxt/fonts'
   ],
 
-  supabase: {
-    redirect: true,
-    redirectOptions: {
-      login: '/login',
-      callback: '/confirm',
-      exclude: ['/', '/login']
-    }
-  },
-
   devtools: {
     enabled: true
   },
@@ -49,6 +40,15 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
+    }
+  },
+
+  supabase: {
+    redirect: true,
+    redirectOptions: {
+      login: '/login',
+      callback: '/confirm',
+      exclude: ['/', '/login']
     }
   }
 })

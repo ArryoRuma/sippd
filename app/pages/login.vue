@@ -37,7 +37,7 @@ async function handleLogin() {
       color: 'error'
     })
   } else {
-    navigateTo('/dashboard')
+    navigateTo('/dashboard', { external: true })
   }
 }
 </script>
@@ -54,8 +54,15 @@ async function handleLogin() {
         </p>
       </div>
 
-      <UForm :state="{ email, password }" class="space-y-4" @submit="handleLogin">
-        <UFormField label="Email" name="email">
+      <UForm
+        :state="{ email, password }"
+        class="space-y-4"
+        @submit="handleLogin"
+      >
+        <UFormField
+          label="Email"
+          name="email"
+        >
           <UInput
             v-model="email"
             type="email"
@@ -67,7 +74,10 @@ async function handleLogin() {
           />
         </UFormField>
 
-        <UFormField label="Password" name="password">
+        <UFormField
+          label="Password"
+          name="password"
+        >
           <UInput
             v-model="password"
             type="password"
@@ -79,7 +89,10 @@ async function handleLogin() {
           />
         </UFormField>
 
-        <p v-if="error" class="text-sm text-error">
+        <p
+          v-if="error"
+          class="text-sm text-error"
+        >
           {{ error }}
         </p>
 
