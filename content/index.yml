@@ -1,0 +1,116 @@
+seo:
+  title: Nuxt Landing Template
+  description: A beautiful and customizable landing page template built with Nuxt UI. Features hero section, animated terminal, metrics, and CTA — ready to deploy.
+title: "Track Every Sip.\nTrack every sip."
+description: Sippd is your personal coffee log to rate, review, and remember every cup.
+hero:
+  headline: "v0.2 — hbd tk"
+  links:
+    - label: Start for free
+      color: primary
+      size: xl
+      to: '#'
+    - label: View demo
+      size: xl
+      color: neutral
+      variant: soft
+      to: '#'
+terminal:
+  lines:
+    - segments:
+        - text: "$ "
+          style: prompt
+        - text: "npx telemetry"
+          style: cmd
+        - text: " init"
+          style: flag
+    - segments:
+        - text: "→ Scanning service topology..."
+          style: dim
+    - segments:
+        - text: "→ Found "
+          style: dim
+        - text: "23 services"
+          style: cmd
+        - text: ", "
+          style: dim
+        - text: "847 endpoints"
+          style: cmd
+        - text: ", "
+          style: dim
+        - text: "12 databases"
+          style: cmd
+    - segments:
+        - text: "→ Deploying collector agents "
+          style: dim
+        - text: "✓"
+          style: success
+    - segments:
+        - text: "→ Baseline established in "
+          style: dim
+        - text: "340ms"
+          style: metric-good
+    - segments:
+        - text: " "
+          style: dim
+    - segments:
+        - text: "✓ Live at "
+          style: success
+        - text: "https://app.example.com/acme-corp"
+          style: url
+logos:
+  title: Trusted by engineering teams at
+  items:
+    - i-simple-icons-vercel
+    - i-simple-icons-github
+    - i-simple-icons-linear
+    - i-simple-icons-supabase
+    - i-simple-icons-stripe
+features:
+  headline: Capabilities
+  title: Everything your coffee habit needs.
+  description: From your first sip to your all-time favorites, Sippd has every tool to build your coffee memory.
+  items:
+    - icon: i-lucide-coffee
+      title: Log Every Coffee
+      description: Track drinks, cafes, roasters, and tasting notes in seconds.
+    - icon: i-lucide-star
+      title: Sip Score
+      description: Rate each coffee so your favorites naturally rise to the top.
+    - icon: i-lucide-scroll-text
+      title: Your Sip Log
+      description: Keep a clean, scrollable history of every coffee you had.
+    - icon: i-lucide-bookmark
+      title: Saved Sips
+      description: Bookmark coffees you want to come back to.
+    - icon: i-lucide-list-todo
+      title: Wanna Sip
+      description: Maintain a running list of coffees, cafes, and beans to try next.
+    - icon: i-lucide-trophy
+      title: Top Sips
+      description: See your all-time best coffees automatically organized.
+metrics:
+  headline: By the numbers
+  title: "Built around your coffee habit."
+  description: Simple, fast, and yours. Every number that matters for building your personal coffee memory.
+  items:
+    - value: < 5s
+      label: Time to log
+      class: text-primary
+    - value: 100%
+      label: Your data
+      class: text-success
+    - value: "∞"
+      label: Coffees tracked
+      class: text-info
+    - value: "0"
+      label: Forgotten great cups
+      class: text-warning
+cta:
+  title: "Start logging\nyour coffee."
+  description: It only takes one sip to start building your taste.
+  command: npx telemetry init
+  links:
+    - label: Log your first sip
+      to: /dashboard
+      color: primary

@@ -1,76 +1,352 @@
-<template>
-  <div>
-    <UPageHero
-      title="Nuxt Starter Template"
-      description="A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours."
-      :links="[{
-        label: 'Get started',
-        to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-        target: '_blank',
-        trailingIcon: 'i-lucide-arrow-right',
-        size: 'xl'
-      }, {
-        label: 'Use this template',
-        to: 'https://github.com/nuxt-ui-templates/starter',
-        target: '_blank',
-        icon: 'i-simple-icons-github',
-        size: 'xl',
-        color: 'neutral',
-        variant: 'subtle'
-      }]"
-    />
+<script setup lang="ts">
+import App from '~/app.vue'
 
+definePageMeta({
+  colorMode: 'dark'
+})
+
+const { data: page } = await useAsyncData('index', () => queryCollection('content').first())
+if (!page.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+}
+
+const title = page.value?.seo?.title || page.value?.title
+const description = page.value?.seo?.description || page.value?.description
+
+useSeoMeta({
+  title,
+  ogTitle: title,
+  description,
+  ogDescription: description
+})
+
+const heroTitle = computed(() => {
+  const [primary = '', ...secondaryParts] = (page.value?.title ?? '').split('\n')
+
+  return {
+    primary,
+    secondary: secondaryParts.join(' ').trim()
+  }
+})
+
+function enterMotion(delay: number = 0) {
+  return {
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, delay }
+  }
+}
+
+function scrollMotion(delay: number = 0) {
+  return {
+    initial: { opacity: 0, y: 16 },
+    whileInView: { opacity: 1, y: 0 },
+    inViewOptions: { once: true, amount: 1 },
+    transition: { duration: 0.6, delay }
+  }
+}
+
+function staggerMotion(index: number = 0) {
+  return {
+    initial: { opacity: 0 },
+    whileInView: { opacity: 1 },
+    inViewOptions: { once: true, amount: 1 },
+    transition: { duration: 0.6, delay: index * 0.08 }
+  }
+}
+
+const { copy, copied } = useClipboard()
+</script>
+
+<template>
+  <AppHeader />
+  
+  <div v-if="page">
+    <!-- Hero -->
+     
+    <UPageHero
+      :ui="{
+        root: 'pb-24 sm:pb-32',
+        container: 'relative z-10 lg:py-32',
+        wrapper: 'flex flex-col items-center',
+        title: 'sm:text-6xl lg:text-7xl xl:text-[80px] tracking-tighter leading-[1.05]',
+        description: 'mt-5 max-w-xl mx-auto text-base sm:text-lg leading-relaxed text-default',
+        links: 'gap-3'
+      }"
+    >
+      <template #top>
+        <Motion v-bind="staggerMotion(0)">
+        </Motion>
+
+        <GradientGlow class="top-0 w-2/3 h-1/2" />
+      </template>
+
+      <template #headline>
+        <Motion v-bind="enterMotion(0.2)">
+          <UBadge
+            color="neutral"
+            variant="soft"
+            :label="page.hero.headline"
+            class="rounded-full px-3 py-1.5 gap-1.5 bg-white/5 backdrop-blur"
+          >
+            <template #leading>
+              <UChip
+                inset
+                standalone
+                :ui="{ base: 'animate-pulse ring-0' }"
+              />
+            </template>
+          </UBadge>
+        </Motion>
+      </template>
+
+      <template #title>
+        <Motion
+          as="span"
+          v-bind="enterMotion(0.35)"
+          class="inline-block"
+        >
+          {{ heroTitle.primary }}
+          <br v-if="heroTitle.secondary">
+          <span
+            v-if="heroTitle.secondary"
+            class="animate-shimmer bg-size-[200%_auto] bg-clip-text text-transparent"
+            :style="{
+              backgroundImage: 'linear-gradient(135deg, var(--color-primary-400), var(--color-primary-300), var(--color-primary-200), var(--color-primary-100), var(--color-primary-200), var(--color-primary-300), var(--color-primary-400))',
+              animationDuration: '10s'
+            }"
+          >
+            {{ heroTitle.secondary }}
+          </span>
+        </Motion>
+      </template>
+
+      <template #description>
+        <Motion
+          as="span"
+          v-bind="enterMotion(0.5)"
+          class="inline-block"
+        >
+          {{ page.description }}
+        </Motion>
+      </template>
+
+      <template #links>
+        <Motion
+          class="flex flex-wrap justify-center gap-6"
+          v-bind="enterMotion(0.65)"
+        >
+          <UButton
+            v-for="link in page.hero.links"
+            :key="link.label"
+            v-bind="link"
+          />
+        </Motion>
+      </template>
+
+      <Motion
+        as-child
+        v-bind="enterMotion(0.85)"
+        class="max-w-2xl mx-auto w-full"
+      >
+        <HeroTerminal :lines="page.terminal.lines" />
+      </Motion>
+
+      <Motion
+        class="max-w-lg mx-auto w-full"
+        v-bind="scrollMotion(0.95)"
+      >
+        <UPageLogos
+          :title="page.logos.title"
+          :items="page.logos.items"
+          :ui="{
+            title: 'font-mono uppercase text-xs tracking-[0.12em] text-dimmed',
+            logos: 'gap-0',
+            logo: 'text-muted size-6'
+          }"
+        />
+      </Motion>
+    </UPageHero>
+
+    <!-- Features -->
     <UPageSection
       id="features"
-      title="Everything you need to build modern Nuxt apps"
-      description="Start with a solid foundation. This template includes all the essentials for building production-ready applications with Nuxt UI's powerful component system."
-      :features="[{
-        icon: 'i-lucide-rocket',
-        title: 'Production-ready from day one',
-        description: 'Pre-configured with TypeScript, ESLint, Tailwind CSS, and all the best practices. Focus on building features, not setting up tooling.'
-      }, {
-        icon: 'i-lucide-palette',
-        title: 'Beautiful by default',
-        description: 'Leveraging Nuxt UI\'s design system with automatic dark mode, consistent spacing, and polished components that look great out of the box.'
-      }, {
-        icon: 'i-lucide-zap',
-        title: 'Lightning fast',
-        description: 'Optimized for performance with SSR/SSG support, automatic code splitting, and edge-ready deployment. Your users will love the speed.'
-      }, {
-        icon: 'i-lucide-blocks',
-        title: '100+ components included',
-        description: 'Access Nuxt UI\'s comprehensive component library. From forms to navigation, everything is accessible, responsive, and customizable.'
-      }, {
-        icon: 'i-lucide-code-2',
-        title: 'Developer experience first',
-        description: 'Auto-imports, hot module replacement, and TypeScript support. Write less boilerplate and ship more features.'
-      }, {
-        icon: 'i-lucide-shield-check',
-        title: 'Built for scale',
-        description: 'Enterprise-ready architecture with proper error handling, SEO optimization, and security best practices built-in.'
-      }]"
-    />
+      :ui="{
+        root: 'py-24 sm:py-32 scroll-mt-(--ui-header-height)',
+        container: 'max-w-5xl',
+        headline: 'font-mono font-medium text-xs text-primary uppercase tracking-[0.12em] text-center',
+        title: 'max-w-lg mx-auto',
+        description: 'max-w-md mx-auto text-dimmed'
+      }"
+    >
+      <template #headline>
+        <Motion
+          as="span"
+          v-bind="scrollMotion()"
+          class="inline-block"
+        >
+          {{ page.features.headline }}
+        </Motion>
+      </template>
 
-    <UPageSection>
-      <UPageCTA
-        title="Ready to build your next Nuxt app?"
-        description="Join thousands of developers building with Nuxt and Nuxt UI. Get this template and start shipping today."
-        variant="subtle"
-        :links="[{
-          label: 'Start building',
-          to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-          target: '_blank',
-          trailingIcon: 'i-lucide-arrow-right',
-          color: 'neutral'
-        }, {
-          label: 'View on GitHub',
-          to: 'https://github.com/nuxt-ui-templates/starter',
-          target: '_blank',
-          icon: 'i-simple-icons-github',
-          color: 'neutral',
-          variant: 'outline'
-        }]"
-      />
+      <template #title>
+        <Motion
+          as="span"
+          v-bind="scrollMotion(0.1)"
+          class="inline-block"
+        >
+          {{ page.features.title }}
+        </Motion>
+      </template>
+
+      <template #description>
+        <Motion
+          as="span"
+          v-bind="scrollMotion(0.2)"
+          class="inline-block"
+        >
+          {{ page.features.description }}
+        </Motion>
+      </template>
+
+      <div class="rounded-2xl border border-default bg-default overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px">
+          <Motion
+            v-for="(feature, index) in page.features.items"
+            :key="feature.title"
+            v-bind="staggerMotion(index)"
+          >
+            <UPageCard
+              :icon="feature.icon"
+              :title="feature.title"
+              :description="feature.description"
+              class="rounded-none duration-300"
+              to="#"
+              :ui="{
+                leading: 'mb-5 flex size-9 justify-center rounded-lg bg-primary/10',
+                title: 'text-sm tracking-tight',
+                description: 'text-sm leading-relaxed sm:line-clamp-2 lg:line-clamp-3 text-dimmed'
+              }"
+            />
+          </Motion>
+        </div>
+      </div>
     </UPageSection>
+
+    <!-- Metrics -->
+    <UPageSection
+      id="metrics"
+      :ui="{
+        root: 'py-24 sm:py-32 scroll-mt-(--ui-header-height)',
+        container: 'max-w-5xl',
+        headline: 'font-mono font-medium text-xs text-primary uppercase tracking-[0.12em] text-center',
+        title: 'max-w-lg mx-auto',
+        description: 'max-w-md mx-auto text-dimmed'
+      }"
+    >
+      <template #headline>
+        <Motion
+          as="span"
+          v-bind="scrollMotion()"
+          class="inline-block"
+        >
+          {{ page.metrics.headline }}
+        </Motion>
+      </template>
+
+      <template #title>
+        <Motion
+          as="span"
+          v-bind="scrollMotion(0.1)"
+          class="inline-block"
+        >
+          {{ page.metrics.title }}
+        </Motion>
+      </template>
+
+      <template #description>
+        <Motion
+          as="span"
+          v-bind="scrollMotion(0.2)"
+          class="inline-block"
+        >
+          {{ page.metrics.description }}
+        </Motion>
+      </template>
+
+      <div class="rounded-2xl border border-default bg-default overflow-hidden">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-px">
+          <Motion
+            v-for="(metric, index) in page.metrics.items"
+            :key="metric.label"
+            v-bind="staggerMotion(index)"
+          >
+            <UPageCard
+              :title="metric.value"
+              :description="metric.label"
+              class="rounded-none duration-300"
+              to="#"
+              :ui="{
+                root: 'text-center',
+                wrapper: 'items-center',
+                title: ['text-4xl font-bold tracking-tight leading-none', metric.class],
+                description: 'font-mono text-xs uppercase tracking-[0.06em] text-dimmed mt-3'
+              }"
+            />
+          </Motion>
+        </div>
+      </div>
+    </UPageSection>
+
+    <!-- CTA -->
+    <UPageCTA
+      variant="naked"
+      :ui="{
+        root: 'py-24 sm:py-32',
+        container: 'max-w-3xl text-center',
+        title: 'lg:text-5xl tracking-tighter whitespace-pre-line',
+        description: 'mx-auto max-w-sm leading-relaxed text-dimmed'
+      }"
+    >
+      <template #top>
+        <GradientGlow class="bottom-0 w-2/3 h-1/2" />
+      </template>
+
+      <template #title>
+        <Motion
+          as="span"
+          v-bind="scrollMotion()"
+          class="inline-block"
+        >
+          {{ page.cta.title }}
+        </Motion>
+      </template>
+
+      <template #description>
+        <Motion
+          as="span"
+          v-bind="scrollMotion(0.1)"
+          class="inline-block"
+        >
+          {{ page.cta.description }}
+        </Motion>
+      </template>
+
+      <template #links>
+        <Motion
+          class="flex flex-col items-center justify-center gap-6"
+          v-bind="scrollMotion(0.2)"
+        >
+          <UButton
+            v-for="link in page.cta.links"
+            :key="link.label"
+            v-bind="link"
+            size="xl"
+          />
+
+          
+        </Motion>
+      </template>
+    </UPageCTA>
   </div>
 </template>
