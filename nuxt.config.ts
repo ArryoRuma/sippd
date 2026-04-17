@@ -8,19 +8,15 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@vueuse/nuxt',
     'motion-v/nuxt',
-    '@nuxtjs/supabase'
+    '@nuxtjs/supabase',
+    '@nuxt/fonts'
   ],
-  runtimeConfig: {
-    public: {
-      supabaseUrl: process.env.SUPABASE_URL,
-      supabaseKey: process.env.SUPABASE_KEY,
-    },
-  },
+
   supabase: {
     redirect: true,
     redirectOptions: {
       login: '/login',
-      callback: '/dashboard',
+      callback: '/confirm',
       exclude: ['/', '/login']
     }
   },
