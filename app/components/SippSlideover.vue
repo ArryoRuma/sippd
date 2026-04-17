@@ -84,10 +84,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     return
   }
 
+  const { data: authData, error: authError } = await supabase.auth.getUser()
+  const currentUser = authData.user
+
+  if (authError || !currentUser) {
+    toast.add({ title: 'Session expired', description: 'Please log in again.', color: 'error' })
+    navigateTo('/login')
+    return
+  }
+
   loading.value = true
 
   const { error } = await supabase.from('sipps').insert({
-    user_id: user.value.id,
+    user_id: currentUser.id,
     roaster: event.data.roaster,
     roast_type: event.data.roast_type,
     origin: event.data.origin,

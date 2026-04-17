@@ -45,6 +45,11 @@ export default defineNuxtConfig({
 
   supabase: {
     redirect: true,
+    cookieOptions: {
+      // Secure cookies are ignored on plain http localhost; keep secure in production only.
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    },
     redirectOptions: {
       login: '/login',
       callback: '/confirm',

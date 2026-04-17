@@ -19,11 +19,15 @@ watchEffect(() => {
 })
 
 async function handleLogin() {
+  if (loading.value) {
+    return
+  }
+
   error.value = ''
   loading.value = true
 
-  const { error: authError } = await supabase.auth.signInWithPassword({
-    email: email.value,
+  const { data, error: authError } = await supabase.auth.signInWithPassword({
+    email: email.value.trim(),
     password: password.value
   })
 
@@ -36,8 +40,15 @@ async function handleLogin() {
       description: authError.message,
       color: 'error'
     })
+  } else if (!data.session) {
+    error.value = 'Signed in, but no session was created. Please try again.'
+    toast.add({
+      title: 'Login incomplete',
+      description: error.value,
+      color: 'warning'
+    })
   } else {
-    navigateTo('/dashboard', { external: true })
+    await navigateTo('/dashboard')
   }
 }
 </script>
@@ -54,10 +65,9 @@ async function handleLogin() {
         </p>
       </div>
 
-      <UForm
-        :state="{ email, password }"
+      <form
         class="space-y-4"
-        @submit="handleLogin"
+        @submit.prevent="handleLogin"
       >
         <UFormField
           label="Email"
@@ -70,7 +80,6 @@ async function handleLogin() {
             icon="i-lucide-mail"
             size="lg"
             class="w-full"
-            required
           />
         </UFormField>
 
@@ -85,7 +94,6 @@ async function handleLogin() {
             icon="i-lucide-lock"
             size="lg"
             class="w-full"
-            required
           />
         </UFormField>
 
@@ -104,7 +112,7 @@ async function handleLogin() {
           block
           :loading="loading"
         />
-      </UForm>
+      </form>
     </div>
   </div>
 </template>

@@ -31,8 +31,17 @@ async function addItem() {
     return
   }
 
+  const { data: authData, error: authError } = await supabase.auth.getUser()
+  const currentUser = authData.user
+
+  if (authError || !currentUser) {
+    toast.add({ title: 'Session expired', description: 'Please log in again.', color: 'error' })
+    navigateTo('/login')
+    return
+  }
+
   const { error } = await supabase.from('wanna_sipps').insert({
-    user_id: user.value.id,
+    user_id: currentUser.id,
     roaster: newRoaster.value.trim(),
     notes: newNotes.value.trim() || null
   })
