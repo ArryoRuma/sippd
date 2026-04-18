@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import App from '~/app.vue'
 
-definePageMeta({
-  colorMode: 'dark'
-})
-
 const { data: page } = await useAsyncData('index', () => queryCollection('content').first())
 if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })

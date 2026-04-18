@@ -72,6 +72,9 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
     />
 
     <template #right>
+      <ClientOnly>
+        <UColorModeButton />
+      </ClientOnly>
       <UButton
         v-if="!user"
         label="Sign in"
@@ -151,6 +154,12 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
       />
 
       <div class="mt-4 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-muted">Color mode</span>
+          <ClientOnly>
+            <UColorModeButton />
+          </ClientOnly>
+        </div>
         <UButton
           v-if="!user"
           label="Sign in"
