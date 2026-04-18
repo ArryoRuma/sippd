@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue'
+import { useConfirmAction } from '~/composables/useConfirmAction'
+import { useDashboardTable, useDashboardTableMetrics } from '~/composables/useDashboardTable'
 import type { TableColumn } from '@nuxt/ui'
 import type { Database } from '~/types/database.types'
 
@@ -10,6 +12,8 @@ const user = useSupabaseUser()
 const toast = useToast()
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
+const { createSortHeader, formatDashboardDate } = useDashboardTable()
+const confirmDeleteState = useConfirmAction()
 
 const newRoaster = ref('')
 const newNotes = ref('')
@@ -103,11 +107,21 @@ async function toggleCompleted(id: string, current: boolean) {
 }
 
 async function deleteItem(id: string) {
+  confirmDeleteState.requestConfirmation({
+    title: 'Delete this wishlist item?',
+    description: 'This item will be permanently removed.',
+    action: async () => {
+      await deleteItemNow(id)
+    }
+  })
+}
+
+async function deleteItemNow(id: string) {
   const { error } = await supabase.from('wanna_sipps').delete().eq('id', id)
   if (error) {
     toast.add({ title: 'Error deleting item', description: error.message, color: 'error' })
   } else {
-    refresh()
+    await refresh()
   }
 }
 
@@ -132,6 +146,13 @@ const filteredItems = computed(() => {
   })
 })
 
+const filteredCount = computed(() => filteredItems.value.length)
+const { currentPage, itemsPerPage, selectedRowCount, visibleTableRowCount } = useDashboardTableMetrics({
+  table,
+  pagination,
+  fallbackRowCount: filteredCount
+})
+
 const columns: TableColumn<WannaSipp>[] = [
   {
     id: 'select',
@@ -149,47 +170,19 @@ const columns: TableColumn<WannaSipp>[] = [
   },
   {
     accessorKey: 'completed',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Status',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Status')
   },
   {
     accessorKey: 'roaster',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Roaster',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Roaster')
   },
   {
     accessorKey: 'origin',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Origin',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Origin')
   },
   {
     accessorKey: 'method',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Method',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Method')
   },
   {
     accessorKey: 'notes',
@@ -198,14 +191,7 @@ const columns: TableColumn<WannaSipp>[] = [
   },
   {
     accessorKey: 'created_at',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Added',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Added')
   },
   {
     id: 'actions',
@@ -217,6 +203,18 @@ async function deleteSelected() {
   const selectedRows = table.value?.tableApi?.getFilteredSelectedRowModel().rows ?? []
   const selectedIds = selectedRows.map((row: { original: WannaSipp }) => row.original.id)
 
+  if (!selectedIds.length) return
+
+  confirmDeleteState.requestConfirmation({
+    title: `Delete ${selectedIds.length} selected item(s)?`,
+    description: 'This will permanently remove all selected wishlist entries.',
+    action: async () => {
+      await deleteSelectedNow(selectedIds)
+    }
+  })
+}
+
+async function deleteSelectedNow(selectedIds: string[]) {
   if (!selectedIds.length) return
 
   const { error } = await supabase.from('wanna_sipps').delete().in('id', selectedIds)
@@ -253,220 +251,228 @@ async function markSelectedCompleted(completed: boolean) {
   }
 }
 
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
+function updateDeleteConfirmOpen(value: boolean) {
+  confirmDeleteState.isOpen.value = value
 }
 </script>
 
 <template>
-  <UDashboardPanel id="wanna-sipp">
-    <template #header>
-      <UDashboardNavbar title="Wanna Sipp">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
+  <div>
+    <UDashboardPanel id="wanna-sipp">
+      <template #header>
+        <UDashboardNavbar title="Wanna Sipp">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
 
-        <template #right>
-          <UButton
-            label="Add"
-            icon="i-lucide-plus"
-            color="primary"
-            @click="adding = !adding"
-          />
-        </template>
-      </UDashboardNavbar>
-
-      <UDashboardToolbar>
-        <template #left>
-          <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
-            <UInput
-              v-model="search"
-              icon="i-lucide-search"
-              placeholder="Search wishlist"
-              class="w-full sm:w-80"
-            />
-            <USelect
-              v-model="statusFilter"
-              :items="['All', 'Pending', 'Completed']"
-              class="w-full sm:w-44"
-            />
-          </div>
-        </template>
-      </UDashboardToolbar>
-    </template>
-
-    <template #body>
-      <div class="px-4 lg:px-6 py-4 space-y-4">
-        <div
-          v-if="adding"
-          class="p-4 rounded-lg border border-default bg-elevated/50 space-y-3"
-        >
-          <UInput
-            v-model="newRoaster"
-            placeholder="Roaster or coffee name"
-            class="w-full"
-          />
-          <UInput
-            v-model="newNotes"
-            placeholder="Notes (optional)"
-            class="w-full"
-          />
-          <div class="flex gap-2">
+          <template #right>
             <UButton
-              label="Save"
+              label="Add"
+              icon="i-lucide-plus"
               color="primary"
-              size="sm"
-              @click="addItem"
+              @click="adding = !adding"
             />
-            <UButton
-              label="Cancel"
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              @click="adding = false"
-            />
-          </div>
-        </div>
+          </template>
+        </UDashboardNavbar>
 
-        <UAlert
-          v-if="(table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0) > 0"
-          color="info"
-          variant="soft"
-          icon="i-lucide-check-square"
-          :title="`${table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0} row(s) selected`"
-        >
-          <template #actions>
-            <div class="flex items-center gap-2">
-              <UButton
-                label="Mark done"
-                icon="i-lucide-check"
-                color="success"
-                variant="soft"
-                size="sm"
-                @click="markSelectedCompleted(true)"
+        <UDashboardToolbar>
+          <template #left>
+            <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+              <UInput
+                v-model="search"
+                icon="i-lucide-search"
+                placeholder="Search wishlist"
+                class="w-full sm:w-80"
               />
-              <UButton
-                label="Mark pending"
-                icon="i-lucide-rotate-ccw"
-                color="neutral"
-                variant="soft"
-                size="sm"
-                @click="markSelectedCompleted(false)"
-              />
-              <UButton
-                label="Delete"
-                icon="i-lucide-trash-2"
-                color="error"
-                variant="soft"
-                size="sm"
-                @click="deleteSelected"
+              <USelect
+                v-model="statusFilter"
+                :items="['All', 'Pending', 'Completed']"
+                class="w-full sm:w-44"
               />
             </div>
           </template>
-        </UAlert>
+        </UDashboardToolbar>
+      </template>
 
-        <UTable
-          ref="table"
-          v-model:row-selection="rowSelection"
-          v-model:pagination="pagination"
-          v-model:sorting="sorting"
-          :data="filteredItems"
-          :columns="columns"
-          :loading="status === 'pending' || status === 'idle'"
-        >
-          <template #completed-cell="{ row }">
-            <UCheckbox
-              :model-value="row.original.completed"
-              @update:model-value="toggleCompleted(row.original.id, row.original.completed)"
+      <template #body>
+        <div class="px-4 lg:px-6 py-4 space-y-4">
+          <div
+            v-if="adding"
+            class="p-4 rounded-lg border border-default bg-elevated/50 space-y-3"
+          >
+            <UInput
+              v-model="newRoaster"
+              placeholder="Roaster or coffee name"
+              class="w-full"
             />
-          </template>
-
-          <template #roaster-cell="{ row }">
-            <div class="flex flex-col gap-1">
-              <span
-                class="font-medium"
-                :class="row.original.completed ? 'line-through text-muted' : 'text-highlighted'"
-              >
-                {{ row.original.roaster }}
-              </span>
-              <span
-                v-if="row.original.roast_type"
-                class="text-xs text-muted"
-              >
-                {{ row.original.roast_type }}
-              </span>
-            </div>
-          </template>
-
-          <template #method-cell="{ row }">
-            <span class="text-sm text-muted">{{ row.original.method || '—' }}</span>
-          </template>
-
-          <template #origin-cell="{ row }">
-            <span class="text-sm text-muted">{{ row.original.origin || '—' }}</span>
-          </template>
-
-          <template #notes-cell="{ row }">
-            <span class="text-sm text-muted block max-w-64 truncate">
-              {{ row.original.notes || '—' }}
-            </span>
-          </template>
-
-          <template #created_at-cell="{ row }">
-            <span class="text-sm text-muted">{{ formatDate(row.original.created_at) }}</span>
-          </template>
-
-          <template #actions-cell="{ row }">
-            <UDropdownMenu
-              :items="[
-                [{
-                  label: row.original.completed ? 'Mark pending' : 'Mark complete',
-                  icon: row.original.completed ? 'i-lucide-rotate-ccw' : 'i-lucide-check',
-                  onSelect: () => toggleCompleted(row.original.id, row.original.completed)
-                }],
-                [{
-                  label: 'Delete',
-                  icon: 'i-lucide-trash-2',
-                  color: 'error',
-                  onSelect: () => deleteItem(row.original.id)
-                }]
-              ]"
-            >
+            <UInput
+              v-model="newNotes"
+              placeholder="Notes (optional)"
+              class="w-full"
+            />
+            <div class="flex gap-2">
               <UButton
-                icon="i-lucide-ellipsis"
+                label="Save"
+                color="primary"
+                size="sm"
+                @click="addItem"
+              />
+              <UButton
+                label="Cancel"
                 color="neutral"
                 variant="ghost"
-                size="xs"
+                size="sm"
+                @click="adding = false"
               />
-            </UDropdownMenu>
-          </template>
-
-          <template #empty>
-            <div class="py-12 text-center">
-              <UIcon
-                name="i-lucide-list-todo"
-                class="size-10 text-muted mb-3"
-              />
-              <p class="text-sm text-muted">
-                No wishlist items match your filters.
-              </p>
             </div>
-          </template>
-        </UTable>
+          </div>
 
-        <div class="flex justify-end">
-          <UPagination
-            :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
-            :items-per-page="table?.tableApi?.getState().pagination.pageSize"
-            :total="table?.tableApi?.getFilteredRowModel().rows.length"
-            @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
-          />
+          <UAlert
+            v-if="selectedRowCount > 0"
+            color="info"
+            variant="soft"
+            icon="i-lucide-check-square"
+            :title="`${selectedRowCount} row(s) selected`"
+          >
+            <template #actions>
+              <div class="flex items-center gap-2">
+                <UButton
+                  label="Mark done"
+                  icon="i-lucide-check"
+                  color="success"
+                  variant="soft"
+                  size="sm"
+                  @click="markSelectedCompleted(true)"
+                />
+                <UButton
+                  label="Mark pending"
+                  icon="i-lucide-rotate-ccw"
+                  color="neutral"
+                  variant="soft"
+                  size="sm"
+                  @click="markSelectedCompleted(false)"
+                />
+                <UButton
+                  label="Delete"
+                  icon="i-lucide-trash-2"
+                  color="error"
+                  variant="soft"
+                  size="sm"
+                  @click="deleteSelected"
+                />
+              </div>
+            </template>
+          </UAlert>
+
+          <UTable
+            ref="table"
+            v-model:row-selection="rowSelection"
+            v-model:pagination="pagination"
+            v-model:sorting="sorting"
+            :data="filteredItems"
+            :columns="columns"
+            :loading="status === 'pending' || status === 'idle'"
+          >
+            <template #completed-cell="{ row }">
+              <UCheckbox
+                :model-value="row.original.completed"
+                @update:model-value="toggleCompleted(row.original.id, row.original.completed)"
+              />
+            </template>
+
+            <template #roaster-cell="{ row }">
+              <div class="flex flex-col gap-1">
+                <span
+                  class="font-medium"
+                  :class="row.original.completed ? 'line-through text-muted' : 'text-highlighted'"
+                >
+                  {{ row.original.roaster }}
+                </span>
+                <span
+                  v-if="row.original.roast_type"
+                  class="text-xs text-muted"
+                >
+                  {{ row.original.roast_type }}
+                </span>
+              </div>
+            </template>
+
+            <template #method-cell="{ row }">
+              <span class="text-sm text-muted">{{ row.original.method || '—' }}</span>
+            </template>
+
+            <template #origin-cell="{ row }">
+              <span class="text-sm text-muted">{{ row.original.origin || '—' }}</span>
+            </template>
+
+            <template #notes-cell="{ row }">
+              <span class="text-sm text-muted block max-w-64 truncate">
+                {{ row.original.notes || '—' }}
+              </span>
+            </template>
+
+            <template #created_at-cell="{ row }">
+              <span class="text-sm text-muted">{{ formatDashboardDate(row.original.created_at) }}</span>
+            </template>
+
+            <template #actions-cell="{ row }">
+              <UDropdownMenu
+                :items="[
+                  [{
+                    label: row.original.completed ? 'Mark pending' : 'Mark complete',
+                    icon: row.original.completed ? 'i-lucide-rotate-ccw' : 'i-lucide-check',
+                    onSelect: () => toggleCompleted(row.original.id, row.original.completed)
+                  }],
+                  [{
+                    label: 'Delete',
+                    icon: 'i-lucide-trash-2',
+                    color: 'error',
+                    onSelect: () => deleteItem(row.original.id)
+                  }]
+                ]"
+              >
+                <UButton
+                  icon="i-lucide-ellipsis"
+                  color="neutral"
+                  variant="ghost"
+                  size="xs"
+                />
+              </UDropdownMenu>
+            </template>
+
+            <template #empty>
+              <div class="py-12 text-center">
+                <UIcon
+                  name="i-lucide-list-todo"
+                  class="size-10 text-muted mb-3"
+                />
+                <p class="text-sm text-muted">
+                  No wishlist items match your filters.
+                </p>
+              </div>
+            </template>
+          </UTable>
+
+          <div class="flex justify-end">
+            <UPagination
+              :page="currentPage"
+              :items-per-page="itemsPerPage"
+              :total="visibleTableRowCount"
+              @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
+            />
+          </div>
         </div>
-      </div>
-    </template>
-  </UDashboardPanel>
+      </template>
+    </UDashboardPanel>
+
+    <ConfirmActionModal
+      :open="confirmDeleteState.isOpen.value"
+      :title="confirmDeleteState.title.value"
+      :description="confirmDeleteState.description.value"
+      :pending="confirmDeleteState.isPending.value"
+      @update:open="updateDeleteConfirmOpen"
+      @cancel="confirmDeleteState.cancelAction"
+      @confirm="confirmDeleteState.confirmAction"
+    />
+  </div>
 </template>

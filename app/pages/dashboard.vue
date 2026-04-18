@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useDashboardTable } from '~/composables/useDashboardTable'
 import type { Database } from '~/types/database.types'
 
 definePageMeta({ layout: 'dashboard' })
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
+const { formatDashboardDate } = useDashboardTable()
 
 const { data: stats, status } = await useAsyncData('dashboard-stats', async () => {
   const { data: sipps } = await supabase
@@ -52,14 +54,6 @@ const { data: stats, status } = await useAsyncData('dashboard-stats', async () =
 const avgProgress = computed(() => {
   return Math.min(100, Math.round(((stats.value?.average ?? 0) / 50) * 100))
 })
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
 
 type Sipp = Database['public']['Tables']['sipps']['Row']
 </script>
@@ -228,7 +222,7 @@ type Sipp = Database['public']['Tables']['sipps']['Row']
                     {{ sipp.roaster }}
                   </p>
                   <p class="text-xs text-muted truncate">
-                    {{ sipp.origin }} · {{ sipp.method }} · {{ formatDate(sipp.created_at) }}
+                    {{ sipp.origin }} · {{ sipp.method }} · {{ formatDashboardDate(sipp.created_at) }}
                   </p>
                 </div>
 

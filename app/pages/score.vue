@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { h, resolveComponent } from 'vue'
+import { resolveComponent } from 'vue'
+import { useDashboardTable, useDashboardTableMetrics } from '~/composables/useDashboardTable'
 import type { TableColumn } from '@nuxt/ui'
 import type { Database } from '~/types/database.types'
 
@@ -10,20 +11,34 @@ const user = useSupabaseUser()
 const toast = useToast()
 const UButton = resolveComponent('UButton')
 const loadError = ref<string | null>(null)
+const { createSelectOptions, createSortHeader, formatDashboardDate, searchableText } = useDashboardTable()
 
 const search = ref('')
 const methodFilter = ref('All')
+const roastFilter = ref('All')
 const slideoverOpen = ref(false)
 const selectedSipp = ref<Database['public']['Tables']['sipps']['Row']>()
-const table = ref<unknown>(null)
+type TableApi = {
+  getFilteredRowModel?: () => { rows: unknown[] }
+  getState?: () => {
+    pagination?: {
+      pageIndex?: number
+      pageSize?: number
+    }
+  }
+  setPageIndex: (pageIndex: number) => void
+}
+type TableRef = { tableApi?: TableApi }
+
+const table = ref<TableRef | null>(null)
+const pagination = ref({
+  pageIndex: 0,
+  pageSize: 10
+})
 const sorting = ref([
   { id: 'overall', desc: true },
   { id: 'created_at', desc: true }
 ])
-
-function searchableText(value: string | null | undefined) {
-  return value?.toLowerCase() ?? ''
-}
 
 type Sipp = Database['public']['Tables']['sipps']['Row']
 const { data: sipps, status, refresh } = await useAsyncData('sipps-ranked', async () => {
@@ -53,23 +68,31 @@ const filteredSipps = computed(() => {
         .some(field => searchableText(field).includes(q))
 
     const matchesMethod = methodFilter.value === 'All' || (sipp.method ?? '') === methodFilter.value
+    const matchesRoast = roastFilter.value === 'All' || (sipp.roast_type ?? '') === roastFilter.value
 
-    return matchesSearch && matchesMethod
+    return matchesSearch && matchesMethod && matchesRoast
   })
 })
 
 const totalSipps = computed(() => sipps.value?.length ?? 0)
 const filteredCount = computed(() => filteredSipps.value.length)
 const renderedRowCount = computed<number>(() => filteredCount.value)
+const { currentPage, itemsPerPage, visibleTableRowCount } = useDashboardTableMetrics({
+  table,
+  pagination,
+  fallbackRowCount: filteredCount
+})
 
 const methodOptions = computed(() => {
-  const values = new Set(
-    (sipps.value ?? [])
-      .map(sipp => sipp.method)
-      .filter((value): value is string => Boolean(value))
-  )
+  return createSelectOptions(sipps.value, sipp => sipp.method)
+})
 
-  return ['All', ...Array.from(values).sort((a, b) => a.localeCompare(b))]
+const roastOptions = computed(() => {
+  return createSelectOptions(sipps.value, sipp => sipp.roast_type)
+})
+
+const hasActiveFilters = computed(() => {
+  return search.value.trim().length > 0 || methodFilter.value !== 'All' || roastFilter.value !== 'All'
 })
 
 const columns: TableColumn<Sipp>[] = [
@@ -80,69 +103,27 @@ const columns: TableColumn<Sipp>[] = [
   },
   {
     accessorKey: 'roaster',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Roaster',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Roaster')
   },
   {
     accessorKey: 'origin',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Origin',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Origin')
   },
   {
     accessorKey: 'roast_type',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Roast',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Roast')
   },
   {
     accessorKey: 'method',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Method',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Method')
   },
   {
     accessorKey: 'overall',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Overall',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Overall')
   },
   {
     accessorKey: 'created_at',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Logged',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Logged')
   },
   {
     id: 'actions',
@@ -158,9 +139,9 @@ function getRankIcon(rank: number) {
 }
 
 function getRankColor(rank: number) {
-  if (rank === 1) return 'text-yellow-500'
-  if (rank === 2) return 'text-slate-400'
-  if (rank === 3) return 'text-amber-600'
+  if (rank === 1) return 'text-warning'
+  if (rank === 2) return 'text-info'
+  if (rank === 3) return 'text-primary'
   return 'text-muted'
 }
 
@@ -169,12 +150,10 @@ function openView(sipp: Sipp) {
   slideoverOpen.value = true
 }
 
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
+function clearFilters() {
+  search.value = ''
+  methodFilter.value = 'All'
+  roastFilter.value = 'All'
 }
 </script>
 
@@ -201,6 +180,31 @@ function formatDate(date: string) {
                 v-model="methodFilter"
                 :items="methodOptions"
                 class="w-full sm:w-48"
+              />
+              <USelect
+                v-model="roastFilter"
+                :items="roastOptions"
+                class="w-full sm:w-48"
+              />
+            </div>
+          </template>
+
+          <template #right>
+            <div class="flex items-center gap-2">
+              <UButton
+                label="Refresh"
+                icon="i-lucide-refresh-cw"
+                color="neutral"
+                variant="outline"
+                @click="() => refresh()"
+              />
+              <UButton
+                label="Clear filters"
+                icon="i-lucide-x"
+                color="neutral"
+                variant="ghost"
+                :disabled="!hasActiveFilters"
+                @click="clearFilters"
               />
             </div>
           </template>
@@ -267,6 +271,7 @@ function formatDate(date: string) {
 
           <UTable
             ref="table"
+            v-model:pagination="pagination"
             v-model:sorting="sorting"
             :data="filteredSipps"
             :columns="columns"
@@ -313,7 +318,7 @@ function formatDate(date: string) {
             </template>
 
             <template #created_at-cell="{ row }">
-              <span class="text-sm text-muted">{{ formatDate(row.original.created_at) }}</span>
+              <span class="text-sm text-muted">{{ formatDashboardDate(row.original.created_at) }}</span>
             </template>
 
             <template #actions-cell="{ row }">
@@ -338,6 +343,19 @@ function formatDate(date: string) {
               </div>
             </template>
           </UTable>
+
+          <div class="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-sm text-muted">
+              {{ visibleTableRowCount }} row(s)
+            </p>
+
+            <UPagination
+              :page="currentPage"
+              :items-per-page="itemsPerPage"
+              :total="visibleTableRowCount"
+              @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
+            />
+          </div>
         </div>
       </template>
     </UDashboardPanel>

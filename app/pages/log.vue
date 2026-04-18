@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue'
+import { useConfirmAction } from '~/composables/useConfirmAction'
+import { useDashboardTable, useDashboardTableMetrics } from '~/composables/useDashboardTable'
 import type { TableColumn } from '@nuxt/ui'
 import type { Database } from '~/types/database.types'
 
@@ -11,6 +13,8 @@ const toast = useToast()
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const loadError = ref<string | null>(null)
+const { createSelectOptions, createSortHeader, formatDashboardDate, searchableText } = useDashboardTable()
+const confirmDeleteState = useConfirmAction()
 
 const slideoverOpen = ref(false)
 const selectedSipp = ref<Database['public']['Tables']['sipps']['Row']>()
@@ -48,10 +52,6 @@ const columnVisibility = ref<Record<string, boolean>>({
   aftertaste: false
 })
 
-function searchableText(value: string | null | undefined) {
-  return value?.toLowerCase() ?? ''
-}
-
 type Sipp = Database['public']['Tables']['sipps']['Row']
 const { data: sipps, status, refresh } = await useAsyncData('sipps', async () => {
   loadError.value = null
@@ -71,23 +71,11 @@ const { data: sipps, status, refresh } = await useAsyncData('sipps', async () =>
 })
 
 const methodOptions = computed(() => {
-  const values = new Set(
-    (sipps.value ?? [])
-      .map(sipp => sipp.method)
-      .filter((value): value is string => Boolean(value))
-  )
-
-  return ['All', ...Array.from(values).sort((a, b) => a.localeCompare(b))]
+  return createSelectOptions(sipps.value, sipp => sipp.method)
 })
 
 const roastOptions = computed(() => {
-  const values = new Set(
-    (sipps.value ?? [])
-      .map(sipp => sipp.roast_type)
-      .filter((value): value is string => Boolean(value))
-  )
-
-  return ['All', ...Array.from(values).sort((a, b) => a.localeCompare(b))]
+  return createSelectOptions(sipps.value, sipp => sipp.roast_type)
 })
 
 const filteredSipps = computed(() => {
@@ -112,10 +100,11 @@ const filteredSipps = computed(() => {
 const totalSipps = computed(() => sipps.value?.length ?? 0)
 const filteredCount = computed(() => filteredSipps.value.length)
 const renderedRowCount = computed<number>(() => filteredCount.value)
-const selectedRowCount = computed(() => table.value?.tableApi?.getFilteredSelectedRowModel()?.rows.length ?? 0)
-const visibleTableRowCount = computed(() => table.value?.tableApi?.getFilteredRowModel()?.rows.length ?? filteredCount.value)
-const currentPage = computed(() => (table.value?.tableApi?.getState()?.pagination?.pageIndex ?? pagination.value.pageIndex) + 1)
-const itemsPerPage = computed(() => table.value?.tableApi?.getState()?.pagination?.pageSize ?? pagination.value.pageSize)
+const { currentPage, itemsPerPage, selectedRowCount, visibleTableRowCount } = useDashboardTableMetrics({
+  table,
+  pagination,
+  fallbackRowCount: filteredCount
+})
 
 const columns: TableColumn<Sipp>[] = [
   {
@@ -134,124 +123,47 @@ const columns: TableColumn<Sipp>[] = [
   },
   {
     accessorKey: 'roaster',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Roaster',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Roaster')
   },
   {
     accessorKey: 'roast_type',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Roast',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Roast')
   },
   {
     accessorKey: 'origin',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Origin',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Origin')
   },
   {
     accessorKey: 'method',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Method',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Method')
   },
   {
     accessorKey: 'aroma',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Aroma',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Aroma')
   },
   {
     accessorKey: 'flavor',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Flavor',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Flavor')
   },
   {
     accessorKey: 'acidity',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Acidity',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Acidity')
   },
   {
     accessorKey: 'body',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Body',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Body')
   },
   {
     accessorKey: 'aftertaste',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Aftertaste',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Aftertaste')
   },
   {
     accessorKey: 'overall',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Overall',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Overall')
   },
   {
     accessorKey: 'created_at',
-    header: ({ column }) => h(UButton, {
-      color: 'neutral',
-      variant: 'ghost',
-      label: 'Logged',
-      icon: column.getIsSorted() === 'asc' ? 'i-lucide-arrow-up' : column.getIsSorted() === 'desc' ? 'i-lucide-arrow-down' : 'i-lucide-arrow-up-down',
-      class: '-ml-3',
-      onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
-    })
+    header: createSortHeader(UButton, 'Logged')
   },
   {
     id: 'actions',
@@ -299,12 +211,22 @@ function openEdit(sipp: Sipp) {
 }
 
 async function deleteSipp(id: string) {
+  confirmDeleteState.requestConfirmation({
+    title: 'Delete this sipp?',
+    description: 'This entry will be permanently removed from your log.',
+    action: async () => {
+      await deleteSippNow(id)
+    }
+  })
+}
+
+async function deleteSippNow(id: string) {
   const { error } = await supabase.from('sipps').delete().eq('id', id)
   if (error) {
     toast.add({ title: 'Error deleting sipp', description: error.message, color: 'error' })
   } else {
     toast.add({ title: 'Sipp deleted', color: 'success' })
-    refresh()
+    await refresh()
   }
 }
 
@@ -312,6 +234,18 @@ async function deleteSelected() {
   const selectedRows = table.value?.tableApi?.getFilteredSelectedRowModel().rows ?? []
   const selectedIds = selectedRows.map((row: { original: Sipp }) => row.original.id)
 
+  if (!selectedIds.length) return
+
+  confirmDeleteState.requestConfirmation({
+    title: `Delete ${selectedIds.length} selected sipp(s)?`,
+    description: 'This will permanently remove all selected entries.',
+    action: async () => {
+      await deleteSelectedNow(selectedIds)
+    }
+  })
+}
+
+async function deleteSelectedNow(selectedIds: string[]) {
   if (!selectedIds.length) return
 
   const { error } = await supabase.from('sipps').delete().in('id', selectedIds)
@@ -379,12 +313,8 @@ function onSaved() {
   refresh()
 }
 
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
+function updateDeleteConfirmOpen(value: boolean) {
+  confirmDeleteState.isOpen.value = value
 }
 </script>
 
@@ -524,7 +454,7 @@ function formatDate(date: string) {
                 label="Retry"
                 color="neutral"
                 variant="outline"
-                @click="refresh"
+                @click="() => refresh()"
               />
             </template>
           </UAlert>
@@ -582,7 +512,7 @@ function formatDate(date: string) {
             </template>
 
             <template #created_at-cell="{ row }">
-              <span class="text-sm text-muted">{{ formatDate(row.original.created_at) }}</span>
+              <span class="text-sm text-muted">{{ formatDashboardDate(row.original.created_at) }}</span>
             </template>
 
             <template #actions-cell="{ row }">
@@ -659,5 +589,15 @@ function formatDate(date: string) {
         />
       </template>
     </USlideover>
+
+    <ConfirmActionModal
+      :open="confirmDeleteState.isOpen.value"
+      :title="confirmDeleteState.title.value"
+      :description="confirmDeleteState.description.value"
+      :pending="confirmDeleteState.isPending.value"
+      @update:open="updateDeleteConfirmOpen"
+      @cancel="confirmDeleteState.cancelAction"
+      @confirm="confirmDeleteState.confirmAction"
+    />
   </div>
 </template>
