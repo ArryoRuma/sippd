@@ -2,5 +2,357 @@
 > nuxt-ui-template-landing@ typecheck /Users/larryontruman/Desktop/Coding/5_Experiments/sippd
 > nuxt typecheck
 
+[nuxt] modules:before: 0.131ms
+[nuxt] eslint:config:addons: 0.024ms
+ℹ Module @nuxt/eslint took 14.69ms to setup.
+[nuxt] kit:compatibility: 0.024ms
+ℹ Module @nuxt/content took 22.7ms to setup.
+[nuxt] kit:compatibility: 0.013ms
+ℹ Module @nuxt/ui took 15.88ms to setup.
+ℹ Module vueuse took 0.14ms to setup.
+[nuxt] kit:compatibility: 0.085ms
+ℹ Module motion-v took 0.18ms to setup.
+[nuxt] kit:compatibility: 0.023ms
+ℹ Module @nuxtjs/supabase took 1.27ms to setup.
+ℹ Module @nuxt/fonts took 0.11ms to setup.
+ℹ Module @nuxt/devtools took 44.98ms to setup.
+[nuxt] pages:routerOptions: 0.017ms
+ℹ Module nuxt:pages took 7.4ms to setup.
+ℹ Module nuxt:meta took 1.23ms to setup.
+ℹ Module nuxt:components took 3.31ms to setup.
+ℹ Module nuxt:compiler took 0.13ms to setup.
+ℹ Module nuxt:imports took 1.06ms to setup.
+ℹ Module nuxt:nuxt-config-schema took 0.21ms to setup.
+ℹ Module @nuxt/telemetry took 0.05ms to setup.
+ℹ Module @nuxtjs/mdc took 1.71ms to setup.
+[nuxt] kit:compatibility: 0.013ms
+[nuxt] icon:serverKnownCssClasses: 0.088ms
+ℹ Module @nuxt/icon took 1.81ms to setup.
+[nuxt] kit:compatibility: 0.018ms
+[nuxt] kit:compatibility: 0.013ms
+ℹ Module @nuxtjs/color-mode took 5.43ms to setup.
+[nuxt] imports:dirs: 0.046ms
+[nuxt] imports:sources: 38.199ms
+[nuxt] imports:context: 0.027ms
+[nuxt] imports:extend: 0.047ms
+[nuxt] eslint:config:addons: 0.006ms
+[nuxt] builder:generateApp: 3.978ms
+[nuxt] schema:extend: 0.04ms
+[nuxt] schema:resolved: 0.005ms
+[nuxt] mdc:configSources: 0.046ms
+[nuxt] modules:done: 61.496ms
 ℹ Nuxt Icon server bundle mode is set to local
 ✔ Nuxt Icon discovered local-installed 2 collections: lucide, simple-icons
+[nuxt] nitro:config: 1.404s
+[nuxt] nitro:init: 0.106ms
+[nuxt] ready: 0.122ms
+[nuxt] schema:beforeWrite: 0.01ms
+[nuxt] schema:written: 0.007ms
+[nitro] types:extend: 0.103ms
+[nuxt] prepare:types: 38.347ms
+[nuxt] components:dirs: 0.047ms
+[nuxt] app:resolve: 1.286ms
+[nuxt] pages:extend: 0.047ms
+[nuxt] pages:resolved: 0.112ms
+[nuxt] components:extend: 0.433ms
+[nuxt] app:templates: 33.198ms
+[nuxt] icon:clientBundleIcons: 0.01ms
+[nuxt] nitro:prepare:types: 0.045ms
+[nuxt] ℹ Compiled app-component.mjs in 20.24ms
+[nuxt] ℹ Compiled types/app.config.d.ts in 20.23ms
+[nuxt] ℹ Compiled app.config.mjs in 20.13ms
+[nuxt] ℹ Compiled types/build.d.ts in 20.11ms
+[nuxt] ℹ Compiled nitro.client.mjs in 19.77ms
+[nuxt] ℹ Compiled css.mjs in 19.78ms
+[nuxt] ℹ Compiled fetch.mjs in 19.78ms
+[nuxt] ℹ Compiled error-component.mjs in 19.8ms
+[nuxt] ℹ Compiled global-polyfills.mjs in 19.81ms
+[nuxt] ℹ Compiled layouts.mjs in 19.89ms
+[nuxt] ℹ Compiled middleware.mjs in 19.75ms
+[nuxt] ℹ Compiled nuxt.config.mjs in 19.63ms
+[nuxt] ℹ Compiled paths.mjs in 19.43ms
+[nuxt] ℹ Compiled root-component.mjs in 19.43ms
+[nuxt] ℹ Compiled types/modules.d.ts in 19.44ms
+[nuxt] ℹ Compiled test-component-wrapper.mjs in 18.91ms
+[nuxt] ℹ Compiled types/vue-shim.d.ts in 18.91ms
+[nuxt] ℹ Compiled types/nitro-layouts.d.ts in 18.93ms
+[nuxt] ℹ Compiled types/builder-env.d.ts in 18.93ms
+[nuxt] ℹ Compiled content/sql_dump.txt in 18.95ms
+[nuxt] ℹ Compiled content/components.ts in 18.97ms
+[nuxt] ℹ Compiled content/manifest.ts in 18.52ms
+[nuxt] ℹ Compiled ui/prose/index.ts in 15.47ms
+[nuxt] ℹ Compiled ui/index.ts in 6.92ms
+[nuxt] ℹ Compiled types/ui.d.ts in 6.82ms
+[nuxt] ℹ Compiled ui-image-component.ts in 6.79ms
+[nuxt] ℹ Compiled types/supabase.d.ts in 6.75ms
+[nuxt] ℹ Compiled routes.mjs in 6.65ms
+[nuxt] ℹ Compiled pages.mjs in 5.69ms
+[nuxt] ℹ Compiled types/middleware.d.ts in 5.65ms
+[nuxt] ℹ Compiled types/nitro-middleware.d.ts in 5.65ms
+[nuxt] ℹ Compiled types/layouts.d.ts in 5.66ms
+[nuxt] ℹ Compiled unhead-options.mjs in 5.63ms
+[nuxt] ℹ Compiled unhead.config.mjs in 5.64ms
+[nuxt] ℹ Compiled components.d.ts in 5.64ms
+[nuxt] ℹ Compiled types/components.d.ts in 4.42ms
+[nuxt] ℹ Compiled components.plugin.mjs in 3.23ms
+[nuxt] ℹ Compiled component-names.mjs in 3.13ms
+[nuxt] ℹ Compiled components.islands.mjs in 3.12ms
+[nuxt] ℹ Compiled component-chunk.mjs in 3.07ms
+[nuxt] ℹ Compiled mdc-image-component.mjs in 8.12ms
+[nuxt] ℹ Compiled color-mode-options.mjs in 8.03ms
+[nuxt] ℹ Compiled route-rules.mjs in 8.05ms
+[nuxt] ℹ Compiled ui/prose/a.ts in 23.13ms
+[nuxt] ℹ Compiled ui/prose/accordion.ts in 22.98ms
+[nuxt] ℹ Compiled ui/prose/accordion-item.ts in 23ms
+[nuxt] ℹ Compiled ui/prose/badge.ts in 23.02ms
+[nuxt] ℹ Compiled ui/prose/blockquote.ts in 23.04ms
+[nuxt] ℹ Compiled ui/prose/callout.ts in 23.07ms
+[nuxt] ℹ Compiled ui/prose/card.ts in 22.81ms
+[nuxt] ℹ Compiled ui/prose/card-group.ts in 22.77ms
+[nuxt] ℹ Compiled ui/prose/code.ts in 22.75ms
+[nuxt] ℹ Compiled ui/prose/code-collapse.ts in 22.73ms
+[nuxt] ℹ Compiled ui/prose/code-group.ts in 22.75ms
+[nuxt] ℹ Compiled ui/prose/code-icon.ts in 22.75ms
+[nuxt] ℹ Compiled ui/prose/code-preview.ts in 22.76ms
+[nuxt] ℹ Compiled ui/prose/code-tree.ts in 22.78ms
+[nuxt] ℹ Compiled ui/prose/collapsible.ts in 22.77ms
+[nuxt] ℹ Compiled ui/prose/em.ts in 22.77ms
+[nuxt] ℹ Compiled ui/prose/field.ts in 22.79ms
+[nuxt] ℹ Compiled ui/prose/field-group.ts in 22.81ms
+[nuxt] ℹ Compiled ui/prose/h1.ts in 22.83ms
+[nuxt] ℹ Compiled ui/prose/h2.ts in 22.85ms
+[nuxt] ℹ Compiled ui/prose/h3.ts in 22.86ms
+[nuxt] ℹ Compiled ui/prose/h4.ts in 22.87ms
+[nuxt] ℹ Compiled ui/prose/hr.ts in 22.89ms
+[nuxt] ℹ Compiled ui/prose/icon.ts in 22.91ms
+[nuxt] ℹ Compiled ui/prose/img.ts in 22.93ms
+[nuxt] ℹ Compiled ui/prose/kbd.ts in 22.94ms
+[nuxt] ℹ Compiled ui/prose/li.ts in 22.96ms
+[nuxt] ℹ Compiled ui/prose/ol.ts in 22.98ms
+[nuxt] ℹ Compiled ui/prose/p.ts in 23ms
+[nuxt] ℹ Compiled ui/prose/pre.ts in 23.02ms
+[nuxt] ℹ Compiled ui/prose/steps.ts in 23.04ms
+[nuxt] ℹ Compiled ui/prose/strong.ts in 22.98ms
+[nuxt] ℹ Compiled ui/prose/table.ts in 23ms
+[nuxt] ℹ Compiled ui/prose/tabs.ts in 23.02ms
+[nuxt] ℹ Compiled ui/prose/tabs-item.ts in 23.04ms
+[nuxt] ℹ Compiled ui/prose/tbody.ts in 23.06ms
+[nuxt] ℹ Compiled ui/prose/td.ts in 23.08ms
+[nuxt] ℹ Compiled ui/prose/th.ts in 23.05ms
+[nuxt] ℹ Compiled ui/prose/thead.ts in 23.08ms
+[nuxt] ℹ Compiled ui/prose/tr.ts in 23.1ms
+[nuxt] ℹ Compiled ui/prose/ul.ts in 23.12ms
+[nuxt] ℹ Compiled ui/content/content-navigation.ts in 23.09ms
+[nuxt] ℹ Compiled ui/content/content-search.ts in 22.77ms
+[nuxt] ℹ Compiled ui/content/content-search-button.ts in 22.75ms
+[nuxt] ℹ Compiled ui/content/content-surround.ts in 22.77ms
+[nuxt] ℹ Compiled ui/content/content-toc.ts in 22.72ms
+[nuxt] ℹ Compiled ui/accordion.ts in 22.58ms
+[nuxt] ℹ Compiled ui/alert.ts in 22.6ms
+[nuxt] ℹ Compiled ui/auth-form.ts in 22.45ms
+[nuxt] ℹ Compiled ui/avatar.ts in 22.46ms
+[nuxt] ℹ Compiled ui/avatar-group.ts in 22.48ms
+[nuxt] ℹ Compiled ui/badge.ts in 22.49ms
+[nuxt] ℹ Compiled ui/banner.ts in 22.32ms
+[nuxt] ℹ Compiled ui/blog-post.ts in 22.28ms
+[nuxt] ℹ Compiled ui/blog-posts.ts in 22.21ms
+[nuxt] ℹ Compiled ui/breadcrumb.ts in 22.23ms
+[nuxt] ℹ Compiled ui/button.ts in 22.21ms
+[nuxt] ℹ Compiled ui/calendar.ts in 21.93ms
+[nuxt] ℹ Compiled ui/card.ts in 21.72ms
+[nuxt] ℹ Compiled ui/carousel.ts in 21.74ms
+[nuxt] ℹ Compiled ui/changelog-version.ts in 21.72ms
+[nuxt] ℹ Compiled ui/changelog-versions.ts in 21.72ms
+[nuxt] ℹ Compiled ui/chat-message.ts in 21.74ms
+[nuxt] ℹ Compiled ui/chat-messages.ts in 21.62ms
+[nuxt] ℹ Compiled ui/chat-palette.ts in 21.64ms
+[nuxt] ℹ Compiled ui/chat-prompt.ts in 21.65ms
+[nuxt] ℹ Compiled ui/chat-prompt-submit.ts in 21.67ms
+[nuxt] ℹ Compiled ui/chat-reasoning.ts in 21.69ms
+[nuxt] ℹ Compiled ui/chat-shimmer.ts in 21.64ms
+[nuxt] ℹ Compiled ui/chat-tool.ts in 21.65ms
+[nuxt] ℹ Compiled ui/checkbox.ts in 21.63ms
+[nuxt] ℹ Compiled ui/checkbox-group.ts in 21.48ms
+[nuxt] ℹ Compiled ui/chip.ts in 21.39ms
+[nuxt] ℹ Compiled ui/collapsible.ts in 21.31ms
+[nuxt] ℹ Compiled ui/color-picker.ts in 21.33ms
+[nuxt] ℹ Compiled ui/command-palette.ts in 21.34ms
+[nuxt] ℹ Compiled ui/container.ts in 21.27ms
+[nuxt] ℹ Compiled ui/context-menu.ts in 21.29ms
+[nuxt] ℹ Compiled ui/dashboard-group.ts in 21.19ms
+[nuxt] ℹ Compiled ui/dashboard-navbar.ts in 21.21ms
+[nuxt] ℹ Compiled ui/dashboard-panel.ts in 21.19ms
+[nuxt] ℹ Compiled ui/dashboard-resize-handle.ts in 21.21ms
+[nuxt] ℹ Compiled ui/dashboard-search.ts in 21.23ms
+[nuxt] ℹ Compiled ui/dashboard-search-button.ts in 21.25ms
+[nuxt] ℹ Compiled ui/dashboard-sidebar.ts in 21.27ms
+[nuxt] ℹ Compiled ui/dashboard-sidebar-collapse.ts in 21.28ms
+[nuxt] ℹ Compiled ui/dashboard-sidebar-toggle.ts in 21.3ms
+[nuxt] ℹ Compiled ui/dashboard-toolbar.ts in 21.32ms
+[nuxt] ℹ Compiled ui/drawer.ts in 21.34ms
+[nuxt] ℹ Compiled ui/dropdown-menu.ts in 21.29ms
+[nuxt] ℹ Compiled ui/editor.ts in 21.19ms
+[nuxt] ℹ Compiled ui/editor-drag-handle.ts in 21.13ms
+[nuxt] ℹ Compiled ui/editor-emoji-menu.ts in 21.15ms
+[nuxt] ℹ Compiled ui/editor-mention-menu.ts in 21.12ms
+[nuxt] ℹ Compiled ui/editor-suggestion-menu.ts in 21.12ms
+[nuxt] ℹ Compiled ui/editor-toolbar.ts in 21.13ms
+[nuxt] ℹ Compiled ui/empty.ts in 21.11ms
+[nuxt] ℹ Compiled ui/error.ts in 21.12ms
+[nuxt] ℹ Compiled ui/field-group.ts in 21.14ms
+[nuxt] ℹ Compiled ui/file-upload.ts in 21.16ms
+[nuxt] ℹ Compiled ui/footer.ts in 21ms
+[nuxt] ℹ Compiled ui/footer-columns.ts in 21.01ms
+[nuxt] ℹ Compiled ui/form.ts in 21.01ms
+[nuxt] ℹ Compiled ui/form-field.ts in 21.03ms
+[nuxt] ℹ Compiled ui/header.ts in 21.04ms
+[nuxt] ℹ Compiled ui/input.ts in 21.05ms
+[nuxt] ℹ Compiled ui/input-date.ts in 20.86ms
+[nuxt] ℹ Compiled ui/input-menu.ts in 20.64ms
+[nuxt] ℹ Compiled ui/input-number.ts in 20.38ms
+[nuxt] ℹ Compiled ui/input-tags.ts in 20.23ms
+[nuxt] ℹ Compiled ui/input-time.ts in 20.03ms
+[nuxt] ℹ Compiled ui/kbd.ts in 19.82ms
+[nuxt] ℹ Compiled ui/link.ts in 19.73ms
+[nuxt] ℹ Compiled ui/main.ts in 19.73ms
+[nuxt] ℹ Compiled ui/marquee.ts in 19.75ms
+[nuxt] ℹ Compiled ui/modal.ts in 19.76ms
+[nuxt] ℹ Compiled ui/navigation-menu.ts in 19.77ms
+[nuxt] ℹ Compiled ui/page.ts in 19.41ms
+[nuxt] ℹ Compiled ui/page-anchors.ts in 19.43ms
+[nuxt] ℹ Compiled ui/page-aside.ts in 19.39ms
+[nuxt] ℹ Compiled ui/page-body.ts in 19.41ms
+[nuxt] ℹ Compiled ui/page-cta.ts in 19.43ms
+[nuxt] ℹ Compiled ui/page-card.ts in 19.43ms
+[nuxt] ℹ Compiled ui/page-columns.ts in 19.26ms
+[nuxt] ℹ Compiled ui/page-feature.ts in 19.28ms
+[nuxt] ℹ Compiled ui/page-grid.ts in 19.27ms
+[nuxt] ℹ Compiled ui/page-header.ts in 19.29ms
+[nuxt] ℹ Compiled ui/page-hero.ts in 20.53ms
+[nuxt] ℹ Compiled ui/page-links.ts in 20.59ms
+[nuxt] ℹ Compiled ui/page-list.ts in 20.59ms
+[nuxt] ℹ Compiled ui/page-logos.ts in 20.61ms
+[nuxt] ℹ Compiled ui/page-section.ts in 20.63ms
+[nuxt] ℹ Compiled ui/pagination.ts in 20.64ms
+[nuxt] ℹ Compiled ui/pin-input.ts in 20.66ms
+[nuxt] ℹ Compiled ui/popover.ts in 20.58ms
+[nuxt] ℹ Compiled ui/pricing-plan.ts in 20.6ms
+[nuxt] ℹ Compiled ui/pricing-plans.ts in 20.6ms
+[nuxt] ℹ Compiled ui/pricing-table.ts in 20.62ms
+[nuxt] ℹ Compiled ui/progress.ts in 20.63ms
+[nuxt] ℹ Compiled ui/radio-group.ts in 20.42ms
+[nuxt] ℹ Compiled ui/scroll-area.ts in 20.25ms
+[nuxt] ℹ Compiled ui/select.ts in 20.27ms
+[nuxt] ℹ Compiled ui/select-menu.ts in 19.99ms
+[nuxt] ℹ Compiled ui/separator.ts in 19.79ms
+[nuxt] ℹ Compiled ui/sidebar.ts in 19.72ms
+[nuxt] ℹ Compiled ui/skeleton.ts in 19.6ms
+[nuxt] ℹ Compiled ui/slideover.ts in 19.61ms
+[nuxt] ℹ Compiled ui/slider.ts in 19.62ms
+[nuxt] ℹ Compiled ui/stepper.ts in 19.55ms
+[nuxt] ℹ Compiled ui/switch.ts in 19.45ms
+[nuxt] ℹ Compiled ui/table.ts in 19.39ms
+[nuxt] ℹ Compiled ui/tabs.ts in 19.2ms
+[nuxt] ℹ Compiled ui/textarea.ts in 19.07ms
+[nuxt] ℹ Compiled ui/timeline.ts in 18.97ms
+[nuxt] ℹ Compiled ui/toast.ts in 18.78ms
+[nuxt] ℹ Compiled ui/toaster.ts in 18.64ms
+[nuxt] ℹ Compiled ui/tooltip.ts in 18.6ms
+[nuxt] ℹ Compiled ui/tree.ts in 18.63ms
+[nuxt] ℹ Compiled ui/user.ts in 18.55ms
+[nuxt] ℹ Compiled ui.css in 18.51ms
+[nuxt] ℹ Compiled mdc-configs.mjs in 14.6ms
+[nuxt] ℹ Compiled mdc-imports.mjs in 14.59ms
+[nuxt] ℹ Compiled nuxt-icon-server-bundle.mjs in 14.5ms
+[nuxt] ℹ Compiled content/database.compressed.mjs in 13.4ms
+[nuxt] ℹ Compiled imports.mjs in 15.03ms
+[nuxt] ℹ Compiled imports.d.ts in 15.05ms
+[nuxt] ℹ Compiled types/nitro-nuxt.d.ts in 14.56ms
+[nuxt] ℹ Compiled nuxt-icon-client-bundle.mjs in 14.77ms
+[nuxt] ℹ Compiled types/runtime-config.d.ts in 40.11ms
+[nuxt] ℹ Compiled types/shared-imports.d.ts in 24.36ms
+[nuxt] ℹ Compiled mdc-highlighter.mjs in 24.89ms
+[nuxt] ℹ Compiled types/imports.d.ts in 26.09ms
+[nuxt] pages:routerOptions: 0.012ms
+[nuxt] ℹ Compiled router.options.mjs in 37.25ms
+[nuxt] ℹ Compiled content/types.d.ts in 76.79ms
+[nuxt] ℹ Compiled types/supabase-database.d.ts in 70.77ms
+[nuxt] ℹ Compiled plugins.server.mjs in 6.47ms
+[nuxt] ℹ Compiled plugins.client.mjs in 7.88ms
+[nuxt] ℹ Compiled types/plugins.d.ts in 8.67ms
+[nuxt] imports:extend: 0.031ms
+[nuxt] eslint:config:addons: 0.008ms
+[nuxt] builder:generateApp: 4.867ms
+[nuxt] app:templatesGenerated: 13.979ms
+[nuxt] build:before: 2.382ms
+
+ Nuxt Build Performance
+
+  Phase                       Duration       RSS Delta      Heap Delta
+  ────────────────────────────────────────────────────────────────────
+  init                             4ms       +288.0 KB       +490.0 KB  ██
+  modules                        448ms       +112.8 MB        +26.1 MB  ████████░░░░░░░░░░
+  modules:done                    23ms         +2.6 MB         +9.1 MB  ████
+  imports:sources                 38ms         +3.3 MB         -1.1 MB  █████
+  nitro:config                    1.4s         +6.3 MB         +2.3 MB  ██████████░
+  nitro:createNitro               75ms         +3.5 MB         +6.8 MB  ██████
+  ready                          760µs        +32.0 KB       +112.8 KB  █
+  prepare:types                   38ms         +1.5 MB       -743.2 KB  █████
+  app:generate                   127ms         +9.8 MB        +20.4 MB  ███████░
+  app:templates                   33ms         +4.7 MB         -3.5 MB  █████
+  app:templatesGenerated          14ms         +1.7 MB         -3.0 MB  ████
+  ────────────────────────────────────────────────────────────────────
+  Total                           2.8s       +172.5 MB        +97.9 MB
+
+ Modules
+
+  • @nuxt/devtools — 45ms
+  • @nuxt/content — 23ms
+  • @nuxt/ui — 16ms
+  • @nuxt/eslint — 15ms
+  • nuxt:pages — 7ms
+  • @nuxtjs/color-mode — 5ms
+
+ Details
+
+  • module:@nuxt/eslint — 15ms
+  • module:@nuxt/content — 23ms
+  • module:@nuxt/ui — 16ms
+  • module:@nuxt/devtools — 45ms
+  • module:nuxt:pages — 7ms
+
+ Data dump written to ./.nuxt/perf-report.json
+ Trace written to ./.nuxt/perf-trace.json (load in https://ui.perfetto.dev)
+
+[nitro] close: 0.102ms
+[nuxt] close: 4.561ms
+app/pages/wanna-sipp.vue(125,9): error TS1005: ':' expected.
+app/pages/wanna-sipp.vue(126,3): error TS1005: ',' expected.
+app/pages/wanna-sipp.vue(126,9): error TS1005: ':' expected.
+app/pages/wanna-sipp.vue(127,3): error TS1005: ',' expected.
+app/pages/wanna-sipp.vue(127,9): error TS1005: ':' expected.
+app/pages/wanna-sipp.vue(128,3): error TS1005: ',' expected.
+app/pages/wanna-sipp.vue(128,9): error TS1005: ':' expected.
+app/pages/wanna-sipp.vue(129,7): error TS1005: ',' expected.
+app/pages/wanna-sipp.vue(153,11): error TS1005: ':' expected.
+app/pages/wanna-sipp.vue(154,5): error TS1005: ',' expected.
+app/pages/wanna-sipp.vue(154,11): error TS1005: ':' expected.
+app/pages/wanna-sipp.vue(155,5): error TS1005: ',' expected.
+app/pages/wanna-sipp.vue(155,11): error TS1005: ':' expected.
+app/pages/wanna-sipp.vue(156,5): error TS1005: ',' expected.
+app/pages/wanna-sipp.vue(156,11): error TS1005: ':' expected.
+app/pages/wanna-sipp.vue(157,5): error TS1005: ',' expected.
+app/pages/wanna-sipp.vue(162,3): error TS1136: Property assignment expected.
+app/pages/wanna-sipp.vue(204,1): error TS1005: ',' expected.
+
+ ERROR  Process exited with non-zero status (2)
+
+    at L._waitForOutput (node_modules/.pnpm/tinyexec@1.0.4/node_modules/tinyexec/dist/main.mjs:582:92)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.run (node_modules/.pnpm/@nuxt+cli@3.34.0_@nuxt+schema@4.4.2_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/typecheck-DzNAMeid.mjs:37:52)
+    at async runCommand (node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:188:47)
+    at async runCommand (node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:185:21)
+    at async runMain (node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:285:10) 
+
+
+ ELIFECYCLE  Command failed with exit code 1.

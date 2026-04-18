@@ -1,0 +1,3 @@
+[submodule ".claude/vue-nuxt-best-practices"]
+	path = .claude/vue-nuxt-best-practices
+	url = https://github.com/vinayakkulkarni/vue-nuxt-best-practices.git

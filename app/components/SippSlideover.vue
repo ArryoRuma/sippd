@@ -67,6 +67,26 @@ const state = reactive({
   aftertaste: props.sipp?.aftertaste ?? 5
 })
 
+const mode = computed(() => {
+  if (props.readonly) return 'view'
+  if (props.sipp) return 'edit'
+  return 'create'
+})
+
+function syncStateFromSipp() {
+  state.roaster = props.sipp?.roaster ?? ''
+  state.roast_type = props.sipp?.roast_type ?? ''
+  state.origin = props.sipp?.origin ?? ''
+  state.method = props.sipp?.method ?? ''
+  state.aroma = props.sipp?.aroma ?? 5
+  state.flavor = props.sipp?.flavor ?? 5
+  state.acidity = props.sipp?.acidity ?? 5
+  state.body = props.sipp?.body ?? 5
+  state.aftertaste = props.sipp?.aftertaste ?? 5
+}
+
+watch(() => props.sipp, syncStateFromSipp, { immediate: true })
+
 const overall = computed(() => state.aroma + state.flavor + state.acidity + state.body + state.aftertaste)
 
 function onError(event: FormErrorEvent) {
@@ -95,8 +115,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   loading.value = true
 
-  const { error } = await supabase.from('sipps').insert({
-    user_id: currentUser.id,
+  const payload = {
     roaster: event.data.roaster,
     roast_type: event.data.roast_type,
     origin: event.data.origin,
@@ -106,14 +125,27 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     acidity: event.data.acidity,
     body: event.data.body,
     aftertaste: event.data.aftertaste
-  })
+  }
+
+  const { error } = props.sipp
+    ? await supabase
+        .from('sipps')
+        .update(payload)
+        .eq('id', props.sipp.id)
+    : await supabase.from('sipps').insert({
+        user_id: currentUser.id,
+        ...payload
+      })
 
   loading.value = false
 
   if (error) {
     toast.add({ title: 'Error saving sipp', description: error.message, color: 'error' })
   } else {
-    toast.add({ title: 'Sipp logged!', color: 'success' })
+    toast.add({
+      title: props.sipp ? 'Sipp updated!' : 'Sipp logged!',
+      color: 'success'
+    })
     emit('saved')
     emit('close')
   }
@@ -124,7 +156,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <div class="p-6 space-y-6">
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-bold text-highlighted">
-        {{ readonly ? 'Sipp Details' : 'New Sipp' }}
+        {{ mode === 'view' ? 'Sipp Details' : mode === 'edit' ? 'Edit Sipp' : 'New Sipp' }}
       </h2>
       <UButton
         icon="i-lucide-x"
@@ -280,7 +312,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <UButton
           type="submit"
-          label="Log Sipp"
+          :label="mode === 'edit' ? 'Save Changes' : 'Log Sipp'"
           color="primary"
           block
           :loading="loading"

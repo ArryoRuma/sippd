@@ -18,14 +18,14 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  colorMode: {
+    preference: 'light'
+  },
+
   mdc: {
     highlight: {
       noApiRoute: false
     }
-  },
-
-  colorMode: {
-    preference: 'light'
   },
 
   compatibilityDate: '2025-01-15',
@@ -37,6 +37,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+  debug: true,
 
   eslint: {
     config: {
