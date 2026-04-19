@@ -212,7 +212,7 @@ function clearFilters() {
       </template>
 
       <template #body>
-        <div class="px-4 lg:px-6 py-4">
+        <div class="p-4 lg:p-6">
           <div class="mb-4 flex flex-wrap items-center gap-2 text-sm text-muted">
             <UBadge
               :label="`${totalSipps} loaded`"

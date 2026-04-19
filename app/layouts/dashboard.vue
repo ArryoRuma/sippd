@@ -36,6 +36,14 @@ const links = [[{
       open.value = false
     }
   }, {
+    label: 'Insights',
+    to: '/insights',
+    icon: 'i-lucide-line-chart',
+    exact: true,
+    onSelect: () => {
+      open.value = false
+    }
+  }, {
     label: 'Wanna Sipp',
     to: '/wanna-sipp',
     icon: 'i-lucide-list-todo',

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent, FormErrorEvent } from '@nuxt/ui'
+import type { Database } from '~/types/database.types'
 
 const props = defineProps<{
   sipp?: {
@@ -25,7 +26,7 @@ const emit = defineEmits<{
   saved: []
 }>()
 
-const supabase = useSupabaseClient()
+const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 const toast = useToast()
 const loading = ref(false)
@@ -54,6 +55,7 @@ const schema = z.object({
 })
 
 type Schema = z.output<typeof schema>
+type SippPreset = Pick<Database['public']['Tables']['sipps']['Row'], 'id' | 'roaster' | 'roast_type' | 'origin' | 'method' | 'aroma' | 'flavor' | 'acidity' | 'body' | 'aftertaste' | 'overall' | 'created_at'>
 
 const state = reactive({
   roaster: props.sipp?.roaster ?? '',
@@ -65,6 +67,41 @@ const state = reactive({
   acidity: props.sipp?.acidity ?? 5,
   body: props.sipp?.body ?? 5,
   aftertaste: props.sipp?.aftertaste ?? 5
+})
+
+const { data: presetSipps } = await useAsyncData('sipp-log-presets', async (): Promise<SippPreset[]> => {
+  const { data, error } = await supabase
+    .from('sipps')
+    .select('id, roaster, roast_type, origin, method, aroma, flavor, acidity, body, aftertaste, overall, created_at')
+    .order('created_at', { ascending: false })
+    .limit(5)
+
+  if (error) {
+    return []
+  }
+
+  return (data ?? []) as SippPreset[]
+})
+
+const topPreset = computed(() => {
+  const presets = presetSipps.value ?? []
+  if (!presets.length) return null
+
+  return [...presets].sort((a, b) => b.overall - a.overall)[0] ?? null
+})
+
+const latestPreset = computed(() => {
+  return (presetSipps.value ?? [])[0] ?? null
+})
+
+const presetMenuItems = computed(() => {
+  return [
+    (presetSipps.value ?? []).map(preset => ({
+      label: `${preset.roaster} · ${preset.method} · ${preset.overall}/50`,
+      icon: 'i-lucide-copy',
+      onSelect: () => applyPreset(preset)
+    }))
+  ]
 })
 
 const mode = computed(() => {
@@ -83,6 +120,24 @@ function syncStateFromSipp() {
   state.acidity = props.sipp?.acidity ?? 5
   state.body = props.sipp?.body ?? 5
   state.aftertaste = props.sipp?.aftertaste ?? 5
+}
+
+function applyPreset(preset: SippPreset) {
+  state.roaster = preset.roaster
+  state.roast_type = preset.roast_type
+  state.origin = preset.origin
+  state.method = preset.method
+  state.aroma = preset.aroma
+  state.flavor = preset.flavor
+  state.acidity = preset.acidity
+  state.body = preset.body
+  state.aftertaste = preset.aftertaste
+
+  toast.add({
+    title: 'Preset applied',
+    description: `Loaded fields from ${preset.roaster}.`,
+    color: 'success'
+  })
 }
 
 watch(() => props.sipp, syncStateFromSipp, { immediate: true })
@@ -175,6 +230,49 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       @submit="onSubmit"
       @error="onError"
     >
+      <div
+        v-if="mode === 'create' && (latestPreset || topPreset)"
+        class="rounded-xl border border-default bg-elevated/50 p-3"
+      >
+        <p class="text-xs uppercase tracking-wide text-muted">
+          Quick presets
+        </p>
+
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <UButton
+            v-if="latestPreset"
+            label="Use latest log"
+            icon="i-lucide-history"
+            size="xs"
+            color="neutral"
+            variant="soft"
+            @click="latestPreset && applyPreset(latestPreset)"
+          />
+          <UButton
+            v-if="topPreset"
+            label="Use top-rated"
+            icon="i-lucide-star"
+            size="xs"
+            color="neutral"
+            variant="soft"
+            @click="topPreset && applyPreset(topPreset)"
+          />
+
+          <UDropdownMenu
+            v-if="presetMenuItems[0]?.length"
+            :items="presetMenuItems"
+          >
+            <UButton
+              label="Choose recent"
+              icon="i-lucide-chevron-down"
+              size="xs"
+              color="neutral"
+              variant="outline"
+            />
+          </UDropdownMenu>
+        </div>
+      </div>
+
       <UFormField
         label="Coffee Roaster"
         name="roaster"

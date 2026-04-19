@@ -295,7 +295,7 @@ function updateDeleteConfirmOpen(value: boolean) {
       </template>
 
       <template #body>
-        <div class="px-4 lg:px-6 py-4 space-y-4">
+        <div class="p-4 lg:p-6 space-y-4">
           <div
             v-if="adding"
             class="p-4 rounded-lg border border-default bg-elevated/50 space-y-3"

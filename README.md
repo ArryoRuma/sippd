@@ -1,29 +1,28 @@
-# Nuxt Landing Template
+# Sippd
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+Sippd is a coffee rating app for logging cups, scoring brews, and keeping track of coffees you want to revisit.
 
-Use this template to build your own landing page with [Nuxt UI](https://ui.nuxt.com) quickly.
+## What It Does
 
-- [Live demo](https://landing-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
-
-<a href="https://landing-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/landing-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/landing-light.png">
-    <img alt="Nuxt Landing Template" src="https://ui.nuxt.com/assets/templates/nuxt/landing-light.png">
-  </picture>
-</a>
-
-## Quick Start
-
-```bash [Terminal]
-npm create nuxt@latest -- -t ui/landing
-```
+- Log coffees with ratings, notes, origin, roaster, and brew method.
+- Keep a running history of every sip.
+- Track favorites and compare top-rated coffees.
+- Maintain a `Wanna Sip` list for coffees to try next.
 
 ## Deployment
 
 Project-specific Vercel deployment steps are documented in [docs/vercel-deployment.md](docs/vercel-deployment.md).
+
+## Environment
+
+Set these environment variables before running the app locally or on Vercel:
+
+```bash
+NUXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NUXT_PUBLIC_SUPABASE_KEY=your_supabase_publishable_key
+```
+
+The legacy `SUPABASE_URL` and `SUPABASE_KEY` variables are still supported, but this repo should prefer the `NUXT_PUBLIC_` names.
 
 ## Setup
 
@@ -55,8 +54,11 @@ Locally preview production build:
 pnpm preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## App Areas
 
-## Renovate integration
-
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+- `/` landing page
+- `/dashboard` overview of your coffee activity
+- `/insights` deeper charts and trends with time-range filters
+- `/log` coffee log
+- `/score` ratings and rankings
+- `/wanna-sipp` wishlist / backlog

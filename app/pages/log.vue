@@ -9,6 +9,7 @@ definePageMeta({ layout: 'dashboard' })
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
+const route = useRoute()
 const toast = useToast()
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
@@ -36,9 +37,14 @@ type TableRef<T> = { tableApi?: TableApi<T> }
 
 const table = ref<TableRef<Database['public']['Tables']['sipps']['Row']> | null>(null)
 const rowSelection = ref<Record<string, boolean>>({})
-const search = ref('')
-const methodFilter = ref('All')
-const roastFilter = ref('All')
+const search = ref(typeof route.query.search === 'string' ? route.query.search : '')
+const methodFilter = ref(typeof route.query.method === 'string' ? route.query.method : 'All')
+const roastFilter = ref(typeof route.query.roast === 'string' ? route.query.roast : 'All')
+const originFilter = ref(typeof route.query.origin === 'string' ? route.query.origin : 'All')
+const fromDate = ref(typeof route.query.from === 'string' ? route.query.from : '')
+const toDate = ref(typeof route.query.to === 'string' ? route.query.to : '')
+const minOverall = ref(typeof route.query.minOverall === 'string' ? route.query.minOverall : '')
+const maxOverall = ref(typeof route.query.maxOverall === 'string' ? route.query.maxOverall : '')
 const pagination = ref({
   pageIndex: 0,
   pageSize: 10
@@ -78,8 +84,65 @@ const roastOptions = computed(() => {
   return createSelectOptions(sipps.value, sipp => sipp.roast_type)
 })
 
+const originOptions = computed(() => {
+  return createSelectOptions(sipps.value, sipp => sipp.origin)
+})
+
+const hasActiveFilters = computed(() => {
+  return search.value.trim().length > 0
+    || methodFilter.value !== 'All'
+    || roastFilter.value !== 'All'
+    || originFilter.value !== 'All'
+    || Boolean(fromDate.value)
+    || Boolean(toDate.value)
+    || Boolean(minOverall.value)
+    || Boolean(maxOverall.value)
+})
+
+const quickFilterChips = [
+  { id: 'last-7-days', label: 'Last 7 Days' },
+  { id: 'high-score', label: 'Score 40+' },
+  { id: 'espresso-focus', label: 'Espresso Focus' }
+] as const
+
+function toDateInputValue(date: Date) {
+  return date.toISOString().slice(0, 10)
+}
+
+function applyQuickFilter(chipId: (typeof quickFilterChips)[number]['id']) {
+  if (chipId === 'last-7-days') {
+    const now = new Date()
+    const start = new Date(now)
+    start.setDate(now.getDate() - 6)
+
+    fromDate.value = toDateInputValue(start)
+    toDate.value = toDateInputValue(now)
+    return
+  }
+
+  if (chipId === 'high-score') {
+    minOverall.value = '40'
+    maxOverall.value = ''
+    return
+  }
+
+  methodFilter.value = 'Espresso'
+}
+
 const filteredSipps = computed(() => {
   const q = search.value.trim().toLowerCase()
+  const from = fromDate.value ? new Date(fromDate.value) : null
+  const to = toDate.value ? new Date(toDate.value) : null
+  const minScore = minOverall.value ? Number(minOverall.value) : null
+  const maxScore = maxOverall.value ? Number(maxOverall.value) : null
+
+  if (from) {
+    from.setHours(0, 0, 0, 0)
+  }
+
+  if (to) {
+    to.setHours(23, 59, 59, 999)
+  }
 
   return (sipps.value ?? []).filter((sipp) => {
     const matchesSearch = q.length === 0
@@ -92,8 +155,14 @@ const filteredSipps = computed(() => {
 
     const matchesMethod = methodFilter.value === 'All' || (sipp.method ?? '') === methodFilter.value
     const matchesRoast = roastFilter.value === 'All' || (sipp.roast_type ?? '') === roastFilter.value
+    const matchesOrigin = originFilter.value === 'All' || (sipp.origin ?? '') === originFilter.value
+    const createdAt = new Date(sipp.created_at)
+    const matchesFrom = !from || createdAt >= from
+    const matchesTo = !to || createdAt <= to
+    const matchesMinScore = minScore === null || sipp.overall >= minScore
+    const matchesMaxScore = maxScore === null || sipp.overall <= maxScore
 
-    return matchesSearch && matchesMethod && matchesRoast
+    return matchesSearch && matchesMethod && matchesRoast && matchesOrigin && matchesFrom && matchesTo && matchesMinScore && matchesMaxScore
   })
 })
 
@@ -313,6 +382,17 @@ function onSaved() {
   refresh()
 }
 
+function clearFilters() {
+  search.value = ''
+  methodFilter.value = 'All'
+  roastFilter.value = 'All'
+  originFilter.value = 'All'
+  fromDate.value = ''
+  toDate.value = ''
+  minOverall.value = ''
+  maxOverall.value = ''
+}
+
 function updateDeleteConfirmOpen(value: boolean) {
   confirmDeleteState.isOpen.value = value
 }
@@ -356,6 +436,37 @@ function updateDeleteConfirmOpen(value: boolean) {
                 :items="roastOptions"
                 class="w-full sm:w-48"
               />
+              <USelect
+                v-model="originFilter"
+                :items="originOptions"
+                class="w-full sm:w-48"
+              />
+              <UInput
+                v-model="fromDate"
+                type="date"
+                class="w-full sm:w-44"
+              />
+              <UInput
+                v-model="toDate"
+                type="date"
+                class="w-full sm:w-44"
+              />
+              <UInput
+                v-model="minOverall"
+                type="number"
+                :min="1"
+                :max="50"
+                placeholder="Min score"
+                class="w-full sm:w-32"
+              />
+              <UInput
+                v-model="maxOverall"
+                type="number"
+                :min="1"
+                :max="50"
+                placeholder="Max score"
+                class="w-full sm:w-32"
+              />
             </div>
           </template>
 
@@ -396,13 +507,33 @@ function updateDeleteConfirmOpen(value: boolean) {
                 variant="outline"
                 @click="exportCsv"
               />
+              <UButton
+                label="Clear filters"
+                icon="i-lucide-x"
+                color="neutral"
+                variant="ghost"
+                :disabled="!hasActiveFilters"
+                @click="clearFilters"
+              />
             </div>
           </template>
         </UDashboardToolbar>
       </template>
 
       <template #body>
-        <div class="px-4 lg:px-6 py-4">
+        <div class="p-4 lg:p-6">
+          <div class="mb-4 flex flex-wrap items-center gap-2">
+            <UButton
+              v-for="chip in quickFilterChips"
+              :key="chip.id"
+              :label="chip.label"
+              size="xs"
+              color="neutral"
+              variant="soft"
+              @click="applyQuickFilter(chip.id)"
+            />
+          </div>
+
           <div class="mb-4 flex flex-wrap items-center gap-2 text-sm text-muted">
             <UBadge
               :label="`${totalSipps} loaded`"
@@ -557,7 +688,7 @@ function updateDeleteConfirmOpen(value: boolean) {
                   :label="totalSipps === 0 ? 'Log a new sipp' : 'Clear filters'"
                   color="neutral"
                   variant="outline"
-                  @click="totalSipps === 0 ? openNew() : (search = '', methodFilter = 'All', roastFilter = 'All')"
+                  @click="totalSipps === 0 ? openNew() : clearFilters()"
                 />
               </div>
             </template>

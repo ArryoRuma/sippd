@@ -1,71 +1,71 @@
 seo:
-  title: Nuxt Landing Template
-  description: A beautiful and customizable landing page template built with Nuxt UI. Features hero section, animated terminal, metrics, and CTA — ready to deploy.
+  title: Sippd | Coffee Rating App
+  description: Track every sip, rate every brew, and remember the coffees worth coming back to.
 title: "Track Every Sip.\nTrack every sip."
 description: Sippd is your personal coffee log to rate, review, and remember every cup.
 hero:
-  headline: "v0.2 — hbd tk"
+  headline: "Personal coffee ratings, not caffeine chaos"
   links:
-    - label: Start for free
+    - label: Start logging
       color: primary
       size: xl
-      to: '#'
-    - label: View demo
+      to: /login
+    - label: Explore features
       size: xl
       color: neutral
       variant: soft
-      to: '#'
+      to: '#features'
 terminal:
   lines:
     - segments:
         - text: "$ "
           style: prompt
-        - text: "npx telemetry"
+        - text: "sippd log"
           style: cmd
-        - text: " init"
+        - text: " --coffee \"Ethiopia Guji\""
           style: flag
     - segments:
-        - text: "→ Scanning service topology..."
+        - text: "→ Roaster: Sey"
           style: dim
     - segments:
-        - text: "→ Found "
+        - text: "→ Method: "
           style: dim
-        - text: "23 services"
+        - text: "V60"
           style: cmd
-        - text: ", "
+        - text: " | Origin: "
           style: dim
-        - text: "847 endpoints"
+        - text: "Ethiopia"
           style: cmd
-        - text: ", "
+        - text: " | Score: "
           style: dim
-        - text: "12 databases"
+        - text: "9.2"
           style: cmd
     - segments:
-        - text: "→ Deploying collector agents "
+        - text: "→ Notes: "
           style: dim
-        - text: "✓"
+        - text: "jasmine, peach, bergamot"
           style: success
     - segments:
-        - text: "→ Baseline established in "
+        - text: "→ Saved to your sip log in "
           style: dim
-        - text: "340ms"
+        - text: "2.1s"
           style: metric-good
     - segments:
         - text: " "
           style: dim
     - segments:
-        - text: "✓ Live at "
+        - text: "✓ Next up: "
           style: success
-        - text: "https://app.example.com/acme-corp"
+        - text: "Kenya AA from your Wanna Sip list"
           style: url
 logos:
-  title: Trusted by engineering teams at
+  title: Track the details that shape your taste
   items:
-    - i-simple-icons-vercel
-    - i-simple-icons-github
-    - i-simple-icons-linear
-    - i-simple-icons-supabase
-    - i-simple-icons-stripe
+    - i-lucide-coffee
+    - i-lucide-star
+    - i-lucide-notebook-pen
+    - i-lucide-bookmark
+    - i-lucide-trophy
 features:
   headline: Capabilities
   title: Everything your coffee habit needs.
@@ -90,27 +90,27 @@ features:
       title: Top Sips
       description: See your all-time best coffees automatically organized.
 metrics:
-  headline: By the numbers
-  title: "Built around your coffee habit."
-  description: Simple, fast, and yours. Every number that matters for building your personal coffee memory.
+  headline: Why it helps
+  title: "Built for remembering what was actually good."
+  description: Fast logging, clear ratings, and enough detail to make your next order smarter.
   items:
-    - value: < 5s
+    - value: < 10s
       label: Time to log
       class: text-primary
-    - value: 100%
-      label: Your data
+    - value: 1
+      label: Place for every cup
       class: text-success
-    - value: "∞"
-      label: Coffees tracked
+    - value: 5+
+      label: Tasting details tracked
       class: text-info
-    - value: "0"
-      label: Forgotten great cups
+    - value: "∞"
+      label: Great coffees remembered
       class: text-warning
 cta:
   title: "Start logging\nyour coffee."
   description: It only takes one sip to start building your taste.
-  command: npx telemetry init
+  command: sippd log --coffee "first favorite"
   links:
     - label: Log your first sip
-      to: /dashboard
+      to: /login
       color: primary
