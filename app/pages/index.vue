@@ -59,8 +59,8 @@ function staggerMotion(index: number = 0) {
 
       <UPageHero
         :ui="{
-          root: 'pb-24 sm:pb-32',
-          container: 'relative z-10 lg:py-32',
+          root: 'pb-12 sm:pb-12',
+          container: 'relative z-10 lg:py-12',
           wrapper: 'flex flex-col items-center',
           title: 'sm:text-6xl lg:text-7xl xl:text-[80px] tracking-tighter leading-[1.05]',
           description: 'mt-5 max-w-xl mx-auto text-base sm:text-lg leading-relaxed text-default',
@@ -69,6 +69,18 @@ function staggerMotion(index: number = 0) {
       >
         <template #top>
           <Motion v-bind="staggerMotion(0)" />
+
+          <Motion
+            as="div"
+            v-bind="enterMotion(0.1)"
+            class="pt-30 mb-2 flex justify-center"
+          >
+            <img
+              src="/logo.svg"
+              alt="Sippd logo"
+              class="h-160 w-auto opacity-90 dark:invert"
+            >
+          </Motion>
 
           <GradientGlow class="top-0 w-2/3 h-1/2" />
         </template>
@@ -164,7 +176,7 @@ function staggerMotion(index: number = 0) {
       <UPageSection
         id="features"
         :ui="{
-          root: 'py-24 sm:py-32 scroll-mt-(--ui-header-height)',
+          root: 'py-12 sm:py-12 scroll-mt-(--ui-header-height)',
           container: 'max-w-5xl',
           headline: 'font-mono font-medium text-xs text-primary uppercase tracking-[0.12em] text-center',
           title: 'max-w-lg mx-auto',
@@ -229,7 +241,7 @@ function staggerMotion(index: number = 0) {
       <UPageSection
         id="metrics"
         :ui="{
-          root: 'py-24 sm:py-32 scroll-mt-(--ui-header-height)',
+          root: 'py-12 sm:py-12 scroll-mt-(--ui-header-height)',
           container: 'max-w-5xl',
           headline: 'font-mono font-medium text-xs text-primary uppercase tracking-[0.12em] text-center',
           title: 'max-w-lg mx-auto',
@@ -294,10 +306,10 @@ function staggerMotion(index: number = 0) {
       <UPageCTA
         variant="naked"
         :ui="{
-          root: 'py-24 sm:py-32',
+          root: 'py-6 sm:py-6 scroll-mt-(--ui-header-height)',
           container: 'max-w-3xl text-center',
           title: 'lg:text-5xl tracking-tighter whitespace-pre-line',
-          description: 'mx-auto max-w-sm leading-relaxed text-dimmed'
+          description: 'mx-auto max-w-lg leading-relaxed text-dimmed'
         }"
       >
         <template #top>

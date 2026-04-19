@@ -611,89 +611,89 @@ function updateDeleteConfirmOpen(value: boolean) {
           </UAlert>
 
           <div class="overflow-x-auto">
-          <UTable
-            ref="table"
-            v-model:row-selection="rowSelection"
-            v-model:pagination="pagination"
-            v-model:column-visibility="columnVisibility"
-            :data="filteredSipps"
-            :columns="columns"
-            :loading="status === 'pending' || status === 'idle'"
-            class="w-full"
-          >
-            <template #roaster-cell="{ row }">
-              <button
-                type="button"
-                class="text-left font-semibold text-highlighted hover:text-primary transition-colors"
-                @click="openView(row.original)"
-              >
-                {{ row.original.roaster }}
-              </button>
-            </template>
+            <UTable
+              ref="table"
+              v-model:row-selection="rowSelection"
+              v-model:pagination="pagination"
+              v-model:column-visibility="columnVisibility"
+              :data="filteredSipps"
+              :columns="columns"
+              :loading="status === 'pending' || status === 'idle'"
+              class="w-full"
+            >
+              <template #roaster-cell="{ row }">
+                <button
+                  type="button"
+                  class="text-left font-semibold text-highlighted hover:text-primary transition-colors"
+                  @click="openView(row.original)"
+                >
+                  {{ row.original.roaster }}
+                </button>
+              </template>
 
-            <template #method-cell="{ row }">
-              <UBadge
-                :label="row.original.method"
-                variant="subtle"
-              />
-            </template>
-
-            <template #overall-cell="{ row }">
-              <span class="font-semibold text-primary">{{ row.original.overall }}</span>
-              <span class="text-xs text-muted">/50</span>
-            </template>
-
-            <template #created_at-cell="{ row }">
-              <span class="text-sm text-muted">{{ formatDashboardDate(row.original.created_at) }}</span>
-            </template>
-
-            <template #actions-cell="{ row }">
-              <UDropdownMenu
-                :items="[
-                  [{
-                    label: 'View details',
-                    icon: 'i-lucide-eye',
-                    onSelect: () => openView(row.original)
-                  }, {
-                    label: 'Edit',
-                    icon: 'i-lucide-pencil',
-                    onSelect: () => openEdit(row.original)
-                  }],
-                  [{
-                    label: 'Delete',
-                    icon: 'i-lucide-trash-2',
-                    color: 'error',
-                    onSelect: () => deleteSipp(row.original.id)
-                  }]
-                ]"
-              >
-                <UButton
-                  icon="i-lucide-ellipsis"
-                  color="neutral"
-                  variant="ghost"
-                  size="xs"
+              <template #method-cell="{ row }">
+                <UBadge
+                  :label="row.original.method"
+                  variant="subtle"
                 />
-              </UDropdownMenu>
-            </template>
+              </template>
 
-            <template #empty>
-              <div class="py-12 text-center">
-                <UIcon
-                  name="i-lucide-coffee"
-                  class="size-10 text-muted mb-3"
-                />
-                <p class="text-sm text-muted mb-4">
-                  {{ totalSipps === 0 ? 'No sipps were returned for this account yet.' : 'No sipps match your current filters.' }}
-                </p>
-                <UButton
-                  :label="totalSipps === 0 ? 'Log a new sipp' : 'Clear filters'"
-                  color="neutral"
-                  variant="outline"
-                  @click="totalSipps === 0 ? openNew() : clearFilters()"
-                />
-              </div>
-            </template>
-          </UTable>
+              <template #overall-cell="{ row }">
+                <span class="font-semibold text-primary">{{ row.original.overall }}</span>
+                <span class="text-xs text-muted">/50</span>
+              </template>
+
+              <template #created_at-cell="{ row }">
+                <span class="text-sm text-muted">{{ formatDashboardDate(row.original.created_at) }}</span>
+              </template>
+
+              <template #actions-cell="{ row }">
+                <UDropdownMenu
+                  :items="[
+                    [{
+                      label: 'View details',
+                      icon: 'i-lucide-eye',
+                      onSelect: () => openView(row.original)
+                    }, {
+                      label: 'Edit',
+                      icon: 'i-lucide-pencil',
+                      onSelect: () => openEdit(row.original)
+                    }],
+                    [{
+                      label: 'Delete',
+                      icon: 'i-lucide-trash-2',
+                      color: 'error',
+                      onSelect: () => deleteSipp(row.original.id)
+                    }]
+                  ]"
+                >
+                  <UButton
+                    icon="i-lucide-ellipsis"
+                    color="neutral"
+                    variant="ghost"
+                    size="xs"
+                  />
+                </UDropdownMenu>
+              </template>
+
+              <template #empty>
+                <div class="py-12 text-center">
+                  <UIcon
+                    name="i-lucide-coffee"
+                    class="size-10 text-muted mb-3"
+                  />
+                  <p class="text-sm text-muted mb-4">
+                    {{ totalSipps === 0 ? 'No sipps were returned for this account yet.' : 'No sipps match your current filters.' }}
+                  </p>
+                  <UButton
+                    :label="totalSipps === 0 ? 'Log a new sipp' : 'Clear filters'"
+                    color="neutral"
+                    variant="outline"
+                    @click="totalSipps === 0 ? openNew() : clearFilters()"
+                  />
+                </div>
+              </template>
+            </UTable>
           </div>
 
           <div class="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">

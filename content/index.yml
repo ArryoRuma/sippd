@@ -1,10 +1,10 @@
 seo:
   title: Sippd | Coffee Rating App
   description: Track every sip, rate every brew, and remember the coffees worth coming back to.
-title: "Track Every Sip.\nTrack every sip."
+title: "Welcome to\nSippd."
 description: Sippd is your personal coffee log to rate, review, and remember every cup.
 hero:
-  headline: "Personal coffee ratings, not caffeine chaos"
+  headline: "Happy Birthday, TK!"
   links:
     - label: Start logging
       color: primary
@@ -97,7 +97,7 @@ metrics:
     - value: < 10s
       label: Time to log
       class: text-primary
-    - value: 1
+    - value: "1"
       label: Place for every cup
       class: text-success
     - value: 5+
@@ -107,8 +107,8 @@ metrics:
       label: Great coffees remembered
       class: text-warning
 cta:
-  title: "Start logging\nyour coffee."
-  description: It only takes one sip to start building your taste.
+  title: "Happy birthday, TK!\nHere's to many more sips together."
+  description: Happy birthday TK! May the wiggler always wig out for you and I pray that you have the best year yet. Thank you for being such a great brother-in-law and for always making us laugh, I hope you enjoy all the coffee and that your reviews are raving, we love you! --Han | TK! So glad to have you in the family and to be able to share a love of coffee with you. I hope this year brings you as much joy as you bring to everyone around you. Happy birthday, and may your sip log be filled with amazing coffees and even better memories! --Larryon 
   command: sippd log --coffee "first favorite"
   links:
     - label: Log your first sip

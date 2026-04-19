@@ -60,16 +60,20 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
   <UHeader>
     <template #left>
       <NuxtLink to="/">
-        <AppLogo class="h-6 w-auto shrink-0" />
+        <img
+          src="/logo-horiz.svg"
+          class="h-16 w-auto shrink-0"
+          alt="Sippd"
+        >
       </NuxtLink>
 
-      <TemplateMenu />
+      <!--  <TemplateMenu /> -->
     </template>
 
-    <UNavigationMenu
+    <!-- <UNavigationMenu
       :items="items"
       variant="link"
-    />
+    /> -->
 
     <template #right>
       <ClientOnly>
