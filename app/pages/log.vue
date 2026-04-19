@@ -610,6 +610,7 @@ function updateDeleteConfirmOpen(value: boolean) {
             </template>
           </UAlert>
 
+          <div class="overflow-x-auto">
           <UTable
             ref="table"
             v-model:row-selection="rowSelection"
@@ -618,7 +619,7 @@ function updateDeleteConfirmOpen(value: boolean) {
             :data="filteredSipps"
             :columns="columns"
             :loading="status === 'pending' || status === 'idle'"
-            class="flex-1"
+            class="w-full"
           >
             <template #roaster-cell="{ row }">
               <button
@@ -693,6 +694,7 @@ function updateDeleteConfirmOpen(value: boolean) {
               </div>
             </template>
           </UTable>
+          </div>
 
           <div class="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p class="text-sm text-muted">
