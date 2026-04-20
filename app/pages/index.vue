@@ -73,12 +73,12 @@ function staggerMotion(index: number = 0) {
           <Motion
             as="div"
             v-bind="enterMotion(0.1)"
-            class="pt-30 mb-2 flex justify-center"
+            class="pt-3 mb-4 flex justify-center"
           >
             <img
               src="/logo.svg"
               alt="Sippd logo"
-              class="h-160 w-auto opacity-90 dark:invert"
+              class="h-44 sm:h-52 w-auto opacity-90 dark:invert"
             >
           </Motion>
 
