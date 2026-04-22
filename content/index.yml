@@ -6,10 +6,10 @@ description: Sippd is your personal coffee log to rate, review, and remember eve
 hero:
   headline: "Happy Birthday, TK!"
   links:
-    - label: Start logging
+    - label: Create free account
       color: primary
       size: xl
-      to: /login
+      to: /signup
     - label: Explore features
       size: xl
       color: neutral
@@ -111,6 +111,6 @@ cta:
   description: Happy birthday TK! May the wiggler always wig out for you and I pray that you have the best year yet. Thank you for being such a great brother-in-law and for always making us laugh, I hope you enjoy all the coffee and that your reviews are raving, we love you! --Han | TK! So glad to have you in the family and to be able to share a love of coffee with you. I hope this year brings you as much joy as you bring to everyone around you. Happy birthday, and may your sip log be filled with amazing coffees and even better memories! --Larryon 
   command: sippd log --coffee "first favorite"
   links:
-    - label: Log your first sip
-      to: /login
+    - label: Create your account
+      to: /signup
       color: primary
