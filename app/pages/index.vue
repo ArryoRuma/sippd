@@ -4,6 +4,8 @@ if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 
+const { trackFunnelEvent } = useFunnelEvents()
+
 const title = page.value?.seo?.title || page.value?.title
 const description = page.value?.seo?.description || page.value?.description
 
@@ -47,6 +49,17 @@ function staggerMotion(index: number = 0) {
     inViewOptions: { once: true, amount: 1 },
     transition: { duration: 0.6, delay: index * 0.08 }
   }
+}
+
+function handleLandingCtaClick(link: { label?: string, to?: string }, placement: 'hero' | 'final-cta') {
+  if (link.to !== '/signup') {
+    return
+  }
+
+  trackFunnelEvent('landing_cta_clicked', {
+    placement,
+    label: link.label ?? 'Create account'
+  })
 }
 </script>
 
@@ -144,6 +157,7 @@ function staggerMotion(index: number = 0) {
               v-for="link in page.hero.links"
               :key="link.label"
               v-bind="link"
+              @click="handleLandingCtaClick(link, 'hero')"
             />
           </Motion>
         </template>
@@ -346,6 +360,7 @@ function staggerMotion(index: number = 0) {
               :key="link.label"
               v-bind="link"
               size="xl"
+              @click="handleLandingCtaClick(link, 'final-cta')"
             />
           </Motion>
         </template>
