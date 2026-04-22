@@ -42,6 +42,12 @@ export interface Database {
           email: string | null
           full_name: string | null
           favorite_method: string | null
+          brew_frequency: string | null
+          roast_preference: string | null
+          onboarding_goal: string | null
+          flavor_notes: string[]
+          preferred_origins: string[]
+          log_reminders: boolean
           onboarding_completed: boolean
           onboarding_step: string
           created_at: string
@@ -52,6 +58,12 @@ export interface Database {
           email?: string | null
           full_name?: string | null
           favorite_method?: string | null
+          brew_frequency?: string | null
+          roast_preference?: string | null
+          onboarding_goal?: string | null
+          flavor_notes?: string[]
+          preferred_origins?: string[]
+          log_reminders?: boolean
           onboarding_completed?: boolean
           onboarding_step?: string
           created_at?: string
@@ -62,6 +74,12 @@ export interface Database {
           email?: string | null
           full_name?: string | null
           favorite_method?: string | null
+          brew_frequency?: string | null
+          roast_preference?: string | null
+          onboarding_goal?: string | null
+          flavor_notes?: string[]
+          preferred_origins?: string[]
+          log_reminders?: boolean
           onboarding_completed?: boolean
           onboarding_step?: string
           created_at?: string
