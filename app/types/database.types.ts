@@ -9,6 +9,66 @@ export type Json
 export interface Database {
   public: {
     Tables: {
+      funnel_events: {
+        Row: {
+          id: string
+          user_id: string | null
+          event_name: string
+          source: string
+          metadata: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          event_name: string
+          source?: string
+          metadata?: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          event_name?: string
+          source?: string
+          metadata?: Json
+          created_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          id: string
+          email: string | null
+          full_name: string | null
+          favorite_method: string | null
+          onboarding_completed: boolean
+          onboarding_step: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          email?: string | null
+          full_name?: string | null
+          favorite_method?: string | null
+          onboarding_completed?: boolean
+          onboarding_step?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string | null
+          full_name?: string | null
+          favorite_method?: string | null
+          onboarding_completed?: boolean
+          onboarding_step?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sipps: {
         Row: {
           id: string
