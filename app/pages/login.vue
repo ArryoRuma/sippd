@@ -112,6 +112,16 @@ async function handleLogin() {
           block
           :loading="loading"
         />
+
+        <p class="text-center text-sm text-muted">
+          New to Sippd?
+          <NuxtLink
+            to="/signup"
+            class="text-primary hover:text-primary/80"
+          >
+            Create an account
+          </NuxtLink>
+        </p>
       </form>
     </div>
   </div>

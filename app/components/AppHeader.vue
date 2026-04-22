@@ -79,14 +79,21 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
       <ClientOnly>
         <UColorModeButton />
       </ClientOnly>
-      <UButton
-        v-if="!user"
-        label="Sign in"
-        color="neutral"
-        variant="ghost"
-        class="hidden lg:flex"
-        to="/login"
-      />
+      <template v-if="!user">
+        <UButton
+          label="Sign in"
+          color="neutral"
+          variant="ghost"
+          class="hidden lg:flex"
+          to="/login"
+        />
+        <UButton
+          label="Create account"
+          color="primary"
+          class="hidden lg:flex"
+          to="/signup"
+        />
+      </template>
       <UButton
         v-if="user"
         label="Dashboard"
@@ -171,6 +178,13 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
           variant="soft"
           block
           to="/login"
+        />
+        <UButton
+          v-if="!user"
+          label="Create account"
+          color="primary"
+          block
+          to="/signup"
         />
         <UButton
           v-if="user"
