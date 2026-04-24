@@ -1,9 +1,10 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'blue',
+      primary: 'cerulean',
       success: 'lime',
       warning: 'amber',
+      error: 'vibrant-coral',
       neutral: 'zinc'
     },
     button: {

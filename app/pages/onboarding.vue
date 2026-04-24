@@ -231,9 +231,6 @@ async function handleOnboardingComplete() {
 
 <template>
   <div class="relative min-h-screen bg-default px-4 py-10 overflow-hidden">
-    <div class="vibe-orb -left-32 top-10 size-96 opacity-55" style="background: radial-gradient(circle, color-mix(in oklch, var(--ui-primary) 18%, transparent) 0%, transparent 74%);" />
-    <div class="vibe-orb -right-28 top-80 size-96 opacity-50" style="background: radial-gradient(circle, color-mix(in oklch, var(--vibe-accent) 18%, transparent) 0%, transparent 74%); animation-delay: 1.6s;" />
-
     <div class="mx-auto w-full max-w-xl rounded-2xl p-6 sm:p-8 vibe-surface">
       <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">
         Onboarding

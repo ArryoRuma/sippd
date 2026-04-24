@@ -73,9 +73,6 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
 
 <template>
   <div class="relative overflow-hidden">
-    <div class="vibe-orb -left-24 top-24 size-72 opacity-60" style="background: radial-gradient(circle, color-mix(in oklch, var(--ui-primary) 18%, transparent) 0%, transparent 72%);" />
-    <div class="vibe-orb -right-28 top-64 size-80 opacity-60" style="background: radial-gradient(circle, color-mix(in oklch, var(--vibe-accent) 20%, transparent) 0%, transparent 75%); animation-delay: 1.4s;" />
-
     <AppHeader />
 
     <div v-if="page">
@@ -106,7 +103,6 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
             >
           </Motion>
 
-          <GradientGlow class="top-0 w-2/3 h-1/2" />
         </template>
 
         <template #headline>
@@ -138,11 +134,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
             <br v-if="heroTitle.secondary">
             <span
               v-if="heroTitle.secondary"
-              class="animate-shimmer bg-size-[200%_auto] bg-clip-text text-transparent"
-              :style="{
-                backgroundImage: 'linear-gradient(130deg, var(--color-primary-500), var(--color-primary-300), var(--color-lime-300), var(--color-primary-200), var(--color-primary-500))',
-                animationDuration: '9s'
-              }"
+              class="text-primary"
             >
               {{ heroTitle.secondary }}
             </span>
@@ -339,10 +331,6 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
           description: 'mx-auto max-w-lg leading-relaxed text-dimmed'
         }"
       >
-        <template #top>
-          <GradientGlow class="bottom-0 w-2/3 h-1/2" />
-        </template>
-
         <template #title>
           <Motion
             as="span"

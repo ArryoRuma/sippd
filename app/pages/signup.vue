@@ -130,9 +130,6 @@ async function handleResendVerification() {
 
 <template>
   <div class="relative flex min-h-screen items-center justify-center bg-default px-4">
-    <div class="vibe-orb -left-24 top-16 size-80 opacity-60" style="background: radial-gradient(circle, color-mix(in oklch, var(--ui-primary) 20%, transparent) 0%, transparent 72%);" />
-    <div class="vibe-orb -right-28 bottom-20 size-80 opacity-55" style="background: radial-gradient(circle, color-mix(in oklch, var(--vibe-accent) 20%, transparent) 0%, transparent 74%); animation-delay: 1.4s;" />
-
     <div class="vibe-surface w-full max-w-sm space-y-8 rounded-2xl p-6 sm:p-8">
       <div class="text-center">
         <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-primary">

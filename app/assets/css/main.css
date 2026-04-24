@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap");
 @import "tailwindcss";
 @import "@nuxt/ui";
 
@@ -6,7 +7,7 @@
 @theme static {
   --font-sans: 'Instrument Sans', -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
-  --font-display: var(--font-sans);
+  --font-display: 'Rubik Dirt', var(--font-sans);
 
   --color-lime-50: #fbfde8;
   --color-lime-100: #f5fbb3;
@@ -20,11 +21,71 @@
   --color-lime-900: #435514;
   --color-lime-950: #232f06;
 
+  --color-cerulean-50: #e5f9ff;
+  --color-cerulean-100: #ccf3ff;
+  --color-cerulean-200: #99e7ff;
+  --color-cerulean-300: #66dbff;
+  --color-cerulean-400: #33cfff;
+  --color-cerulean-500: #00c3ff;
+  --color-cerulean-600: #009ccc;
+  --color-cerulean-700: #007599;
+  --color-cerulean-800: #004e66;
+  --color-cerulean-900: #002733;
+  --color-cerulean-950: #001b24;
+
+  --color-tropical-teal-50: #e5feff;
+  --color-tropical-teal-100: #ccfcff;
+  --color-tropical-teal-200: #99faff;
+  --color-tropical-teal-300: #66f7ff;
+  --color-tropical-teal-400: #33f5ff;
+  --color-tropical-teal-500: #00f2ff;
+  --color-tropical-teal-600: #00c2cc;
+  --color-tropical-teal-700: #009199;
+  --color-tropical-teal-800: #006166;
+  --color-tropical-teal-900: #003033;
+  --color-tropical-teal-950: #002224;
+
+  --color-light-yellow-50: #fefde7;
+  --color-light-yellow-100: #fcfbcf;
+  --color-light-yellow-200: #f9f69f;
+  --color-light-yellow-300: #f7f26e;
+  --color-light-yellow-400: #f4ee3e;
+  --color-light-yellow-500: #f1e90e;
+  --color-light-yellow-600: #c1bb0b;
+  --color-light-yellow-700: #918c08;
+  --color-light-yellow-800: #605d06;
+  --color-light-yellow-900: #302f03;
+  --color-light-yellow-950: #222102;
+
+  --color-soft-apricot-50: #fff2e6;
+  --color-soft-apricot-100: #fee5cd;
+  --color-soft-apricot-200: #fdca9b;
+  --color-soft-apricot-300: #fdb068;
+  --color-soft-apricot-400: #fc9636;
+  --color-soft-apricot-500: #fb7b04;
+  --color-soft-apricot-600: #c96303;
+  --color-soft-apricot-700: #974a02;
+  --color-soft-apricot-800: #643102;
+  --color-soft-apricot-900: #321901;
+  --color-soft-apricot-950: #231101;
+
+  --color-vibrant-coral-50: #fde9e8;
+  --color-vibrant-coral-100: #fad3d1;
+  --color-vibrant-coral-200: #f6a8a2;
+  --color-vibrant-coral-300: #f17c74;
+  --color-vibrant-coral-400: #ed5145;
+  --color-vibrant-coral-500: #e82517;
+  --color-vibrant-coral-600: #ba1e12;
+  --color-vibrant-coral-700: #8b160e;
+  --color-vibrant-coral-800: #5d0f09;
+  --color-vibrant-coral-900: #2e0705;
+  --color-vibrant-coral-950: #200503;
+
   --animate-shimmer: shimmer 8s ease-in-out infinite alternate;
   --animate-vibe-float: vibe-float 7s ease-in-out infinite;
   --animate-vibe-drift: vibe-drift 16s ease-in-out infinite alternate;
 
-  --vibe-accent: var(--color-lime-500);
+  --vibe-accent: var(--color-tropical-teal-500);
   --vibe-accent-soft: color-mix(in oklch, var(--vibe-accent) 24%, transparent);
   --vibe-accent-ink: color-mix(in oklch, var(--vibe-accent) 50%, var(--ui-color-neutral-900));
   --vibe-glow-primary: color-mix(in oklch, var(--ui-primary) 28%, transparent);
@@ -59,22 +120,26 @@
   }
 }
 
+:root {
+  --ui-bg: var(--color-light-yellow-50);
+  --ui-bg-muted: var(--color-light-yellow-100);
+  --ui-bg-elevated: var(--color-light-yellow-50);
+  --ui-bg-accented: var(--color-light-yellow-100);
+}
+
 .dark {
   --ui-bg: var(--ui-color-neutral-950);
   --ui-bg-muted: var(--ui-color-neutral-900);
   --ui-bg-elevated: var(--ui-color-neutral-900);
   --ui-bg-accented: var(--ui-color-neutral-800);
   --ui-border: var(--ui-color-neutral-900);
-  --vibe-accent-soft: color-mix(in oklch, var(--color-lime-400) 18%, transparent);
-  --vibe-accent-ink: color-mix(in oklch, var(--color-lime-300) 70%, var(--ui-color-neutral-950));
+  --vibe-accent-soft: color-mix(in oklch, var(--color-tropical-teal-400) 18%, transparent);
+  --vibe-accent-ink: color-mix(in oklch, var(--color-tropical-teal-300) 70%, var(--ui-color-neutral-950));
 }
 
 .vibe-surface {
   border: 1px solid color-mix(in oklch, var(--ui-border) 80%, transparent);
-  background:
-    radial-gradient(circle at 10% 0%, var(--vibe-accent-soft), transparent 38%),
-    radial-gradient(circle at 100% 100%, color-mix(in oklch, var(--ui-primary) 16%, transparent), transparent 52%),
-    color-mix(in oklch, var(--ui-bg-elevated) 82%, transparent);
+  background: color-mix(in oklch, var(--ui-bg-elevated) 88%, transparent);
   box-shadow:
     0 12px 34px -20px var(--vibe-glow-primary),
     inset 0 1px 0 color-mix(in oklch, white 40%, transparent);
@@ -90,7 +155,7 @@
 }
 
 .vibe-dot {
-  background: radial-gradient(circle at 30% 30%, color-mix(in oklch, white 70%, var(--vibe-accent)) 0%, var(--vibe-accent) 58%, color-mix(in oklch, var(--vibe-accent) 35%, transparent) 100%);
+  background: color-mix(in oklch, var(--vibe-accent) 82%, white 18%);
 }
 
 .vibe-orb {
