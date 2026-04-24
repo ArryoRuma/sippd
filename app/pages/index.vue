@@ -102,7 +102,6 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
               class="h-44 sm:h-52 w-auto opacity-95 dark:invert animate-[var(--animate-vibe-float)]"
             >
           </Motion>
-
         </template>
 
         <template #headline>
@@ -367,7 +366,6 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
           </Motion>
         </template>
       </UPageCTA>
-
     </div>
   </div>
 </template>

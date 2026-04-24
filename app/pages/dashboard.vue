@@ -79,7 +79,7 @@ const emptyDashboardStats: DashboardStats = {
   previousAverage: 0
 }
 
-const methodPalette = ['#2563eb', '#60a5fa', '#a9d316', '#c8f031']
+const methodPalette = ['#00c3ff', '#fb7b04', '#a9d316', '#004e66']
 
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
@@ -300,6 +300,29 @@ const dashboardAsyncData = await useAsyncData('dashboard-stats', async (): Promi
     supabase.rpc('dashboard_taste_profile', { p_from: selectedRangeStart.value, p_to: selectedRangeEnd.value }),
     supabase.rpc('dashboard_top_origins', { p_limit: 3, p_from: selectedRangeStart.value, p_to: selectedRangeEnd.value }),
     recentQuery
+  ])
+
+  const firstError = summaryRes.error
+    ?? activityRes.error
+    ?? methodMixRes.error
+    ?? tasteProfileRes.error
+    ?? topOriginsRes.error
+    ?? recentRes.error
+
+  if (firstError) {
+    loadError.value = firstError.message
+    toast.add({ title: 'Could not load dashboard analytics', description: firstError.message, color: 'error' })
+    return emptyDashboardStats
+  }
+
+  const summary = mapSummaryRow(summaryRes.data?.[0] ?? null)
+  const methodMix = mapMethodMixRows(methodMixRes.data ?? [])
+
+  return {
+    ...summary,
+    recent: recentRes.data ?? [],
+    methods: methodMix.slice(0, 3).map(item => ({ method: item.label, count: item.count })),
+    activity: mapActivityRows(activityRes.data ?? []),
     methodMix,
     tasteProfile: mapTasteProfile(tasteProfileRes.data?.[0] ?? null),
     topOrigins: mapTopOrigins(topOriginsRes.data ?? [])
