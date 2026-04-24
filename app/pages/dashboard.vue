@@ -300,29 +300,6 @@ const dashboardAsyncData = await useAsyncData('dashboard-stats', async (): Promi
     supabase.rpc('dashboard_taste_profile', { p_from: selectedRangeStart.value, p_to: selectedRangeEnd.value }),
     supabase.rpc('dashboard_top_origins', { p_limit: 3, p_from: selectedRangeStart.value, p_to: selectedRangeEnd.value }),
     recentQuery
-  ])
-
-  const firstError = summaryRes.error
-    ?? activityRes.error
-    ?? methodMixRes.error
-    ?? tasteProfileRes.error
-    ?? topOriginsRes.error
-    ?? recentRes.error
-
-  if (firstError) {
-    loadError.value = firstError.message
-    toast.add({ title: 'Could not load dashboard analytics', description: firstError.message, color: 'error' })
-    return emptyDashboardStats
-  }
-
-  const summary = mapSummaryRow(summaryRes.data?.[0] ?? null)
-  const methodMix = mapMethodMixRows(methodMixRes.data ?? [])
-
-  return {
-    ...summary,
-    recent: recentRes.data ?? [],
-    methods: methodMix.slice(0, 3).map(item => ({ method: item.label, count: item.count })),
-    activity: mapActivityRows(activityRes.data ?? []),
     methodMix,
     tasteProfile: mapTasteProfile(tasteProfileRes.data?.[0] ?? null),
     topOrigins: mapTopOrigins(topOriginsRes.data ?? [])
@@ -363,30 +340,6 @@ const activityChartPath = computed(() => {
       return `${index === 0 ? 'M' : 'L'} ${x} ${y}`
     })
     .join(' ')
-})
-
-const methodMixBackground = computed(() => {
-  const segments = stats.value.methodMix
-
-  if (!segments.length) {
-    return 'conic-gradient(from 180deg, rgba(148, 163, 184, 0.15) 0deg 360deg)'
-  }
-
-  let currentAngle = 0
-  const stops: string[] = []
-
-  for (const segment of segments) {
-    const angle = (segment.share / 100) * 360
-    const nextAngle = currentAngle + angle
-    stops.push(`${segment.color} ${currentAngle}deg ${nextAngle}deg`)
-    currentAngle = nextAngle
-  }
-
-  if (currentAngle < 360) {
-    stops.push(`rgba(148, 163, 184, 0.16) ${currentAngle}deg 360deg`)
-  }
-
-  return `conic-gradient(from 180deg, ${stops.join(', ')})`
 })
 
 function methodFilterLink(method: string) {
@@ -443,9 +396,6 @@ function originFilterLink(origin: string) {
 
     <template #body>
       <div class="relative overflow-hidden p-4 lg:p-6 space-y-6">
-        <div class="vibe-orb -left-24 -top-20 size-72 opacity-55" style="background: radial-gradient(circle, color-mix(in oklch, var(--ui-primary) 20%, transparent) 0%, transparent 74%);" />
-        <div class="vibe-orb -right-28 top-44 size-72 opacity-50" style="background: radial-gradient(circle, color-mix(in oklch, var(--vibe-accent) 18%, transparent) 0%, transparent 74%); animation-delay: 1.5s;" />
-
         <div>
           <h2 class="text-2xl font-bold text-highlighted">
             Welcome back{{ dashboardGreetingName ? `, ${dashboardGreetingName}` : '' }}
@@ -597,8 +547,6 @@ function originFilterLink(origin: string) {
               class="space-y-4"
             >
               <div class="relative rounded-2xl border border-default bg-elevated/60 px-4 pb-4 pt-5">
-                <div class="absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.18),transparent_65%)]" />
-
                 <div class="relative flex h-48 items-end gap-3">
                   <NuxtLink
                     v-for="point in stats.activity"
@@ -628,24 +576,6 @@ function originFilterLink(origin: string) {
                     viewBox="0 0 100 100"
                     preserveAspectRatio="none"
                   >
-                    <defs>
-                      <linearGradient
-                        id="dashboard-score-line"
-                        x1="0"
-                        x2="1"
-                        y1="0"
-                        y2="0"
-                      >
-                        <stop
-                          offset="0%"
-                          stop-color="#93c5fd"
-                        />
-                        <stop
-                          offset="100%"
-                          stop-color="#2563eb"
-                        />
-                      </linearGradient>
-                    </defs>
                     <path
                       d="M 0 100 L 100 100"
                       fill="none"
@@ -656,7 +586,8 @@ function originFilterLink(origin: string) {
                     <path
                       :d="activityChartPath"
                       fill="none"
-                      stroke="url(#dashboard-score-line)"
+                      stroke="currentColor"
+                      class="text-primary"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2.5"
@@ -742,7 +673,7 @@ function originFilterLink(origin: string) {
                 </div>
                 <div class="h-2 overflow-hidden rounded-full bg-elevated ring-1 ring-inset ring-default">
                   <div
-                    class="h-full rounded-full bg-[linear-gradient(90deg,rgba(147,197,253,0.95),rgba(37,99,235,0.95))]"
+                    class="h-full rounded-full bg-primary"
                     :style="{ width: `${(metric.value / 10) * 100}%` }"
                   />
                 </div>
@@ -785,8 +716,7 @@ function originFilterLink(origin: string) {
             >
               <div class="flex justify-center">
                 <div
-                  class="relative flex size-40 items-center justify-center rounded-full"
-                  :style="{ background: methodMixBackground }"
+                  class="relative flex size-40 items-center justify-center rounded-full border border-primary/20 bg-primary/10"
                 >
                   <div class="flex size-24 flex-col items-center justify-center rounded-full border border-default bg-default text-center shadow-sm">
                     <span class="text-2xl font-semibold text-highlighted">{{ stats.total }}</span>
