@@ -170,13 +170,13 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
           </Motion>
         </template>
 
-        <Motion
+        <!--<Motion
           as-child
           v-bind="enterMotion(0.85)"
           class="max-w-2xl mx-auto w-full"
         >
           <HeroTerminal :lines="page.terminal.lines" />
-        </Motion>
+        </Motion> -->
 
         <Motion
           class="max-w-lg mx-auto w-full"
