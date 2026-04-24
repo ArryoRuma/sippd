@@ -394,7 +394,7 @@ function toLogWithRange(extra: Record<string, string | undefined> = {}) {
                 </div>
                 <div class="h-2 overflow-hidden rounded-full bg-elevated ring-1 ring-inset ring-default">
                   <div
-                    class="h-full rounded-full bg-[linear-gradient(90deg,rgba(147,197,253,0.95),rgba(37,99,235,0.95))]"
+                    class="h-full rounded-full bg-primary"
                     :style="{ width: `${(metric.value / 10) * 100}%` }"
                   />
                 </div>
