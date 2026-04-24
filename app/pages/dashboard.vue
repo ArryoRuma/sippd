@@ -117,6 +117,51 @@ const selectedRangeEnd = computed(() => {
   return null
 })
 
+function formatDisplayName(value: string) {
+  return value
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+const dashboardProfileName = await useAsyncData('dashboard-profile-name', async (): Promise<string | null> => {
+  const { data: authData, error: authError } = await supabase.auth.getUser()
+  const authUser = authData.user ?? user.value
+
+  if (authError || !authUser?.id) {
+    return null
+  }
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', authUser.id)
+    .maybeSingle()
+
+  if (error) {
+    console.warn('Could not load dashboard profile name', error.message)
+    return null
+  }
+
+  return data?.full_name?.trim() || null
+}, {
+  default: () => null,
+  watch: [() => user.value?.id]
+})
+
+const dashboardGreetingName = computed(() => {
+  const profileName = dashboardProfileName.data.value
+
+  if (profileName) {
+    return formatDisplayName(profileName)
+  }
+
+  const emailLocal = user.value?.email?.split('@')[0]?.replace(/[._-]+/g, ' ') ?? ''
+  return emailLocal ? formatDisplayName(emailLocal) : ''
+})
+
 const activityDays = computed(() => {
   if (selectedRange.value === '7d') return 7
   if (selectedRange.value === '90d') return 90
@@ -400,7 +445,7 @@ function originFilterLink(origin: string) {
       <div class="p-4 lg:p-6 space-y-6">
         <div>
           <h2 class="text-2xl font-bold text-highlighted">
-            Welcome back{{ user?.email ? `, ${user.email.split('@')[0]}` : '' }}
+            Welcome back{{ dashboardGreetingName ? `, ${dashboardGreetingName}` : '' }}
           </h2>
           <p class="text-sm text-muted mt-1">
             Track trends, review your best cups, and keep your next brews queued up.

@@ -57,8 +57,25 @@ watchEffect(() => {
   }
 })
 
+async function getAuthenticatedUser() {
+  const { data, error } = await supabase.auth.getUser()
+
+  if (error) {
+    toast.add({ title: 'Authentication error', description: error.message, color: 'error' })
+    return null
+  }
+
+  return data.user
+}
+
 async function loadProfile() {
   if (!user.value) {
+    return
+  }
+
+  const authUser = await getAuthenticatedUser()
+
+  if (!authUser?.id) {
     return
   }
 
@@ -67,7 +84,7 @@ async function loadProfile() {
   const { data, error } = await supabase
     .from('profiles')
     .select('full_name,brew_frequency,onboarding_goal,favorite_method,roast_preference,flavor_notes,preferred_origins,log_reminders,onboarding_completed')
-    .eq('id', user.value.id)
+    .eq('id', authUser.id)
     .maybeSingle()
 
   loadingProfile.value = false
@@ -126,6 +143,17 @@ async function handleOnboardingComplete() {
     return
   }
 
+  const authUser = await getAuthenticatedUser()
+
+  if (!authUser?.id) {
+    toast.add({
+      title: 'Could not complete onboarding',
+      description: 'Your session is not ready yet. Please try again.',
+      color: 'error'
+    })
+    return
+  }
+
   if (!fullName.value.trim()) {
     toast.add({ title: 'Name required', description: 'Tell us what to call you.', color: 'warning' })
     return
@@ -143,9 +171,9 @@ async function handleOnboardingComplete() {
 
   loading.value = true
 
-  const payload = {
-    id: user.value.id,
-    email: user.value.email ?? null,
+  const profileId = authUser.id
+  const profileValues = {
+    email: authUser.email ?? null,
     full_name: fullName.value.trim() || null,
     brew_frequency: brewFrequency.value || null,
     onboarding_goal: onboardingGoal.value || null,
@@ -158,9 +186,25 @@ async function handleOnboardingComplete() {
     onboarding_step: 'completed'
   }
 
-  const { error } = await supabase
+  const { data: updatedProfile, error: updateError } = await supabase
     .from('profiles')
-    .upsert(payload, { onConflict: 'id' })
+    .update(profileValues)
+    .eq('id', profileId)
+    .select('id')
+    .maybeSingle()
+
+  let error = updateError
+
+  if (!error && !updatedProfile) {
+    const { error: insertError } = await supabase
+      .from('profiles')
+      .insert({
+        id: profileId,
+        ...profileValues
+      })
+
+    error = insertError
+  }
 
   loading.value = false
 
@@ -170,7 +214,7 @@ async function handleOnboardingComplete() {
   }
 
   toast.add({ title: 'Welcome to Sippd', description: 'Your account is ready.', color: 'success' })
-  await trackFunnelEvent('onboarding_completed', {
+  void trackFunnelEvent('onboarding_completed', {
     hasName: Boolean(fullName.value.trim()),
     brewFrequency: brewFrequency.value,
     goal: onboardingGoal.value,
@@ -319,6 +363,17 @@ async function handleOnboardingComplete() {
           size="lg"
           block
           :loading="loading || loadingProfile"
+        />
+
+        <UButton
+          type="button"
+          label="Go to dashboard"
+          color="neutral"
+          variant="soft"
+          size="lg"
+          block
+          to="/dashboard"
+          :disabled="loading || loadingProfile"
         />
       </form>
     </div>

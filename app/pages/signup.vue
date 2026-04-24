@@ -39,7 +39,7 @@ async function handleSignup() {
     hasEmail: Boolean(email.value.trim())
   })
 
-  const emailRedirectTo = process.client
+  const emailRedirectTo = import.meta.client
     ? `${window.location.origin}/confirm`
     : undefined
 
@@ -93,7 +93,7 @@ async function handleResendVerification() {
 
   resending.value = true
 
-  const emailRedirectTo = process.client
+  const emailRedirectTo = import.meta.client
     ? `${window.location.origin}/confirm`
     : undefined
 

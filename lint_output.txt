@@ -1,4 +1,0 @@
-
-> nuxt-ui-template-landing@ lint /Users/larryontruman/Desktop/Coding/5_Experiments/sippd
-> eslint .
-

@@ -17,18 +17,27 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   const supabase = useSupabaseClient()
-  const userId = user.value.id
+  const { data: authData, error: authError } = await supabase.auth.getUser()
+  const authUser = authData.user ?? user.value
+
+  if (authError || !authUser?.id) {
+    if (requiresAuth || isOnboardingPage) {
+      return navigateTo('/login')
+    }
+
+    return
+  }
 
   async function getOnboardingComplete() {
     const { data, error } = await supabase
       .from('profiles')
       .select('onboarding_completed')
-      .eq('id', userId)
+      .eq('id', authUser.id)
       .maybeSingle()
 
     if (error) {
-      // Missing profile is treated as not completed so users are guided to onboarding.
-      return false
+      console.warn('Could not load onboarding status', error.message)
+      return null
     }
 
     return Boolean(data?.onboarding_completed)
@@ -36,13 +45,22 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (isAuthPage) {
     const complete = await getOnboardingComplete()
-    return navigateTo(complete ? '/dashboard' : '/onboarding')
+
+    if (complete === true) {
+      return navigateTo('/dashboard')
+    }
+
+    if (complete === false) {
+      return navigateTo('/onboarding')
+    }
+
+    return
   }
 
   if (isOnboardingPage) {
     const complete = await getOnboardingComplete()
 
-    if (complete) {
+    if (complete === true) {
       return navigateTo('/dashboard')
     }
 
@@ -52,7 +70,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (requiresAuth) {
     const complete = await getOnboardingComplete()
 
-    if (!complete) {
+    if (complete === false) {
       return navigateTo('/onboarding')
     }
   }
