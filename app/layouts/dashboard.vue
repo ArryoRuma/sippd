@@ -87,7 +87,7 @@ const groups = computed(() => [{
       v-model:open="open"
       collapsible
       resizable
-      class="bg-elevated/25"
+      class="bg-elevated/35 border-r border-default/70"
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">
@@ -97,7 +97,7 @@ const groups = computed(() => [{
       <template #default="{ collapsed }">
         <UDashboardSearchButton
           :collapsed="collapsed"
-          class="bg-transparent ring-default"
+          class="bg-transparent ring-default hover:ring-primary/35"
         />
 
         <UNavigationMenu

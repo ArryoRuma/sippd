@@ -57,12 +57,18 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
 </script>
 
 <template>
-  <UHeader>
+  <UHeader
+    class="vibe-glass border-b border-default/70"
+    :ui="{ container: 'relative overflow-hidden' }"
+  >
+    <div class="vibe-orb -left-16 top-[-3rem] size-48 opacity-60" style="background: radial-gradient(circle, color-mix(in oklch, var(--ui-primary) 22%, transparent) 0%, transparent 68%);" />
+    <div class="vibe-orb -right-20 top-[-3.5rem] size-56 opacity-60" style="background: radial-gradient(circle, color-mix(in oklch, var(--vibe-accent) 22%, transparent) 0%, transparent 72%); animation-delay: 1.2s;" />
+
     <template #left>
       <NuxtLink to="/">
         <img
           src="/logo-horiz.svg"
-          class="h-16 w-auto shrink-0"
+          class="h-16 w-auto shrink-0 transition-transform duration-300 hover:scale-[1.02]"
           alt="Sippd"
         >
       </NuxtLink>
@@ -84,7 +90,7 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
           label="Sign in"
           color="neutral"
           variant="ghost"
-          class="hidden lg:flex"
+          class="hidden lg:flex rounded-xl"
           to="/login"
         />
         <UButton
@@ -176,6 +182,7 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
           label="Sign in"
           color="neutral"
           variant="soft"
+          class="rounded-xl"
           block
           to="/login"
         />

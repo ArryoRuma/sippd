@@ -54,10 +54,16 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-default">
-    <div class="w-full max-w-sm space-y-8 px-4">
+  <div class="relative flex min-h-screen items-center justify-center bg-default px-4">
+    <div class="vibe-orb -left-28 top-20 size-80 opacity-60" style="background: radial-gradient(circle, color-mix(in oklch, var(--ui-primary) 18%, transparent) 0%, transparent 72%);" />
+    <div class="vibe-orb -right-24 bottom-16 size-80 opacity-55" style="background: radial-gradient(circle, color-mix(in oklch, var(--vibe-accent) 18%, transparent) 0%, transparent 72%); animation-delay: 1.8s;" />
+
+    <div class="vibe-surface w-full max-w-sm space-y-8 rounded-2xl p-6 sm:p-8">
       <div class="text-center">
-        <h1 class="text-3xl font-bold text-highlighted">
+        <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-primary">
+          Welcome Back
+        </p>
+        <h1 class="mt-2 font-display text-3xl font-bold tracking-tight text-highlighted">
           Sippd
         </h1>
         <p class="mt-2 text-sm text-muted">
@@ -109,6 +115,7 @@ async function handleLogin() {
           label="Sign in"
           color="primary"
           size="lg"
+          class="mt-2"
           block
           :loading="loading"
         />

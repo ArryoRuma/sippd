@@ -6,6 +6,7 @@
 @theme static {
   --font-sans: 'Instrument Sans', -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
+  --font-display: var(--font-sans);
 
   --color-lime-50: #fbfde8;
   --color-lime-100: #f5fbb3;
@@ -20,6 +21,14 @@
   --color-lime-950: #232f06;
 
   --animate-shimmer: shimmer 8s ease-in-out infinite alternate;
+  --animate-vibe-float: vibe-float 7s ease-in-out infinite;
+  --animate-vibe-drift: vibe-drift 16s ease-in-out infinite alternate;
+
+  --vibe-accent: var(--color-lime-500);
+  --vibe-accent-soft: color-mix(in oklch, var(--vibe-accent) 24%, transparent);
+  --vibe-accent-ink: color-mix(in oklch, var(--vibe-accent) 50%, var(--ui-color-neutral-900));
+  --vibe-glow-primary: color-mix(in oklch, var(--ui-primary) 28%, transparent);
+  --vibe-glow-accent: color-mix(in oklch, var(--vibe-accent) 24%, transparent);
 
   @keyframes shimmer {
     0% {
@@ -27,6 +36,25 @@
     }
     100% {
       background-position: 200% center;
+    }
+  }
+
+  @keyframes vibe-float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  @keyframes vibe-drift {
+    0% {
+      transform: translate3d(-3%, -1%, 0) scale(1);
+    }
+    100% {
+      transform: translate3d(3%, 2%, 0) scale(1.04);
     }
   }
 }
@@ -37,4 +65,45 @@
   --ui-bg-elevated: var(--ui-color-neutral-900);
   --ui-bg-accented: var(--ui-color-neutral-800);
   --ui-border: var(--ui-color-neutral-900);
+  --vibe-accent-soft: color-mix(in oklch, var(--color-lime-400) 18%, transparent);
+  --vibe-accent-ink: color-mix(in oklch, var(--color-lime-300) 70%, var(--ui-color-neutral-950));
+}
+
+.vibe-surface {
+  border: 1px solid color-mix(in oklch, var(--ui-border) 80%, transparent);
+  background:
+    radial-gradient(circle at 10% 0%, var(--vibe-accent-soft), transparent 38%),
+    radial-gradient(circle at 100% 100%, color-mix(in oklch, var(--ui-primary) 16%, transparent), transparent 52%),
+    color-mix(in oklch, var(--ui-bg-elevated) 82%, transparent);
+  box-shadow:
+    0 12px 34px -20px var(--vibe-glow-primary),
+    inset 0 1px 0 color-mix(in oklch, white 40%, transparent);
+}
+
+.vibe-glass {
+  background: color-mix(in oklch, var(--ui-bg) 72%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.vibe-hairline {
+  border-color: color-mix(in oklch, var(--vibe-accent) 34%, var(--ui-border));
+}
+
+.vibe-dot {
+  background: radial-gradient(circle at 30% 30%, color-mix(in oklch, white 70%, var(--vibe-accent)) 0%, var(--vibe-accent) 58%, color-mix(in oklch, var(--vibe-accent) 35%, transparent) 100%);
+}
+
+.vibe-orb {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  filter: blur(20px);
+  animation: var(--animate-vibe-drift);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vibe-orb,
+  .animate-shimmer {
+    animation: none !important;
+  }
 }

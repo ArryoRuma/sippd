@@ -79,7 +79,7 @@ const emptyDashboardStats: DashboardStats = {
   previousAverage: 0
 }
 
-const methodPalette = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe']
+const methodPalette = ['#2563eb', '#60a5fa', '#a9d316', '#c8f031']
 
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
@@ -442,7 +442,10 @@ function originFilterLink(origin: string) {
     </template>
 
     <template #body>
-      <div class="p-4 lg:p-6 space-y-6">
+      <div class="relative overflow-hidden p-4 lg:p-6 space-y-6">
+        <div class="vibe-orb -left-24 -top-20 size-72 opacity-55" style="background: radial-gradient(circle, color-mix(in oklch, var(--ui-primary) 20%, transparent) 0%, transparent 74%);" />
+        <div class="vibe-orb -right-28 top-44 size-72 opacity-50" style="background: radial-gradient(circle, color-mix(in oklch, var(--vibe-accent) 18%, transparent) 0%, transparent 74%); animation-delay: 1.5s;" />
+
         <div>
           <h2 class="text-2xl font-bold text-highlighted">
             Welcome back{{ dashboardGreetingName ? `, ${dashboardGreetingName}` : '' }}
@@ -462,7 +465,7 @@ function originFilterLink(origin: string) {
         />
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          <UCard>
+          <UCard class="vibe-surface">
             <template #header>
               <p class="text-xs uppercase tracking-wide text-muted">
                 Total Sipps
@@ -477,7 +480,7 @@ function originFilterLink(origin: string) {
             </p>
           </UCard>
 
-          <UCard>
+          <UCard class="vibe-surface">
             <template #header>
               <p class="text-xs uppercase tracking-wide text-muted">
                 Average Score
@@ -501,7 +504,7 @@ function originFilterLink(origin: string) {
             </p>
           </UCard>
 
-          <UCard>
+          <UCard class="vibe-surface">
             <template #header>
               <p class="text-xs uppercase tracking-wide text-muted">
                 Top Rated
@@ -519,7 +522,7 @@ function originFilterLink(origin: string) {
             </p>
           </UCard>
 
-          <UCard>
+          <UCard class="vibe-surface">
             <template #header>
               <p class="text-xs uppercase tracking-wide text-muted">
                 Favorite Methods
@@ -554,7 +557,7 @@ function originFilterLink(origin: string) {
         </div>
 
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <UCard class="xl:col-span-2 overflow-hidden">
+          <UCard class="xl:col-span-2 overflow-hidden vibe-surface">
             <template #header>
               <div class="flex items-start justify-between gap-3">
                 <div>
@@ -695,7 +698,7 @@ function originFilterLink(origin: string) {
             </div>
           </UCard>
 
-          <UCard>
+          <UCard class="vibe-surface">
             <template #header>
               <div>
                 <p class="font-semibold text-highlighted">
@@ -749,7 +752,7 @@ function originFilterLink(origin: string) {
         </div>
 
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <UCard>
+          <UCard class="vibe-surface">
             <template #header>
               <div>
                 <p class="font-semibold text-highlighted">
@@ -818,7 +821,7 @@ function originFilterLink(origin: string) {
             </div>
           </UCard>
 
-          <UCard>
+          <UCard class="vibe-surface">
             <template #header>
               <div>
                 <p class="font-semibold text-highlighted">
@@ -873,7 +876,7 @@ function originFilterLink(origin: string) {
             </div>
           </UCard>
 
-          <UCard>
+          <UCard class="vibe-surface">
             <template #header>
               <p class="font-semibold text-highlighted">
                 Quick Actions
@@ -935,7 +938,7 @@ function originFilterLink(origin: string) {
         </div>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-          <UCard class="xl:col-span-2">
+          <UCard class="xl:col-span-2 vibe-surface">
             <template #header>
               <div class="flex items-center justify-between gap-3">
                 <div>

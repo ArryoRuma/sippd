@@ -72,7 +72,10 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
 </script>
 
 <template>
-  <div>
+  <div class="relative overflow-hidden">
+    <div class="vibe-orb -left-24 top-24 size-72 opacity-60" style="background: radial-gradient(circle, color-mix(in oklch, var(--ui-primary) 18%, transparent) 0%, transparent 72%);" />
+    <div class="vibe-orb -right-28 top-64 size-80 opacity-60" style="background: radial-gradient(circle, color-mix(in oklch, var(--vibe-accent) 20%, transparent) 0%, transparent 75%); animation-delay: 1.4s;" />
+
     <AppHeader />
 
     <div v-if="page">
@@ -83,7 +86,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
           root: 'pb-12 sm:pb-12',
           container: 'relative z-10 lg:py-12',
           wrapper: 'flex flex-col items-center',
-          title: 'sm:text-6xl lg:text-7xl xl:text-[80px] tracking-tighter leading-[1.05]',
+          title: 'font-display sm:text-6xl lg:text-7xl xl:text-[82px] tracking-[-0.03em] leading-[1.02]',
           description: 'mt-5 max-w-xl mx-auto text-base sm:text-lg leading-relaxed text-default',
           links: 'gap-3'
         }"
@@ -99,7 +102,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
             <img
               src="/logo.svg"
               alt="Sippd logo"
-              class="h-44 sm:h-52 w-auto opacity-90 dark:invert"
+              class="h-44 sm:h-52 w-auto opacity-95 dark:invert animate-[var(--animate-vibe-float)]"
             >
           </Motion>
 
@@ -112,7 +115,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
               color="neutral"
               variant="soft"
               :label="page.hero.headline"
-              class="rounded-full px-3 py-1.5 gap-1.5 bg-white/5 backdrop-blur"
+              class="rounded-full px-4 py-1.5 gap-1.5 vibe-glass vibe-hairline"
             >
               <template #leading>
                 <UChip
@@ -137,8 +140,8 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
               v-if="heroTitle.secondary"
               class="animate-shimmer bg-size-[200%_auto] bg-clip-text text-transparent"
               :style="{
-                backgroundImage: 'linear-gradient(135deg, var(--color-primary-400), var(--color-primary-300), var(--color-primary-200), var(--color-primary-100), var(--color-primary-200), var(--color-primary-300), var(--color-primary-400))',
-                animationDuration: '10s'
+                backgroundImage: 'linear-gradient(130deg, var(--color-primary-500), var(--color-primary-300), var(--color-lime-300), var(--color-primary-200), var(--color-primary-500))',
+                animationDuration: '9s'
               }"
             >
               {{ heroTitle.secondary }}
@@ -158,25 +161,27 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
 
         <template #links>
           <Motion
-            class="flex flex-wrap justify-center gap-6"
+            class="flex flex-wrap justify-center gap-4"
             v-bind="enterMotion(0.65)"
           >
             <UButton
               v-for="link in page.hero.links"
               :key="link.label"
               v-bind="link"
+              size="lg"
+              class="min-w-40"
               @click="handleLandingCtaClick(link, 'hero')"
             />
           </Motion>
         </template>
 
-        <!--<Motion
+        <Motion
           as-child
           v-bind="enterMotion(0.85)"
           class="max-w-2xl mx-auto w-full"
         >
           <HeroTerminal :lines="page.terminal.lines" />
-        </Motion> -->
+        </Motion>
 
         <Motion
           class="max-w-lg mx-auto w-full"
@@ -235,7 +240,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
           </Motion>
         </template>
 
-        <div class="rounded-2xl border border-default bg-default overflow-hidden">
+        <div class="vibe-surface rounded-2xl overflow-hidden">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px">
             <Motion
               v-for="(feature, index) in page.features.items"
@@ -246,10 +251,10 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
                 :icon="feature.icon"
                 :title="feature.title"
                 :description="feature.description"
-                class="rounded-none duration-300"
+                class="group rounded-none duration-300 hover:-translate-y-1 hover:bg-elevated/90"
                 to="#"
                 :ui="{
-                  leading: 'mb-5 flex size-9 justify-center rounded-lg bg-primary/10',
+                  leading: 'mb-5 flex size-9 justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-success/25 group-hover:ring-success/35 transition-colors',
                   title: 'text-sm tracking-tight',
                   description: 'text-sm leading-relaxed sm:line-clamp-2 lg:line-clamp-3 text-dimmed'
                 }"
@@ -300,7 +305,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
           </Motion>
         </template>
 
-        <div class="rounded-2xl border border-default bg-default overflow-hidden">
+        <div class="vibe-surface rounded-2xl overflow-hidden">
           <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-px">
             <Motion
               v-for="(metric, index) in page.metrics.items"
@@ -310,7 +315,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
               <UPageCard
                 :title="metric.value"
                 :description="metric.label"
-                class="rounded-none duration-300"
+                class="rounded-none duration-300 hover:-translate-y-0.5 hover:bg-elevated/90"
                 to="#"
                 :ui="{
                   root: 'text-center',
@@ -368,11 +373,13 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
               :key="link.label"
               v-bind="link"
               size="xl"
+              class="min-w-52"
               @click="handleLandingCtaClick(link, 'final-cta')"
             />
           </Motion>
         </template>
       </UPageCTA>
+
     </div>
   </div>
 </template>

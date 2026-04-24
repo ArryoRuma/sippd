@@ -15,11 +15,11 @@ const { lines } = defineProps<{
 const segmentStyles: Record<string, string> = {
   'prompt': 'text-muted',
   'cmd': 'text-highlighted',
-  'flag': 'text-primary',
+  'flag': 'text-primary font-semibold',
   'dim': 'text-muted',
-  'success': 'text-success',
+  'success': 'text-[color:var(--vibe-accent-ink)]',
   'url': 'text-info',
-  'metric-good': 'text-primary'
+  'metric-good': 'text-primary font-semibold'
 }
 
 function lineMotion(index: number) {
@@ -32,11 +32,11 @@ function lineMotion(index: number) {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-xl border border-default bg-elevated/50 backdrop-blur ring-1 ring-white/2">
-    <div class="flex items-center gap-1.5 border-b border-default p-4 sm:px-6">
-      <span class="size-2.5 rounded-full border border-default bg-muted" />
-      <span class="size-2.5 rounded-full border border-default bg-muted" />
-      <span class="size-2.5 rounded-full border border-default bg-muted" />
+  <div class="vibe-surface overflow-hidden rounded-2xl">
+    <div class="flex items-center gap-1.5 border-b border-default/70 p-4 sm:px-6">
+      <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
+      <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
+      <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
     </div>
 
     <div class="min-h-[200px] p-5 font-mono text-[13px] leading-[1.8] sm:p-6">
