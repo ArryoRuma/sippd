@@ -2,16 +2,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  app: {
-    head: {
-      link: [
-        {
-          rel: 'stylesheet',
-          href: 'https://use.typekit.net/xto0bje.css'
-        }
-      ]
-    }
-  },
 
   modules: [
     '@nuxt/eslint',
@@ -25,6 +15,16 @@ export default defineNuxtConfig({
 
   devtools: {
     enabled: true
+  },
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://use.typekit.net/xto0bje.css'
+        }
+      ]
+    }
   },
 
   css: ['~/assets/css/main.css'],
