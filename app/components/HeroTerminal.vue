@@ -15,11 +15,11 @@ const { lines } = defineProps<{
 const segmentStyles: Record<string, string> = {
   'prompt': 'text-muted',
   'cmd': 'text-highlighted',
-  'flag': 'text-primary',
+  'flag': 'text-primary font-semibold',
   'dim': 'text-muted',
-  'success': 'text-success',
-  'url': 'text-info',
-  'metric-good': 'text-primary'
+  'success': 'text-[color:var(--vibe-accent-ink)]',
+  'url': 'text-warning',
+  'metric-good': 'text-primary font-semibold'
 }
 
 function lineMotion(index: number) {
@@ -32,14 +32,14 @@ function lineMotion(index: number) {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-xl border border-default bg-elevated/50 backdrop-blur ring-1 ring-white/2">
-    <div class="flex items-center gap-1.5 border-b border-default p-4 sm:px-6">
-      <span class="size-2.5 rounded-full border border-default bg-muted" />
-      <span class="size-2.5 rounded-full border border-default bg-muted" />
-      <span class="size-2.5 rounded-full border border-default bg-muted" />
+  <div class="vibe-surface overflow-hidden rounded-2xl">
+    <div class="flex items-center gap-1.5 border-b border-default/70 bg-gradient-to-r from-warning/10 via-primary/4 to-default/0 p-4 sm:px-6">
+      <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
+      <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
+      <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
     </div>
 
-    <div class="min-h-[200px] p-5 font-mono text-[13px] leading-[1.8] sm:p-6">
+    <div class="min-h-[200px] bg-gradient-to-b from-default via-default to-warning/5 p-5 font-mono text-[13px] leading-[1.8] sm:p-6">
       <Motion
         v-for="(line, lineIndex) in lines"
         :key="lineIndex"

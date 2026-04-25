@@ -210,6 +210,13 @@ function toLogWithRange(extra: Record<string, string | undefined> = {}) {
     }
   }
 }
+
+function shouldShowActivityLabel(index: number, total: number) {
+  if (total <= 7) return true
+
+  const step = total > 20 ? 6 : total > 14 ? 4 : 3
+  return index === 0 || index === total - 1 || index % step === 0
+}
 </script>
 
 <template>
@@ -226,14 +233,23 @@ function toLogWithRange(extra: Record<string, string | undefined> = {}) {
               v-model="range"
               :items="rangeOptions"
               value-key="value"
-              class="w-40"
+              class="w-28 sm:w-40"
             />
             <UButton
-              label="Back to Dashboard"
+              label="Dashboard"
               icon="i-lucide-layout-dashboard"
               color="neutral"
               variant="soft"
               to="/dashboard"
+              class="hidden sm:flex"
+            />
+            <UButton
+              icon="i-lucide-layout-dashboard"
+              color="neutral"
+              variant="ghost"
+              to="/dashboard"
+              aria-label="Back to Dashboard"
+              class="sm:hidden"
             />
           </div>
         </template>
@@ -251,7 +267,7 @@ function toLogWithRange(extra: Record<string, string | undefined> = {}) {
           :description="loadError"
         />
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <UCard>
             <p class="text-xs uppercase tracking-wide text-muted">
               Total logged
@@ -315,24 +331,29 @@ function toLogWithRange(extra: Record<string, string | undefined> = {}) {
               v-else
               class="rounded-2xl border border-default bg-elevated/50 px-4 py-5"
             >
-              <div class="relative flex h-56 items-end gap-3">
+              <div class="relative flex h-56 items-end gap-1.5 sm:gap-2">
                 <div
-                  v-for="point in insights.activity"
+                  v-for="(point, index) in insights.activity"
                   :key="point.fullLabel"
-                  class="flex min-w-0 flex-1 flex-col items-center gap-2"
+                  class="flex min-w-0 flex-1 flex-col items-center justify-end gap-2"
                 >
                   <NuxtLink
                     :to="{ path: '/log', query: { from: point.from, to: point.to } }"
-                    class="flex w-full flex-col items-center gap-2 rounded-md px-1 py-1 hover:bg-default/50 transition-colors"
+                    class="flex w-full flex-col items-center gap-2 rounded-md px-0.5 py-1 hover:bg-default/50 transition-colors sm:px-1"
                     :title="`Open logs for ${point.fullLabel}`"
                   >
                     <div class="flex h-36 w-full items-end justify-center">
                       <div
-                        class="w-full max-w-10 rounded-t-xl bg-primary/20 ring-1 ring-inset ring-primary/15"
+                        class="w-full rounded-t-xl bg-primary/20 ring-1 ring-inset ring-primary/15"
                         :style="{ height: `${Math.max(12, (point.count / activityMaxCount) * 100)}%` }"
                       />
                     </div>
-                    <p class="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">{{ point.label }}</p>
+                    <p
+                      v-if="shouldShowActivityLabel(index, insights.activity.length)"
+                      class="font-mono text-[10px] uppercase tracking-[0.08em] text-muted sm:text-[11px]"
+                    >
+                      {{ point.label }}
+                    </p>
                   </NuxtLink>
                 </div>
 
@@ -394,7 +415,7 @@ function toLogWithRange(extra: Record<string, string | undefined> = {}) {
                 </div>
                 <div class="h-2 overflow-hidden rounded-full bg-elevated ring-1 ring-inset ring-default">
                   <div
-                    class="h-full rounded-full bg-[linear-gradient(90deg,rgba(147,197,253,0.95),rgba(37,99,235,0.95))]"
+                    class="h-full rounded-full bg-primary"
                     :style="{ width: `${(metric.value / 10) * 100}%` }"
                   />
                 </div>

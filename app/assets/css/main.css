@@ -4,8 +4,9 @@
 @source "../../../content/**/*";
 
 @theme static {
-  --font-sans: 'Instrument Sans', -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
+  --font-sans: 'new-spirit', serif;
+  --font-mono: 'new-spirit-compressed', sans-serif;
+  --font-display: 'new-spirit', var(--font-sans);
 
   --color-lime-50: #fbfde8;
   --color-lime-100: #f5fbb3;
@@ -19,7 +20,63 @@
   --color-lime-900: #435514;
   --color-lime-950: #232f06;
 
+  --color-almond-cream-50: #fbf3e9;
+  --color-almond-cream-100: #f8e7d3;
+  --color-almond-cream-200: #f1cea7;
+  --color-almond-cream-300: #eab67b;
+  --color-almond-cream-400: #e29e50;
+  --color-almond-cream-500: #db8624;
+  --color-almond-cream-600: #af6b1d;
+  --color-almond-cream-700: #845015;
+  --color-almond-cream-800: #58350e;
+  --color-almond-cream-900: #2c1b07;
+  --color-almond-cream-950: #1f1305;
+
+  --color-cinnamon-wood-50: #f7f0ee;
+  --color-cinnamon-wood-100: #efe0dc;
+  --color-cinnamon-wood-200: #dec2ba;
+  --color-cinnamon-wood-300: #cea397;
+  --color-cinnamon-wood-400: #be8474;
+  --color-cinnamon-wood-500: #ad6552;
+  --color-cinnamon-wood-600: #8b5141;
+  --color-cinnamon-wood-700: #683d31;
+  --color-cinnamon-wood-800: #452921;
+  --color-cinnamon-wood-900: #231410;
+  --color-cinnamon-wood-950: #180e0b;
+
+  --color-chestnut-50: #f9edeb;
+  --color-chestnut-100: #f4dbd7;
+  --color-chestnut-200: #e9b7af;
+  --color-chestnut-300: #dd9388;
+  --color-chestnut-400: #d26f60;
+  --color-chestnut-500: #c74b38;
+  --color-chestnut-600: #9f3c2d;
+  --color-chestnut-700: #772d22;
+  --color-chestnut-800: #501e16;
+  --color-chestnut-900: #280f0b;
+  --color-chestnut-950: #1c0b08;
+
+  --color-mahogany-red-50: #fbecea;
+  --color-mahogany-red-100: #f6dad5;
+  --color-mahogany-red-200: #eeb4aa;
+  --color-mahogany-red-300: #e58f80;
+  --color-mahogany-red-400: #dc6a56;
+  --color-mahogany-red-500: #d4452b;
+  --color-mahogany-red-600: #a93723;
+  --color-mahogany-red-700: #7f291a;
+  --color-mahogany-red-800: #551b11;
+  --color-mahogany-red-900: #2a0e09;
+  --color-mahogany-red-950: #1e0a06;
+
   --animate-shimmer: shimmer 8s ease-in-out infinite alternate;
+  --animate-vibe-float: vibe-float 7s ease-in-out infinite;
+  --animate-vibe-drift: vibe-drift 16s ease-in-out infinite alternate;
+
+  --vibe-accent: var(--color-almond-cream-500);
+  --vibe-accent-soft: color-mix(in oklch, var(--vibe-accent) 24%, transparent);
+  --vibe-accent-ink: color-mix(in oklch, var(--vibe-accent) 42%, var(--color-cinnamon-wood-900));
+  --vibe-glow-primary: color-mix(in oklch, var(--ui-primary) 28%, transparent);
+  --vibe-glow-accent: color-mix(in oklch, var(--vibe-accent) 24%, transparent);
 
   @keyframes shimmer {
     0% {
@@ -29,6 +86,56 @@
       background-position: 200% center;
     }
   }
+
+  @keyframes vibe-float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  @keyframes vibe-drift {
+    0% {
+      transform: translate3d(-3%, -1%, 0) scale(1);
+    }
+    100% {
+      transform: translate3d(3%, 2%, 0) scale(1.04);
+    }
+  }
+}
+
+:root {
+  --ui-bg: var(--color-almond-cream-50);
+  --ui-bg-muted: color-mix(in oklch, var(--color-cinnamon-wood-50) 42%, var(--color-almond-cream-50));
+  --ui-bg-elevated: color-mix(in oklch, var(--color-almond-cream-50) 92%, white 8%);
+  --ui-bg-accented: color-mix(in oklch, var(--color-almond-cream-100) 70%, var(--color-cinnamon-wood-50));
+  --ui-border: color-mix(in oklch, var(--color-cinnamon-wood-200) 74%, white 26%);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-weight: 500;
 }
 
 .dark {
@@ -37,4 +144,82 @@
   --ui-bg-elevated: var(--ui-color-neutral-900);
   --ui-bg-accented: var(--ui-color-neutral-800);
   --ui-border: var(--ui-color-neutral-900);
+  --vibe-accent-soft: color-mix(in oklch, var(--color-almond-cream-400) 18%, transparent);
+  --vibe-accent-ink: color-mix(in oklch, var(--color-almond-cream-300) 70%, var(--ui-color-neutral-950));
+}
+
+.vibe-surface {
+  border: 1px solid color-mix(in oklch, var(--ui-border) 80%, transparent);
+  background: color-mix(in oklch, var(--ui-bg-elevated) 88%, transparent);
+  box-shadow:
+    0 12px 34px -20px var(--vibe-glow-primary),
+    inset 0 1px 0 color-mix(in oklch, white 40%, transparent);
+}
+
+.vibe-glass {
+  background: color-mix(in oklch, var(--ui-bg) 72%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.vibe-hairline {
+  border-color: color-mix(in oklch, var(--vibe-accent) 34%, var(--ui-border));
+}
+
+.vibe-dot {
+  background: color-mix(in oklch, var(--vibe-accent) 82%, white 18%);
+}
+
+.vibe-orb {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  filter: blur(20px);
+  animation: var(--animate-vibe-drift);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vibe-orb,
+  .animate-shimmer {
+    animation: none !important;
+  }
+}
+
+/* ─── Splash screen ──────────────────────────────────── */
+
+@keyframes splash-top-exit {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(-100%); }
+}
+
+@keyframes splash-bottom-exit {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(100%); }
+}
+
+.splash-top-exit {
+  animation: splash-top-exit 0.65s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.splash-bottom-exit {
+  animation: splash-bottom-exit 0.65s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* ─── Page curtain ───────────────────────────────────── */
+
+@keyframes curtain-in {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0%); }
+}
+
+@keyframes curtain-out {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(-100%); }
+}
+
+.curtain-covering {
+  animation: curtain-in 0.55s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.curtain-exiting {
+  animation: curtain-out 0.55s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }

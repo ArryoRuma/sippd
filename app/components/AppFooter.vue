@@ -1,7 +1,7 @@
 <template>
   <UFooter
     :ui="{
-      container: 'border-t border-default lg:py-8'
+      container: 'relative overflow-hidden border-t border-default/70 lg:py-8'
     }"
   >
     <template #left>

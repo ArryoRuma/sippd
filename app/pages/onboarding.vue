@@ -230,12 +230,12 @@ async function handleOnboardingComplete() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-default px-4 py-10">
-    <div class="mx-auto w-full max-w-xl rounded-2xl border border-default bg-elevated/40 p-6 sm:p-8">
+  <div class="relative min-h-screen bg-default px-4 py-10 overflow-hidden">
+    <div class="mx-auto w-full max-w-xl rounded-2xl p-6 sm:p-8 vibe-surface">
       <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">
         Onboarding
       </p>
-      <h1 class="mt-3 text-3xl font-semibold tracking-tight text-highlighted">
+      <h1 class="mt-3 font-display text-3xl font-semibold tracking-tight text-highlighted">
         Let’s tailor Sippd to your taste
       </h1>
       <p class="mt-2 text-sm text-muted">

@@ -15,6 +15,32 @@ const UButton = resolveComponent('UButton')
 const { createSortHeader, formatDashboardDate } = useDashboardTable()
 const confirmDeleteState = useConfirmAction()
 
+const isMobile = ref(false)
+
+onMounted(() => {
+  const mq = window.matchMedia('(max-width: 639px)')
+  isMobile.value = mq.matches
+  const handler = (e: MediaQueryListEvent) => {
+    isMobile.value = e.matches
+  }
+  mq.addEventListener('change', handler)
+  onBeforeUnmount(() => mq.removeEventListener('change', handler))
+})
+
+const mobileColumnVisibility = computed((): Record<string, boolean> => {
+  if (!isMobile.value) {
+    return {}
+  }
+
+  return {
+    select: false,
+    origin: false,
+    method: false,
+    notes: false,
+    created_at: false
+  }
+})
+
 const newRoaster = ref('')
 const newNotes = ref('')
 const adding = ref(false)
@@ -147,6 +173,9 @@ const filteredItems = computed(() => {
 })
 
 const filteredCount = computed(() => filteredItems.value.length)
+const hasActiveFilters = computed(() => {
+  return search.value.trim().length > 0 || statusFilter.value !== 'All'
+})
 const { currentPage, itemsPerPage, selectedRowCount, visibleTableRowCount } = useDashboardTableMetrics({
   table,
   pagination,
@@ -251,6 +280,11 @@ async function markSelectedCompleted(completed: boolean) {
   }
 }
 
+function clearFilters() {
+  search.value = ''
+  statusFilter.value = 'All'
+}
+
 function updateDeleteConfirmOpen(value: boolean) {
   confirmDeleteState.isOpen.value = value
 }
@@ -291,6 +325,19 @@ function updateDeleteConfirmOpen(value: boolean) {
               />
             </div>
           </template>
+
+          <template #right>
+            <div class="flex items-center gap-2">
+              <UButton
+                label="Clear filters"
+                icon="i-lucide-x"
+                color="neutral"
+                variant="ghost"
+                :disabled="!hasActiveFilters"
+                @click="clearFilters"
+              />
+            </div>
+          </template>
         </UDashboardToolbar>
       </template>
 
@@ -310,11 +357,12 @@ function updateDeleteConfirmOpen(value: boolean) {
               placeholder="Notes (optional)"
               class="w-full"
             />
-            <div class="flex gap-2">
+            <div class="flex flex-col gap-2 sm:flex-row">
               <UButton
                 label="Save"
                 color="primary"
                 size="sm"
+                class="w-full sm:w-auto"
                 @click="addItem"
               />
               <UButton
@@ -322,6 +370,7 @@ function updateDeleteConfirmOpen(value: boolean) {
                 color="neutral"
                 variant="ghost"
                 size="sm"
+                class="w-full sm:w-auto"
                 @click="adding = false"
               />
             </div>
@@ -335,7 +384,7 @@ function updateDeleteConfirmOpen(value: boolean) {
             :title="`${selectedRowCount} row(s) selected`"
           >
             <template #actions>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <UButton
                   label="Mark done"
                   icon="i-lucide-check"
@@ -369,6 +418,7 @@ function updateDeleteConfirmOpen(value: boolean) {
             v-model:row-selection="rowSelection"
             v-model:pagination="pagination"
             v-model:sorting="sorting"
+            :column-visibility="mobileColumnVisibility"
             :data="filteredItems"
             :columns="columns"
             :loading="status === 'pending' || status === 'idle'"
