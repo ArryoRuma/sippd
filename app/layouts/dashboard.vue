@@ -116,7 +116,7 @@ const groups = computed(() => [{
       v-model:open="open"
       :collapsible="!isMobileSidebar"
       :resizable="!isMobileSidebar"
-      class="bg-muted/60 border-r border-default/80 max-lg:w-[min(18.5rem,calc(100vw-1rem))] max-lg:rounded-r-2xl max-lg:border-y max-lg:shadow-2xl"
+      class="bg-muted border-r border-default max-lg:w-[min(18.5rem,calc(100vw-1rem))] max-lg:rounded-r-2xl max-lg:border-y max-lg:shadow-2xl"
       :ui="{ footer: 'lg:border-t lg:border-default', header: 'max-lg:pt-[max(env(safe-area-inset-top),0.75rem)]', body: 'max-lg:pb-[max(env(safe-area-inset-bottom),0.75rem)]' }"
     >
       <template #header="{ collapsed }">
@@ -126,7 +126,7 @@ const groups = computed(() => [{
       <template #default="{ collapsed }">
         <UDashboardSearchButton
           :collapsed="collapsed"
-          class="bg-transparent ring-default hover:ring-warning/35"
+          class="bg-transparent ring-default hover:ring-warning"
         />
 
         <UNavigationMenu

@@ -183,3 +183,43 @@ samp {
     animation: none !important;
   }
 }
+
+/* ─── Splash screen ──────────────────────────────────── */
+
+@keyframes splash-top-exit {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(-100%); }
+}
+
+@keyframes splash-bottom-exit {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(100%); }
+}
+
+.splash-top-exit {
+  animation: splash-top-exit 0.65s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.splash-bottom-exit {
+  animation: splash-bottom-exit 0.65s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* ─── Page curtain ───────────────────────────────────── */
+
+@keyframes curtain-in {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0%); }
+}
+
+@keyframes curtain-out {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(-100%); }
+}
+
+.curtain-covering {
+  animation: curtain-in 0.55s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.curtain-exiting {
+  animation: curtain-out 0.55s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}

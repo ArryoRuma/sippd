@@ -61,7 +61,7 @@ const heroUi = {
   container: 'relative z-10 lg:py-6',
   wrapper: 'flex flex-col items-center',
   title: 'font-display sm:text-6xl lg:text-7xl xl:text-[82px] tracking-[-0.03em] leading-[1.02]',
-  description: 'mt-2 max-w-2xl mx-auto text-balance text-base sm:text-lg leading-relaxed text-default',
+  description: 'mt-2 max-w-2xl mx-auto text-balance text-base sm:text-lg leading-relaxed text-cinnamon-wood-700',
   links: 'gap-2'
 } as const
 
@@ -70,7 +70,7 @@ const sectionUi = {
   container: 'max-w-5xl',
   headline: 'font-mono font-medium text-xs text-primary uppercase tracking-[0.12em] text-center',
   title: 'max-w-lg mx-auto',
-  description: 'max-w-md mx-auto text-dimmed'
+  description: 'max-w-md mx-auto text-cinnamon-wood-600'
 } as const
 
 const sectionGridClasses: Record<SectionKind, string> = {
@@ -80,7 +80,7 @@ const sectionGridClasses: Record<SectionKind, string> = {
 
 const sectionSurfaceClasses: Record<SectionKind, string> = {
   features: 'vibe-surface rounded-2xl overflow-hidden',
-  metrics: 'vibe-surface rounded-2xl overflow-hidden bg-gradient-to-b from-warning/18 via-primary/6 to-default/0'
+  metrics: 'vibe-surface rounded-2xl overflow-hidden'
 }
 
 const sections = computed<LandingSection[]>(() => {
@@ -150,23 +150,48 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
 function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
   return 'icon' in item
 }
+
+const { triggerCurtain } = useCurtain()
+
+function ctaLinkProps(link: Record<string, unknown>) {
+  const { to: _to, ...rest } = link
+  return rest
+}
+
+function handleCtaClick(link: { label?: string, to?: string } & Record<string, unknown>, placement: 'hero' | 'final-cta') {
+  handleLandingCtaClick(link, placement)
+  if (!link.to) return
+  const dest = link.to
+  triggerCurtain(() => navigateTo(dest))
+}
+
+const showSplash = ref(false)
+
+onMounted(() => {
+  if (!sessionStorage.getItem('sippd-splash-seen')) {
+    showSplash.value = true
+  }
+})
 </script>
 
 <template>
   <div class="relative overflow-hidden">
-    <div
-      class="vibe-orb -top-24 -left-24 size-72 bg-primary/18"
+    <ClientOnly>
+      <SplashScreen
+        v-if="showSplash"
+        @done="showSplash = false"
+      />
+    </ClientOnly>
+
+    <!-- Oversize background word -->
+    <span
       aria-hidden="true"
-    />
-    <div
-      class="vibe-orb top-40 -right-24 size-80 bg-warning/18"
-      aria-hidden="true"
-      style="animation-delay: 1.5s"
-    />
-    <div
-      class="pointer-events-none absolute inset-x-0 top-0 z-0 h-56 bg-gradient-to-b from-warning/16 via-primary/7 to-default/0"
-      aria-hidden="true"
-    />
+      class="pointer-events-none select-none absolute top-[10%] inset-x-0 flex items-center justify-center overflow-hidden z-0"
+    >
+      <span class="font-display font-black leading-none tracking-tight uppercase whitespace-nowrap opacity-[0.04] text-[clamp(8rem,25vw,22rem)]">
+        TASTE
+      </span>
+    </span>
 
     <AppHeader />
 
@@ -182,17 +207,6 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
         <template #top>
           <Motion v-bind="staggerMotion(0)" />
 
-          <Motion
-            as="div"
-            v-bind="enterMotion(0.1)"
-            class="pt-2 mb-3 flex justify-center"
-          >
-            <img
-              src="/logo-copy.svg"
-              alt="Sippd logo"
-              class="h-44 sm:h-52 w-auto opacity-95 dark:invert animate-[var(--animate-vibe-float)]"
-            >
-          </Motion>
         </template>
 
         <template #headline>
@@ -220,14 +234,13 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
             v-bind="enterMotion(0.35)"
             class="inline-block"
           >
-            {{ heroTitle.primary }}
-            <br v-if="heroTitle.secondary">
-            <span
-              v-if="heroTitle.secondary"
-              class="text-primary"
+            <span class="text-primary">{{ heroTitle.primary }}</span>
+            <br>
+            <img
+              src="/logo-copy.svg"
+              alt="Sippd"
+              class="inline-block h-28 sm:h-36 lg:h-44 w-auto dark:invert animate-[var(--animate-vibe-float)]"
             >
-              {{ heroTitle.secondary }}
-            </span>
           </Motion>
         </template>
 
@@ -249,10 +262,10 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
             <UButton
               v-for="link in page.hero.links"
               :key="link.label"
-              v-bind="link"
+              v-bind="ctaLinkProps(link)"
               size="lg"
               class="min-w-40 rounded-xl"
-              @click="handleLandingCtaClick(link, 'hero')"
+              @click="handleCtaClick(link, 'hero')"
             />
           </Motion>
         </template>
@@ -265,7 +278,7 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
             :title="page.logos.title"
             :items="page.logos.items"
             :ui="{
-              title: 'font-mono uppercase text-xs tracking-[0.12em] text-dimmed',
+              title: 'font-mono uppercase text-xs tracking-[0.12em] text-cinnamon-wood-500',
               logos: 'gap-0',
               logo: 'text-muted size-6'
             }"
@@ -333,7 +346,7 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
                   body: 'h-full',
                   leading: 'mb-5 flex size-10 justify-center rounded-xl bg-warning/16 ring-1 ring-warning/25 group-hover:bg-primary/14 group-hover:ring-primary/30 transition-colors',
                   title: 'text-sm tracking-tight',
-                  description: 'text-sm leading-relaxed sm:line-clamp-2 lg:line-clamp-3 text-dimmed'
+                  description: 'text-sm leading-relaxed sm:line-clamp-2 lg:line-clamp-3 text-cinnamon-wood-600'
                 }"
               />
 
@@ -347,7 +360,7 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
                   root: 'text-center',
                   wrapper: 'items-center',
                   title: ['text-4xl font-bold tracking-tight leading-none', (item as MetricItem).class],
-                  description: 'font-mono text-xs uppercase tracking-[0.06em] text-dimmed mt-3'
+                  description: 'font-mono text-xs uppercase tracking-[0.06em] text-cinnamon-wood-500 mt-3'
                 }"
               />
             </Motion>
@@ -362,7 +375,7 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
           root: 'py-2 sm:py-4 scroll-mt-(--ui-header-height)',
           container: 'max-w-3xl text-center',
           title: 'lg:text-5xl tracking-tighter whitespace-pre-line',
-          description: 'mx-auto max-w-2xl leading-relaxed text-dimmed mt-2'
+          description: 'mx-auto max-w-2xl leading-relaxed text-cinnamon-wood-700 mt-2'
         }"
       >
         <template #title>
@@ -393,10 +406,10 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
             <UButton
               v-for="link in page.cta.links"
               :key="link.label"
-              v-bind="link"
+              v-bind="ctaLinkProps(link)"
               size="xl"
               class="min-w-52 rounded-xl"
-              @click="handleLandingCtaClick(link, 'final-cta')"
+              @click="handleCtaClick(link, 'final-cta')"
             />
           </Motion>
         </template>

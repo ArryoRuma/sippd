@@ -31,5 +31,6 @@ useSeoMeta({
     </UMain>
 
     <AppFooter />
+    <PageCurtain />
   </UApp>
 </template>

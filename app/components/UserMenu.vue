@@ -23,7 +23,7 @@ async function handleLogout() {
       class="shrink-0 ring-1 ring-warning/30 bg-warning/10 text-[color:var(--vibe-accent-ink)]"
     />
     <template v-if="!collapsed">
-      <span class="flex-1 truncate text-xs text-highlighted">
+      <span class="flex-1 truncate text-xs text-cinnamon-wood-700">
         {{ user?.email }}
       </span>
       <UButton

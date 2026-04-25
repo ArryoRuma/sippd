@@ -32,7 +32,7 @@ export default defineAppConfig({
         },
         variant: {
           ghost: {
-            base: 'hover:bg-elevated/80'
+            base: 'hover:bg-elevated'
           }
         }
       },

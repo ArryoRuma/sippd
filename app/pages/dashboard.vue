@@ -426,7 +426,7 @@ function shouldShowActivityLabel(index: number, total: number) {
 
     <template #body>
       <div class="relative overflow-hidden p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
-        <div class="rounded-2xl border border-default/80 bg-elevated/70 p-2.5 shadow-sm md:hidden">
+        <div class="rounded-2xl border border-default bg-elevated p-2.5 shadow-sm md:hidden">
           <div class="flex flex-col gap-2">
             <USelect
               v-model="selectedRange"
@@ -595,7 +595,7 @@ function shouldShowActivityLabel(index: number, total: number) {
 
             <div
               v-else-if="!stats.activity.length"
-              class="rounded-xl border border-dashed border-default bg-elevated/40 p-6 text-sm text-muted"
+              class="rounded-xl border border-dashed border-default bg-elevated p-6 text-sm text-muted"
             >
               Log a few cups and this chart will start showing your weekly rhythm.
             </div>
@@ -604,18 +604,18 @@ function shouldShowActivityLabel(index: number, total: number) {
               v-else
               class="space-y-4"
             >
-              <div class="overflow-hidden rounded-2xl border border-default bg-elevated/60 px-3 pb-3 pt-4 sm:px-4 sm:pb-4 sm:pt-5">
+              <div class="overflow-hidden rounded-2xl border border-default bg-elevated px-3 pb-3 pt-4 sm:px-4 sm:pb-4 sm:pt-5">
                 <div class="relative flex h-44 items-end gap-1.5 sm:h-48 sm:gap-2">
                   <NuxtLink
                     v-for="(point, index) in stats.activity"
                     :key="point.fullLabel"
                     :to="{ path: '/log', query: { from: point.from, to: point.to } }"
-                    class="flex min-w-0 flex-1 flex-col items-center justify-end gap-2 rounded-md px-0.5 py-1 hover:bg-default/50 transition-colors sm:px-1"
+                    class="flex min-w-0 flex-1 flex-col items-center justify-end gap-2 rounded-md px-0.5 py-1 hover:bg-default transition-colors sm:px-1"
                     :title="`Open logs for ${point.fullLabel}`"
                   >
                     <div class="flex h-32 w-full items-end justify-center sm:h-36">
                       <div
-                        class="w-full rounded-t-xl bg-primary/20 ring-1 ring-inset ring-primary/15 transition-all"
+                        class="w-full rounded-t-xl bg-cinnamon-wood-200 ring-1 ring-inset ring-cinnamon-wood-300 transition-all"
                         :style="{ height: `${Math.max(12, (point.count / activityMaxCount) * 100)}%` }"
                       />
                     </div>
@@ -777,7 +777,7 @@ function shouldShowActivityLabel(index: number, total: number) {
             >
               <div class="hidden justify-center sm:flex">
                 <div
-                  class="relative flex size-40 items-center justify-center rounded-full border border-primary/20 bg-primary/10"
+                  class="relative flex size-40 items-center justify-center rounded-full border border-cinnamon-wood-200 bg-cinnamon-wood-50"
                 >
                   <div class="flex size-24 flex-col items-center justify-center rounded-full border border-default bg-default text-center shadow-sm">
                     <span class="text-2xl font-semibold text-highlighted">{{ stats.total }}</span>
@@ -791,7 +791,7 @@ function shouldShowActivityLabel(index: number, total: number) {
                   v-for="method in stats.methodMix"
                   :key="method.label"
                   :to="methodFilterLink(method.label)"
-                  class="flex items-center justify-between gap-3 rounded-xl border border-default bg-elevated/50 px-3 py-2 hover:bg-elevated transition-colors"
+                  class="flex items-center justify-between gap-3 rounded-xl border border-default bg-elevated px-3 py-2 hover:bg-elevated transition-colors"
                 >
                   <div class="flex min-w-0 items-center gap-3">
                     <span
@@ -848,7 +848,7 @@ function shouldShowActivityLabel(index: number, total: number) {
                 v-for="(origin, index) in stats.topOrigins"
                 :key="origin.origin"
                 :to="originFilterLink(origin.origin)"
-                class="block rounded-xl border border-default bg-elevated/40 p-4 hover:bg-elevated transition-colors"
+                class="block rounded-xl border border-default bg-elevated p-4 hover:bg-elevated transition-colors"
               >
                 <div class="flex items-center justify-between gap-3">
                   <div class="min-w-0">
@@ -909,7 +909,7 @@ function shouldShowActivityLabel(index: number, total: number) {
               />
             </div>
 
-            <div class="mt-5 rounded-xl border border-default bg-elevated/40 p-4">
+            <div class="mt-5 rounded-xl border border-default bg-elevated p-4">
               <p class="text-xs uppercase tracking-wide text-muted">
                 Dashboard reads
               </p>
