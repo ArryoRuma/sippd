@@ -1,13 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap");
 @import "tailwindcss";
 @import "@nuxt/ui";
 
 @source "../../../content/**/*";
 
 @theme static {
-  --font-sans: 'Instrument Sans', -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
-  --font-display: 'Rubik Dirt', var(--font-sans);
+  --font-sans: 'new-spirit', serif;
+  --font-mono: 'new-spirit-compressed', sans-serif;
+  --font-display: 'new-spirit', var(--font-sans);
 
   --color-lime-50: #fbfde8;
   --color-lime-100: #f5fbb3;
@@ -125,6 +124,29 @@
   --ui-bg-muted: var(--color-light-yellow-100);
   --ui-bg-elevated: var(--color-light-yellow-50);
   --ui-bg-accented: var(--color-light-yellow-100);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-weight: 500;
 }
 
 .dark {
