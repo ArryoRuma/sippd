@@ -1,4 +1,27 @@
 <script setup lang="ts">
+type FeatureItem = {
+  icon: string
+  title: string
+  description: string
+}
+
+type MetricItem = {
+  value: string
+  label: string
+  class: string
+}
+
+type SectionKind = 'features' | 'metrics'
+
+type LandingSection = {
+  id: string
+  kind: SectionKind
+  headline?: string
+  title: string
+  description: string
+  items: Array<FeatureItem | MetricItem>
+}
+
 const { data: page } = await useAsyncData('index', async () => {
   const rootPage = await queryCollection('content').path('/').first()
 
@@ -31,6 +54,60 @@ const heroTitle = computed(() => {
     primary,
     secondary: secondaryParts.join(' ').trim()
   }
+})
+
+const heroUi = {
+  root: 'pb-4 sm:pb-5',
+  container: 'relative z-10 lg:py-6',
+  wrapper: 'flex flex-col items-center',
+  title: 'font-display sm:text-6xl lg:text-7xl xl:text-[82px] tracking-[-0.03em] leading-[1.02]',
+  description: 'mt-2 max-w-2xl mx-auto text-balance text-base sm:text-lg leading-relaxed text-default',
+  links: 'gap-2'
+} as const
+
+const sectionUi = {
+  root: 'py-12 sm:py-12 scroll-mt-(--ui-header-height)',
+  container: 'max-w-5xl',
+  headline: 'font-mono font-medium text-xs text-primary uppercase tracking-[0.12em] text-center',
+  title: 'max-w-lg mx-auto',
+  description: 'max-w-md mx-auto text-dimmed'
+} as const
+
+const sectionGridClasses: Record<SectionKind, string> = {
+  features: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px',
+  metrics: 'grid sm:grid-cols-2 lg:grid-cols-4 gap-px'
+}
+
+const sectionSurfaceClasses: Record<SectionKind, string> = {
+  features: 'vibe-surface rounded-2xl overflow-hidden',
+  metrics: 'vibe-surface rounded-2xl overflow-hidden bg-gradient-to-b from-warning/18 via-primary/6 to-default/0'
+}
+
+const sections = computed<LandingSection[]>(() => {
+  const content = page.value
+
+  if (!content) {
+    return []
+  }
+
+  return [
+    {
+      id: 'features',
+      kind: 'features',
+      headline: content.features.headline,
+      title: content.features.title,
+      description: content.features.description,
+      items: content.features.items
+    },
+    {
+      id: 'metrics',
+      kind: 'metrics',
+      headline: content.metrics.headline,
+      title: content.metrics.title,
+      description: content.metrics.description,
+      items: content.metrics.items
+    }
+  ]
 })
 
 function enterMotion(delay: number = 0) {
@@ -69,24 +146,38 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
     label: link.label ?? 'Create account'
   })
 }
+
+function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
+  return 'icon' in item
+}
 </script>
 
 <template>
   <div class="relative overflow-hidden">
+    <div
+      class="vibe-orb -top-24 -left-24 size-72 bg-primary/18"
+      aria-hidden="true"
+    />
+    <div
+      class="vibe-orb top-40 -right-24 size-80 bg-warning/18"
+      aria-hidden="true"
+      style="animation-delay: 1.5s"
+    />
+    <div
+      class="pointer-events-none absolute inset-x-0 top-0 z-0 h-56 bg-gradient-to-b from-warning/16 via-primary/7 to-default/0"
+      aria-hidden="true"
+    />
+
     <AppHeader />
 
-    <div v-if="page">
+    <div
+      v-if="page"
+      class="relative z-10"
+    >
       <!-- Hero -->
 
       <UPageHero
-        :ui="{
-          root: 'pb-12 sm:pb-12',
-          container: 'relative z-10 lg:py-12',
-          wrapper: 'flex flex-col items-center',
-          title: 'font-display sm:text-6xl lg:text-7xl xl:text-[82px] tracking-[-0.03em] leading-[1.02]',
-          description: 'mt-5 max-w-xl mx-auto text-base sm:text-lg leading-relaxed text-default',
-          links: 'gap-3'
-        }"
+        :ui="heroUi"
       >
         <template #top>
           <Motion v-bind="staggerMotion(0)" />
@@ -94,10 +185,10 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
           <Motion
             as="div"
             v-bind="enterMotion(0.1)"
-            class="pt-3 mb-4 flex justify-center"
+            class="pt-2 mb-3 flex justify-center"
           >
             <img
-              src="/logo.svg"
+              src="/logo-copy.svg"
               alt="Sippd logo"
               class="h-44 sm:h-52 w-auto opacity-95 dark:invert animate-[var(--animate-vibe-float)]"
             >
@@ -152,7 +243,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
 
         <template #links>
           <Motion
-            class="flex flex-wrap justify-center gap-4"
+            class="flex flex-wrap justify-center gap-2 sm:gap-3"
             v-bind="enterMotion(0.65)"
           >
             <UButton
@@ -160,23 +251,15 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
               :key="link.label"
               v-bind="link"
               size="lg"
-              class="min-w-40"
+              class="min-w-40 rounded-xl"
               @click="handleLandingCtaClick(link, 'hero')"
             />
           </Motion>
         </template>
 
         <Motion
-          as-child
-          v-bind="enterMotion(0.85)"
-          class="max-w-2xl mx-auto w-full"
-        >
-          <HeroTerminal :lines="page.terminal.lines" />
-        </Motion>
-
-        <Motion
-          class="max-w-lg mx-auto w-full"
-          v-bind="scrollMotion(0.95)"
+          class="max-w-lg mx-auto w-full border-t border-default/70 pt-3"
+          v-bind="scrollMotion(0.8)"
         >
           <UPageLogos
             :title="page.logos.title"
@@ -190,15 +273,15 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
         </Motion>
       </UPageHero>
 
-      <!-- Features -->
       <UPageSection
-        id="features"
+        v-for="(section, sectionIndex) in sections"
+        :id="section.id"
+        :key="section.id"
         :ui="{
-          root: 'py-12 sm:py-12 scroll-mt-(--ui-header-height)',
-          container: 'max-w-5xl',
-          headline: 'font-mono font-medium text-xs text-primary uppercase tracking-[0.12em] text-center',
-          title: 'max-w-lg mx-auto',
-          description: 'max-w-md mx-auto text-dimmed'
+          ...sectionUi,
+          root: sectionIndex === 0
+            ? 'pt-6 pb-4 sm:pt-7 sm:pb-5 scroll-mt-(--ui-header-height)'
+            : 'pt-1 pb-6 sm:pt-1 sm:pb-8 scroll-mt-(--ui-header-height)'
         }"
       >
         <template #headline>
@@ -207,7 +290,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
             v-bind="scrollMotion()"
             class="inline-block"
           >
-            {{ page.features.headline }}
+            {{ section.headline }}
           </Motion>
         </template>
 
@@ -217,7 +300,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
             v-bind="scrollMotion(0.1)"
             class="inline-block"
           >
-            {{ page.features.title }}
+            {{ section.title }}
           </Motion>
         </template>
 
@@ -227,91 +310,43 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
             v-bind="scrollMotion(0.2)"
             class="inline-block"
           >
-            {{ page.features.description }}
+            {{ section.description }}
           </Motion>
         </template>
 
-        <div class="vibe-surface rounded-2xl overflow-hidden">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px">
+        <div :class="sectionSurfaceClasses[section.kind]">
+          <div :class="sectionGridClasses[section.kind]">
             <Motion
-              v-for="(feature, index) in page.features.items"
-              :key="feature.title"
+              v-for="(item, index) in section.items"
+              :key="section.kind === 'features' && isFeatureItem(item) ? item.title : (item as MetricItem).label"
               v-bind="staggerMotion(index)"
             >
               <UPageCard
-                :icon="feature.icon"
-                :title="feature.title"
-                :description="feature.description"
-                class="group rounded-none duration-300 hover:-translate-y-1 hover:bg-elevated/90"
+                v-if="section.kind === 'features' && isFeatureItem(item)"
+                :icon="item.icon"
+                :title="item.title"
+                :description="item.description"
+                class="group rounded-none px-1 duration-300 hover:-translate-y-1 hover:bg-elevated/95"
                 to="#"
                 :ui="{
-                  leading: 'mb-5 flex size-9 justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20 group-hover:bg-success/25 group-hover:ring-success/35 transition-colors',
+                  root: 'h-full',
+                  body: 'h-full',
+                  leading: 'mb-5 flex size-10 justify-center rounded-xl bg-warning/16 ring-1 ring-warning/25 group-hover:bg-primary/14 group-hover:ring-primary/30 transition-colors',
                   title: 'text-sm tracking-tight',
                   description: 'text-sm leading-relaxed sm:line-clamp-2 lg:line-clamp-3 text-dimmed'
                 }"
               />
-            </Motion>
-          </div>
-        </div>
-      </UPageSection>
 
-      <!-- Metrics -->
-      <UPageSection
-        id="metrics"
-        :ui="{
-          root: 'py-12 sm:py-12 scroll-mt-(--ui-header-height)',
-          container: 'max-w-5xl',
-          headline: 'font-mono font-medium text-xs text-primary uppercase tracking-[0.12em] text-center',
-          title: 'max-w-lg mx-auto',
-          description: 'max-w-md mx-auto text-dimmed'
-        }"
-      >
-        <template #headline>
-          <Motion
-            as="span"
-            v-bind="scrollMotion()"
-            class="inline-block"
-          >
-            {{ page.metrics.headline }}
-          </Motion>
-        </template>
-
-        <template #title>
-          <Motion
-            as="span"
-            v-bind="scrollMotion(0.1)"
-            class="inline-block"
-          >
-            {{ page.metrics.title }}
-          </Motion>
-        </template>
-
-        <template #description>
-          <Motion
-            as="span"
-            v-bind="scrollMotion(0.2)"
-            class="inline-block"
-          >
-            {{ page.metrics.description }}
-          </Motion>
-        </template>
-
-        <div class="vibe-surface rounded-2xl overflow-hidden">
-          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-px">
-            <Motion
-              v-for="(metric, index) in page.metrics.items"
-              :key="metric.label"
-              v-bind="staggerMotion(index)"
-            >
               <UPageCard
-                :title="metric.value"
-                :description="metric.label"
-                class="rounded-none duration-300 hover:-translate-y-0.5 hover:bg-elevated/90"
+                v-else
+                :title="(item as MetricItem).value"
+                :description="(item as MetricItem).label"
+                class="rounded-none duration-300 hover:-translate-y-0.5 hover:bg-elevated/95"
                 to="#"
                 :ui="{
                   root: 'text-center',
                   wrapper: 'items-center',
-                  title: ['text-4xl font-bold tracking-tight leading-none', metric.class],
+                  title: ['text-4xl font-bold tracking-tight leading-none', (item as MetricItem).class],
                   description: 'font-mono text-xs uppercase tracking-[0.06em] text-dimmed mt-3'
                 }"
               />
@@ -324,10 +359,10 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
       <UPageCTA
         variant="naked"
         :ui="{
-          root: 'py-6 sm:py-6 scroll-mt-(--ui-header-height)',
+          root: 'py-2 sm:py-4 scroll-mt-(--ui-header-height)',
           container: 'max-w-3xl text-center',
           title: 'lg:text-5xl tracking-tighter whitespace-pre-line',
-          description: 'mx-auto max-w-lg leading-relaxed text-dimmed'
+          description: 'mx-auto max-w-2xl leading-relaxed text-dimmed mt-2'
         }"
       >
         <template #title>
@@ -352,7 +387,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
 
         <template #links>
           <Motion
-            class="flex flex-col items-center justify-center gap-6"
+            class="flex flex-col items-center justify-center gap-3"
             v-bind="scrollMotion(0.2)"
           >
             <UButton
@@ -360,7 +395,7 @@ function handleLandingCtaClick(link: { label?: string, to?: string }, placement:
               :key="link.label"
               v-bind="link"
               size="xl"
-              class="min-w-52"
+              class="min-w-52 rounded-xl"
               @click="handleLandingCtaClick(link, 'final-cta')"
             />
           </Motion>
