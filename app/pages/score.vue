@@ -16,6 +16,7 @@ const { createSelectOptions, createSortHeader, formatDashboardDate, searchableTe
 const search = ref('')
 const methodFilter = ref('All')
 const roastFilter = ref('All')
+const mobileFiltersOpen = ref(false)
 const slideoverOpen = ref(false)
 const selectedSipp = ref<Database['public']['Tables']['sipps']['Row']>()
 type TableApi = {
@@ -95,6 +96,38 @@ const hasActiveFilters = computed(() => {
   return search.value.trim().length > 0 || methodFilter.value !== 'All' || roastFilter.value !== 'All'
 })
 
+const isMobile = ref(false)
+
+onMounted(() => {
+  const mq = window.matchMedia('(max-width: 639px)')
+  isMobile.value = mq.matches
+  const handler = (e: MediaQueryListEvent) => {
+    isMobile.value = e.matches
+  }
+  mq.addEventListener('change', handler)
+  onBeforeUnmount(() => mq.removeEventListener('change', handler))
+})
+
+const mobileColumnVisibility = computed((): Record<string, boolean> => {
+  if (!isMobile.value) {
+    return {}
+  }
+
+  return {
+    origin: false,
+    roast_type: false,
+    created_at: false
+  }
+})
+
+const activeFilterCount = computed(() => {
+  return [
+    search.value.trim().length > 0,
+    methodFilter.value !== 'All',
+    roastFilter.value !== 'All'
+  ].filter(Boolean).length
+})
+
 const columns: TableColumn<Sipp>[] = [
   {
     id: 'rank',
@@ -169,28 +202,52 @@ function clearFilters() {
 
         <UDashboardToolbar>
           <template #left>
-            <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
-              <UInput
-                v-model="search"
-                icon="i-lucide-search"
-                placeholder="Search rankings"
-                class="w-full sm:w-80"
-              />
-              <USelect
-                v-model="methodFilter"
-                :items="methodOptions"
-                class="w-full sm:w-48"
-              />
-              <USelect
-                v-model="roastFilter"
-                :items="roastOptions"
-                class="w-full sm:w-48"
-              />
+            <div class="flex w-full flex-col gap-2">
+              <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+                <UInput
+                  v-model="search"
+                  icon="i-lucide-search"
+                  placeholder="Search rankings"
+                  class="w-full sm:w-80"
+                />
+
+                <div class="flex items-center gap-2 sm:hidden">
+                  <UButton
+                    :label="activeFilterCount > 0 ? `Filters (${activeFilterCount})` : 'Filters'"
+                    icon="i-lucide-sliders-horizontal"
+                    color="neutral"
+                    variant="outline"
+                    class="flex-1"
+                    @click="mobileFiltersOpen = true"
+                  />
+                  <UButton
+                    icon="i-lucide-refresh-cw"
+                    color="neutral"
+                    variant="outline"
+                    square
+                    aria-label="Refresh rankings"
+                    @click="() => refresh()"
+                  />
+                </div>
+
+                <div class="hidden sm:flex sm:items-center sm:gap-2">
+                  <USelect
+                    v-model="methodFilter"
+                    :items="methodOptions"
+                    class="w-full sm:w-48"
+                  />
+                  <USelect
+                    v-model="roastFilter"
+                    :items="roastOptions"
+                    class="w-full sm:w-48"
+                  />
+                </div>
+              </div>
             </div>
           </template>
 
           <template #right>
-            <div class="flex items-center gap-2">
+            <div class="hidden items-center gap-2 sm:flex">
               <UButton
                 label="Refresh"
                 icon="i-lucide-refresh-cw"
@@ -273,6 +330,7 @@ function clearFilters() {
             ref="table"
             v-model:pagination="pagination"
             v-model:sorting="sorting"
+            :column-visibility="mobileColumnVisibility"
             :data="filteredSipps"
             :columns="columns"
             :loading="status === 'pending' || status === 'idle'"
@@ -359,6 +417,65 @@ function clearFilters() {
         </div>
       </template>
     </UDashboardPanel>
+
+    <USlideover v-model:open="mobileFiltersOpen">
+      <template #content>
+        <div class="flex h-full flex-col bg-default">
+          <div class="border-b border-default px-4 py-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm font-semibold text-highlighted">
+                  Ranking filters
+                </p>
+                <p class="mt-1 text-sm text-muted">
+                  Narrow the leaderboard without crowding the header.
+                </p>
+              </div>
+              <UButton
+                icon="i-lucide-x"
+                color="neutral"
+                variant="ghost"
+                square
+                aria-label="Close filters"
+                @click="mobileFiltersOpen = false"
+              />
+            </div>
+          </div>
+
+          <div class="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+            <USelect
+              v-model="methodFilter"
+              :items="methodOptions"
+              class="w-full"
+            />
+            <USelect
+              v-model="roastFilter"
+              :items="roastOptions"
+              class="w-full"
+            />
+          </div>
+
+          <div class="border-t border-default px-4 py-4">
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <UButton
+                label="Clear filters"
+                icon="i-lucide-x"
+                color="neutral"
+                variant="ghost"
+                :disabled="!hasActiveFilters"
+                @click="clearFilters"
+              />
+              <UButton
+                label="Done"
+                icon="i-lucide-check"
+                color="primary"
+                @click="mobileFiltersOpen = false"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+    </USlideover>
 
     <USlideover v-model:open="slideoverOpen">
       <template #content>
