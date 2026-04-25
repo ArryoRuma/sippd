@@ -20,73 +20,61 @@
   --color-lime-900: #435514;
   --color-lime-950: #232f06;
 
-  --color-brick-50: #fdf2ef;
-  --color-brick-100: #fce0d8;
-  --color-brick-200: #f8bcab;
-  --color-brick-300: #f29378;
-  --color-brick-400: #e96547;
-  --color-brick-500: #c13b22;
-  --color-brick-600: #a33019;
-  --color-brick-700: #7e2412;
-  --color-brick-800: #5c180c;
-  --color-brick-900: #3b0f07;
-  --color-brick-950: #2a0a04;
+  --color-almond-cream-50: #fbf3e9;
+  --color-almond-cream-100: #f8e7d3;
+  --color-almond-cream-200: #f1cea7;
+  --color-almond-cream-300: #eab67b;
+  --color-almond-cream-400: #e29e50;
+  --color-almond-cream-500: #db8624;
+  --color-almond-cream-600: #af6b1d;
+  --color-almond-cream-700: #845015;
+  --color-almond-cream-800: #58350e;
+  --color-almond-cream-900: #2c1b07;
+  --color-almond-cream-950: #1f1305;
 
-  --color-warm-sand-50: #fdf8ef;
-  --color-warm-sand-100: #faf0d9;
-  --color-warm-sand-200: #f4dfb0;
-  --color-warm-sand-300: #ebca82;
-  --color-warm-sand-400: #dfb254;
-  --color-warm-sand-500: #d09a30;
-  --color-warm-sand-600: #b07e20;
-  --color-warm-sand-700: #876015;
-  --color-warm-sand-800: #62440e;
-  --color-warm-sand-900: #3f2c08;
-  --color-warm-sand-950: #2c1e05;
+  --color-cinnamon-wood-50: #f7f0ee;
+  --color-cinnamon-wood-100: #efe0dc;
+  --color-cinnamon-wood-200: #dec2ba;
+  --color-cinnamon-wood-300: #cea397;
+  --color-cinnamon-wood-400: #be8474;
+  --color-cinnamon-wood-500: #ad6552;
+  --color-cinnamon-wood-600: #8b5141;
+  --color-cinnamon-wood-700: #683d31;
+  --color-cinnamon-wood-800: #452921;
+  --color-cinnamon-wood-900: #231410;
+  --color-cinnamon-wood-950: #180e0b;
 
-  --color-ivory-50: #fefcf8;
-  --color-ivory-100: #fdf7ee;
-  --color-ivory-200: #f9edda;
-  --color-ivory-300: #f3e0c3;
-  --color-ivory-400: #eacfa7;
-  --color-ivory-500: #deba85;
-  --color-ivory-600: #c89a5c;
-  --color-ivory-700: #a57840;
-  --color-ivory-800: #7a572e;
-  --color-ivory-900: #52391d;
-  --color-ivory-950: #392710;
+  --color-chestnut-50: #f9edeb;
+  --color-chestnut-100: #f4dbd7;
+  --color-chestnut-200: #e9b7af;
+  --color-chestnut-300: #dd9388;
+  --color-chestnut-400: #d26f60;
+  --color-chestnut-500: #c74b38;
+  --color-chestnut-600: #9f3c2d;
+  --color-chestnut-700: #772d22;
+  --color-chestnut-800: #501e16;
+  --color-chestnut-900: #280f0b;
+  --color-chestnut-950: #1c0b08;
 
-  --color-soft-apricot-50: #fff2e6;
-  --color-soft-apricot-100: #fee5cd;
-  --color-soft-apricot-200: #fdca9b;
-  --color-soft-apricot-300: #fdb068;
-  --color-soft-apricot-400: #fc9636;
-  --color-soft-apricot-500: #fb7b04;
-  --color-soft-apricot-600: #c96303;
-  --color-soft-apricot-700: #974a02;
-  --color-soft-apricot-800: #643102;
-  --color-soft-apricot-900: #321901;
-  --color-soft-apricot-950: #231101;
-
-  --color-vibrant-coral-50: #fde9e8;
-  --color-vibrant-coral-100: #fad3d1;
-  --color-vibrant-coral-200: #f6a8a2;
-  --color-vibrant-coral-300: #f17c74;
-  --color-vibrant-coral-400: #ed5145;
-  --color-vibrant-coral-500: #e82517;
-  --color-vibrant-coral-600: #ba1e12;
-  --color-vibrant-coral-700: #8b160e;
-  --color-vibrant-coral-800: #5d0f09;
-  --color-vibrant-coral-900: #2e0705;
-  --color-vibrant-coral-950: #200503;
+  --color-mahogany-red-50: #fbecea;
+  --color-mahogany-red-100: #f6dad5;
+  --color-mahogany-red-200: #eeb4aa;
+  --color-mahogany-red-300: #e58f80;
+  --color-mahogany-red-400: #dc6a56;
+  --color-mahogany-red-500: #d4452b;
+  --color-mahogany-red-600: #a93723;
+  --color-mahogany-red-700: #7f291a;
+  --color-mahogany-red-800: #551b11;
+  --color-mahogany-red-900: #2a0e09;
+  --color-mahogany-red-950: #1e0a06;
 
   --animate-shimmer: shimmer 8s ease-in-out infinite alternate;
   --animate-vibe-float: vibe-float 7s ease-in-out infinite;
   --animate-vibe-drift: vibe-drift 16s ease-in-out infinite alternate;
 
-  --vibe-accent: var(--color-warm-sand-500);
+  --vibe-accent: var(--color-almond-cream-500);
   --vibe-accent-soft: color-mix(in oklch, var(--vibe-accent) 24%, transparent);
-  --vibe-accent-ink: color-mix(in oklch, var(--vibe-accent) 50%, var(--ui-color-neutral-900));
+  --vibe-accent-ink: color-mix(in oklch, var(--vibe-accent) 42%, var(--color-cinnamon-wood-900));
   --vibe-glow-primary: color-mix(in oklch, var(--ui-primary) 28%, transparent);
   --vibe-glow-accent: color-mix(in oklch, var(--vibe-accent) 24%, transparent);
 
@@ -120,10 +108,11 @@
 }
 
 :root {
-  --ui-bg: var(--color-ivory-50);
-  --ui-bg-muted: var(--color-ivory-100);
-  --ui-bg-elevated: var(--color-ivory-50);
-  --ui-bg-accented: var(--color-ivory-200);
+  --ui-bg: var(--color-almond-cream-50);
+  --ui-bg-muted: color-mix(in oklch, var(--color-cinnamon-wood-50) 42%, var(--color-almond-cream-50));
+  --ui-bg-elevated: color-mix(in oklch, var(--color-almond-cream-50) 92%, white 8%);
+  --ui-bg-accented: color-mix(in oklch, var(--color-almond-cream-100) 70%, var(--color-cinnamon-wood-50));
+  --ui-border: color-mix(in oklch, var(--color-cinnamon-wood-200) 74%, white 26%);
 }
 
 body {
@@ -155,8 +144,8 @@ samp {
   --ui-bg-elevated: var(--ui-color-neutral-900);
   --ui-bg-accented: var(--ui-color-neutral-800);
   --ui-border: var(--ui-color-neutral-900);
-  --vibe-accent-soft: color-mix(in oklch, var(--color-warm-sand-400) 18%, transparent);
-  --vibe-accent-ink: color-mix(in oklch, var(--color-warm-sand-300) 70%, var(--ui-color-neutral-950));
+  --vibe-accent-soft: color-mix(in oklch, var(--color-almond-cream-400) 18%, transparent);
+  --vibe-accent-ink: color-mix(in oklch, var(--color-almond-cream-300) 70%, var(--ui-color-neutral-950));
 }
 
 .vibe-surface {

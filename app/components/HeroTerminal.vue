@@ -18,7 +18,7 @@ const segmentStyles: Record<string, string> = {
   'flag': 'text-primary font-semibold',
   'dim': 'text-muted',
   'success': 'text-[color:var(--vibe-accent-ink)]',
-  'url': 'text-info',
+  'url': 'text-warning',
   'metric-good': 'text-primary font-semibold'
 }
 
@@ -33,13 +33,13 @@ function lineMotion(index: number) {
 
 <template>
   <div class="vibe-surface overflow-hidden rounded-2xl">
-    <div class="flex items-center gap-1.5 border-b border-default/70 p-4 sm:px-6">
+    <div class="flex items-center gap-1.5 border-b border-default/70 bg-gradient-to-r from-warning/10 via-primary/4 to-default/0 p-4 sm:px-6">
       <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
       <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
       <span class="vibe-dot size-2.5 rounded-full border border-default/70" />
     </div>
 
-    <div class="min-h-[200px] p-5 font-mono text-[13px] leading-[1.8] sm:p-6">
+    <div class="min-h-[200px] bg-gradient-to-b from-default via-default to-warning/5 p-5 font-mono text-[13px] leading-[1.8] sm:p-6">
       <Motion
         v-for="(line, lineIndex) in lines"
         :key="lineIndex"

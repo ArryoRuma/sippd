@@ -1,10 +1,11 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'brick',
+      primary: 'chestnut',
+      info: 'cinnamon-wood',
       success: 'lime',
-      warning: 'warm-sand',
-      error: 'vibrant-coral',
+      warning: 'almond-cream',
+      error: 'mahogany-red',
       neutral: 'zinc'
     },
     button: {
@@ -39,12 +40,12 @@ export default defineAppConfig({
         {
           color: 'primary' as const,
           variant: 'solid' as const,
-          class: 'hover:bg-primary active:bg-primary shadow-[0_0_20px_var(--btn-glow)] hover:shadow-[0_0_34px_var(--btn-glow-hover)] hover:-translate-y-px active:translate-y-0 ring-1 ring-primary/20 [--btn-glow:color-mix(in_oklch,var(--ui-primary)_28%,transparent)] [--btn-glow-hover:color-mix(in_oklch,var(--ui-primary)_40%,transparent)]'
+          class: 'hover:bg-primary active:bg-primary shadow-[0_0_20px_var(--btn-glow)] hover:shadow-[0_0_30px_var(--btn-glow-hover)] hover:-translate-y-px active:translate-y-0 ring-1 ring-primary/18 [--btn-glow:color-mix(in_oklch,var(--ui-primary)_24%,transparent)] [--btn-glow-hover:color-mix(in_oklch,var(--ui-primary)_34%,transparent)]'
         },
         {
           color: 'success' as const,
           variant: 'soft' as const,
-          class: 'ring-1 ring-success/30 text-[color:var(--vibe-accent-ink)] hover:bg-success/25'
+          class: 'ring-1 ring-success/25 text-success hover:bg-success/18'
         }
       ]
     },

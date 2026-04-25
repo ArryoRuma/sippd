@@ -58,7 +58,7 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
 
 <template>
   <UHeader
-    class="vibe-glass border-b border-default/70"
+    class="vibe-glass border-b border-default/80 bg-default/70"
     :ui="{ container: 'relative overflow-hidden' }"
   >
     <template #left>
@@ -87,13 +87,13 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
           label="Sign in"
           color="neutral"
           variant="ghost"
-          class="hidden lg:flex rounded-xl"
+          class="hidden lg:flex rounded-xl hover:bg-warning/10"
           to="/login"
         />
         <UButton
           label="Create account"
           color="primary"
-          class="hidden lg:flex"
+          class="hidden lg:flex rounded-xl shadow-[0_10px_24px_-18px_color-mix(in_oklch,var(--ui-primary)_55%,transparent)]"
           to="/signup"
         />
       </template>
@@ -101,7 +101,7 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
         v-if="user"
         label="Dashboard"
         color="primary"
-        class="hidden lg:flex"
+        class="hidden lg:flex rounded-xl shadow-[0_10px_24px_-18px_color-mix(in_oklch,var(--ui-primary)_55%,transparent)]"
         to="/dashboard"
       />
     </template>
@@ -114,7 +114,7 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
         square
         :aria-label="open ? 'Close navigation' : 'Open navigation'"
         :aria-expanded="open"
-        :class="ui.toggle({ toggleSide: 'right' })"
+        :class="[ui.toggle({ toggleSide: 'right' }), 'rounded-xl hover:bg-warning/10']"
         @click="toggle"
       >
         <svg
@@ -169,7 +169,7 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
 
       <div class="mt-4 flex flex-col gap-2">
         <div class="flex items-center justify-between">
-          <span class="text-sm text-muted">Color mode</span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.12em] text-dimmed">Color mode</span>
           <ClientOnly>
             <UColorModeButton />
           </ClientOnly>
@@ -187,12 +187,14 @@ const variants: Record<string, VariantType | ((custom: unknown) => VariantType)>
           v-if="!user"
           label="Create account"
           color="primary"
+          class="rounded-xl"
           block
           to="/signup"
         />
         <UButton
           v-if="user"
           label="Dashboard"
+          class="rounded-xl"
           block
           to="/dashboard"
         />
