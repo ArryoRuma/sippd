@@ -3,7 +3,36 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 const route = useRoute()
 
+const mobileSidebarQuery = '(max-width: 1023px)'
 const open = ref(false)
+const isMobileSidebar = ref(false)
+
+function syncSidebarViewport(matches: boolean) {
+  isMobileSidebar.value = matches
+  open.value = !matches
+}
+
+watch(() => route.fullPath, () => {
+  if (isMobileSidebar.value) {
+    open.value = false
+  }
+})
+
+onMounted(() => {
+  const mediaQuery = window.matchMedia(mobileSidebarQuery)
+
+  syncSidebarViewport(mediaQuery.matches)
+
+  const handleChange = (event: MediaQueryListEvent) => {
+    syncSidebarViewport(event.matches)
+  }
+
+  mediaQuery.addEventListener('change', handleChange)
+
+  onBeforeUnmount(() => {
+    mediaQuery.removeEventListener('change', handleChange)
+  })
+})
 
 const links = [[{
   label: 'Home',
@@ -85,10 +114,10 @@ const groups = computed(() => [{
     <UDashboardSidebar
       id="default"
       v-model:open="open"
-      collapsible
-      resizable
-      class="bg-elevated/35 border-r border-default/70"
-      :ui="{ footer: 'lg:border-t lg:border-default' }"
+      :collapsible="!isMobileSidebar"
+      :resizable="!isMobileSidebar"
+      class="bg-muted/60 border-r border-default/80 max-lg:w-[min(18.5rem,calc(100vw-1rem))] max-lg:rounded-r-2xl max-lg:border-y max-lg:shadow-2xl"
+      :ui="{ footer: 'lg:border-t lg:border-default', header: 'max-lg:pt-[max(env(safe-area-inset-top),0.75rem)]', body: 'max-lg:pb-[max(env(safe-area-inset-bottom),0.75rem)]' }"
     >
       <template #header="{ collapsed }">
         <AppBrand :collapsed="collapsed" />
@@ -97,7 +126,7 @@ const groups = computed(() => [{
       <template #default="{ collapsed }">
         <UDashboardSearchButton
           :collapsed="collapsed"
-          class="bg-transparent ring-default hover:ring-primary/35"
+          class="bg-transparent ring-default hover:ring-warning/35"
         />
 
         <UNavigationMenu

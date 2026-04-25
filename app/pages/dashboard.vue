@@ -382,6 +382,13 @@ function originFilterLink(origin: string) {
     }
   }
 }
+
+function shouldShowActivityLabel(index: number, total: number) {
+  if (total <= 7) return true
+
+  const step = total > 20 ? 6 : total > 14 ? 4 : 3
+  return index === 0 || index === total - 1 || index % step === 0
+}
 </script>
 
 <template>
@@ -393,7 +400,7 @@ function originFilterLink(origin: string) {
         </template>
 
         <template #right>
-          <div class="flex items-center gap-2">
+          <div class="hidden items-center gap-2 md:flex">
             <USelect
               v-model="selectedRange"
               :items="rangeOptions"
@@ -418,9 +425,37 @@ function originFilterLink(origin: string) {
     </template>
 
     <template #body>
-      <div class="relative overflow-hidden p-4 lg:p-6 space-y-6">
+      <div class="relative overflow-hidden p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+        <div class="rounded-2xl border border-default/80 bg-elevated/70 p-2.5 shadow-sm md:hidden">
+          <div class="flex flex-col gap-2">
+            <USelect
+              v-model="selectedRange"
+              :items="rangeOptions"
+              class="w-full"
+            />
+
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <UButton
+                label="Insights"
+                icon="i-lucide-line-chart"
+                color="neutral"
+                variant="soft"
+                block
+                to="/insights"
+              />
+              <UButton
+                label="Log New Sipp"
+                icon="i-lucide-plus"
+                color="primary"
+                block
+                to="/log"
+              />
+            </div>
+          </div>
+        </div>
+
         <div>
-          <h2 class="text-2xl font-bold text-highlighted">
+          <h2 class="text-xl font-bold text-highlighted sm:text-2xl">
             Welcome back{{ dashboardGreetingName ? `, ${dashboardGreetingName}` : '' }}
           </h2>
           <p class="text-sm text-muted mt-1">
@@ -437,7 +472,7 @@ function originFilterLink(origin: string) {
           :description="loadError"
         />
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
           <UCard class="vibe-surface">
             <template #header>
               <p class="text-xs uppercase tracking-wide text-muted">
@@ -529,10 +564,10 @@ function originFilterLink(origin: string) {
           </UCard>
         </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-3">
           <UCard class="xl:col-span-2 overflow-hidden vibe-surface">
             <template #header>
-              <div class="flex items-start justify-between gap-3">
+              <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <p class="font-semibold text-highlighted">
                     Weekly Activity
@@ -569,33 +604,36 @@ function originFilterLink(origin: string) {
               v-else
               class="space-y-4"
             >
-              <div class="relative rounded-2xl border border-default bg-elevated/60 px-4 pb-4 pt-5">
-                <div class="relative flex h-48 items-end gap-3">
+              <div class="overflow-hidden rounded-2xl border border-default bg-elevated/60 px-3 pb-3 pt-4 sm:px-4 sm:pb-4 sm:pt-5">
+                <div class="relative flex h-44 items-end gap-1.5 sm:h-48 sm:gap-2">
                   <NuxtLink
-                    v-for="point in stats.activity"
+                    v-for="(point, index) in stats.activity"
                     :key="point.fullLabel"
                     :to="{ path: '/log', query: { from: point.from, to: point.to } }"
-                    class="flex min-w-0 flex-1 flex-col items-center gap-3 rounded-md px-1 py-1 hover:bg-default/50 transition-colors"
+                    class="flex min-w-0 flex-1 flex-col items-center justify-end gap-2 rounded-md px-0.5 py-1 hover:bg-default/50 transition-colors sm:px-1"
                     :title="`Open logs for ${point.fullLabel}`"
                   >
-                    <div class="flex h-32 w-full items-end justify-center">
+                    <div class="flex h-32 w-full items-end justify-center sm:h-36">
                       <div
-                        class="w-full max-w-10 rounded-t-xl bg-primary/20 ring-1 ring-inset ring-primary/15 transition-all"
+                        class="w-full rounded-t-xl bg-primary/20 ring-1 ring-inset ring-primary/15 transition-all"
                         :style="{ height: `${Math.max(12, (point.count / activityMaxCount) * 100)}%` }"
                       />
                     </div>
-                    <div class="text-center">
-                      <p class="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
+                    <div class="min-h-8 text-center sm:min-h-10">
+                      <p
+                        v-if="shouldShowActivityLabel(index, stats.activity.length)"
+                        class="font-mono text-[10px] uppercase tracking-[0.08em] text-muted sm:text-[11px]"
+                      >
                         {{ point.label }}
                       </p>
-                      <p class="text-xs text-default">
+                      <p class="hidden text-xs text-default sm:block">
                         {{ point.count }} sip{{ point.count === 1 ? '' : 's' }}
                       </p>
                     </div>
                   </NuxtLink>
 
                   <svg
-                    class="pointer-events-none absolute inset-x-4 top-5 h-32"
+                    class="pointer-events-none absolute inset-x-0 top-5 h-32 sm:h-36"
                     viewBox="0 0 100 100"
                     preserveAspectRatio="none"
                   >
@@ -620,7 +658,7 @@ function originFilterLink(origin: string) {
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div class="grid grid-cols-3 gap-2 sm:gap-3">
                 <div class="rounded-xl border border-default bg-default p-4">
                   <p class="text-xs uppercase tracking-wide text-muted">
                     Last 7 days
@@ -705,7 +743,7 @@ function originFilterLink(origin: string) {
           </UCard>
         </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-3">
           <UCard class="vibe-surface">
             <template #header>
               <div>
@@ -737,7 +775,7 @@ function originFilterLink(origin: string) {
               v-else
               class="space-y-5"
             >
-              <div class="flex justify-center">
+              <div class="hidden justify-center sm:flex">
                 <div
                   class="relative flex size-40 items-center justify-center rounded-full border border-primary/20 bg-primary/10"
                 >
@@ -890,10 +928,10 @@ function originFilterLink(origin: string) {
           </UCard>
         </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-2">
           <UCard class="xl:col-span-2 vibe-surface">
             <template #header>
-              <div class="flex items-center justify-between gap-3">
+              <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p class="font-semibold text-highlighted">
                     Recent Activity
@@ -907,6 +945,7 @@ function originFilterLink(origin: string) {
                   label="Open SippLog"
                   color="neutral"
                   variant="ghost"
+                  class="w-full sm:w-auto"
                   to="/log"
                 />
               </div>
