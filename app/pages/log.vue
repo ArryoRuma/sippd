@@ -18,6 +18,7 @@ const { createSelectOptions, createSortHeader, formatDashboardDate, searchableTe
 const confirmDeleteState = useConfirmAction()
 
 const slideoverOpen = ref(false)
+const mobileFiltersOpen = ref(false)
 const selectedSipp = ref<Database['public']['Tables']['sipps']['Row']>()
 const viewMode = ref(false)
 
@@ -56,6 +57,18 @@ const columnVisibility = ref<Record<string, boolean>>({
   acidity: false,
   body: false,
   aftertaste: false
+})
+
+const isMobile = ref(false)
+
+onMounted(() => {
+  const mq = window.matchMedia('(max-width: 639px)')
+  isMobile.value = mq.matches
+  const handler = (e: MediaQueryListEvent) => {
+    isMobile.value = e.matches
+  }
+  mq.addEventListener('change', handler)
+  onBeforeUnmount(() => mq.removeEventListener('change', handler))
 })
 
 type Sipp = Database['public']['Tables']['sipps']['Row']
@@ -97,6 +110,19 @@ const hasActiveFilters = computed(() => {
     || Boolean(toDate.value)
     || Boolean(minOverall.value)
     || Boolean(maxOverall.value)
+})
+
+const activeFilterCount = computed(() => {
+  return [
+    search.value.trim().length > 0,
+    methodFilter.value !== 'All',
+    roastFilter.value !== 'All',
+    originFilter.value !== 'All',
+    Boolean(fromDate.value),
+    Boolean(toDate.value),
+    Boolean(minOverall.value),
+    Boolean(maxOverall.value)
+  ].filter(Boolean).length
 })
 
 const quickFilterChips = [
@@ -261,6 +287,22 @@ const columnToggleItems = computed(() => {
   }))
 })
 
+const effectiveColumnVisibility = computed(() => {
+  if (!isMobile.value) return columnVisibility.value
+  return {
+    ...columnVisibility.value,
+    select: false,
+    roast_type: false,
+    origin: false,
+    aroma: false,
+    flavor: false,
+    acidity: false,
+    body: false,
+    aftertaste: false,
+    created_at: false
+  }
+})
+
 function openNew() {
   selectedSipp.value = undefined
   viewMode.value = false
@@ -419,59 +461,83 @@ function updateDeleteConfirmOpen(value: boolean) {
 
         <UDashboardToolbar>
           <template #left>
-            <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
-              <UInput
-                v-model="search"
-                icon="i-lucide-search"
-                placeholder="Search roaster, origin, roast, method"
-                class="w-full sm:w-80"
-              />
-              <USelect
-                v-model="methodFilter"
-                :items="methodOptions"
-                class="w-full sm:w-48"
-              />
-              <USelect
-                v-model="roastFilter"
-                :items="roastOptions"
-                class="w-full sm:w-48"
-              />
-              <USelect
-                v-model="originFilter"
-                :items="originOptions"
-                class="w-full sm:w-48"
-              />
-              <UInput
-                v-model="fromDate"
-                type="date"
-                class="w-full sm:w-44"
-              />
-              <UInput
-                v-model="toDate"
-                type="date"
-                class="w-full sm:w-44"
-              />
-              <UInput
-                v-model="minOverall"
-                type="number"
-                :min="1"
-                :max="50"
-                placeholder="Min score"
-                class="w-full sm:w-32"
-              />
-              <UInput
-                v-model="maxOverall"
-                type="number"
-                :min="1"
-                :max="50"
-                placeholder="Max score"
-                class="w-full sm:w-32"
-              />
+            <div class="flex w-full flex-col gap-2">
+              <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+                <UInput
+                  v-model="search"
+                  icon="i-lucide-search"
+                  placeholder="Search sipps"
+                  class="w-full sm:w-80"
+                />
+
+                <div class="flex items-center gap-2 lg:hidden">
+                  <UButton
+                    :label="activeFilterCount > 0 ? `Filters (${activeFilterCount})` : 'Filters'"
+                    icon="i-lucide-sliders-horizontal"
+                    color="neutral"
+                    variant="outline"
+                    class="flex-1"
+                    @click="mobileFiltersOpen = true"
+                  />
+                  <UButton
+                    icon="i-lucide-download"
+                    color="neutral"
+                    variant="outline"
+                    square
+                    aria-label="Export CSV"
+                    @click="exportCsv"
+                  />
+                </div>
+
+                <div class="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-2">
+                  <USelect
+                    v-model="methodFilter"
+                    :items="methodOptions"
+                    class="w-full lg:w-48"
+                  />
+                  <USelect
+                    v-model="roastFilter"
+                    :items="roastOptions"
+                    class="w-full lg:w-48"
+                  />
+                  <USelect
+                    v-model="originFilter"
+                    :items="originOptions"
+                    class="w-full lg:w-48"
+                  />
+                  <UInput
+                    v-model="fromDate"
+                    type="date"
+                    class="w-full lg:w-44"
+                  />
+                  <UInput
+                    v-model="toDate"
+                    type="date"
+                    class="w-full lg:w-44"
+                  />
+                  <UInput
+                    v-model="minOverall"
+                    type="number"
+                    :min="1"
+                    :max="50"
+                    placeholder="Min score"
+                    class="w-full lg:w-32"
+                  />
+                  <UInput
+                    v-model="maxOverall"
+                    type="number"
+                    :min="1"
+                    :max="50"
+                    placeholder="Max score"
+                    class="w-full lg:w-32"
+                  />
+                </div>
+              </div>
             </div>
           </template>
 
           <template #right>
-            <div class="flex items-center gap-2">
+            <div class="hidden items-center gap-2 lg:flex">
               <UPopover>
                 <UButton
                   label="Columns"
@@ -615,7 +681,7 @@ function updateDeleteConfirmOpen(value: boolean) {
               ref="table"
               v-model:row-selection="rowSelection"
               v-model:pagination="pagination"
-              v-model:column-visibility="columnVisibility"
+              :column-visibility="effectiveColumnVisibility"
               :data="filteredSipps"
               :columns="columns"
               :loading="status === 'pending' || status === 'idle'"
@@ -711,6 +777,120 @@ function updateDeleteConfirmOpen(value: boolean) {
         </div>
       </template>
     </UDashboardPanel>
+
+    <USlideover v-model:open="mobileFiltersOpen">
+      <template #content>
+        <div class="flex h-full flex-col bg-default">
+          <div class="border-b border-default px-4 py-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm font-semibold text-highlighted">
+                  Filters and columns
+                </p>
+                <p class="mt-1 text-sm text-muted">
+                  Refine your log without crowding the main table view.
+                </p>
+              </div>
+              <UButton
+                icon="i-lucide-x"
+                color="neutral"
+                variant="ghost"
+                square
+                aria-label="Close filters"
+                @click="mobileFiltersOpen = false"
+              />
+            </div>
+          </div>
+
+          <div class="flex-1 space-y-5 overflow-y-auto px-4 py-4">
+            <div class="space-y-3">
+              <p class="text-xs uppercase tracking-wide text-muted">
+                Filters
+              </p>
+              <USelect
+                v-model="methodFilter"
+                :items="methodOptions"
+                class="w-full"
+              />
+              <USelect
+                v-model="roastFilter"
+                :items="roastOptions"
+                class="w-full"
+              />
+              <USelect
+                v-model="originFilter"
+                :items="originOptions"
+                class="w-full"
+              />
+              <UInput
+                v-model="fromDate"
+                type="date"
+                class="w-full"
+              />
+              <UInput
+                v-model="toDate"
+                type="date"
+                class="w-full"
+              />
+              <div class="grid grid-cols-2 gap-3">
+                <UInput
+                  v-model="minOverall"
+                  type="number"
+                  :min="1"
+                  :max="50"
+                  placeholder="Min score"
+                  class="w-full"
+                />
+                <UInput
+                  v-model="maxOverall"
+                  type="number"
+                  :min="1"
+                  :max="50"
+                  placeholder="Max score"
+                  class="w-full"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <p class="text-xs uppercase tracking-wide text-muted">
+                Visible columns
+              </p>
+              <div
+                v-for="column in columnToggleItems"
+                :key="column.key"
+                class="flex items-center justify-between gap-3 rounded-xl border border-default/70 bg-elevated/40 px-3 py-2.5"
+              >
+                <span class="text-sm capitalize text-default">{{ column.label }}</span>
+                <UCheckbox
+                  :model-value="column.visible"
+                  @update:model-value="toggleColumn(column.key, $event)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-default px-4 py-4">
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <UButton
+                label="Clear filters"
+                icon="i-lucide-x"
+                color="neutral"
+                variant="ghost"
+                :disabled="!hasActiveFilters"
+                @click="clearFilters"
+              />
+              <UButton
+                label="Done"
+                icon="i-lucide-check"
+                color="primary"
+                @click="mobileFiltersOpen = false"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+    </USlideover>
 
     <USlideover v-model:open="slideoverOpen">
       <template #content>
