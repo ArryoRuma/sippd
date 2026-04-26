@@ -477,14 +477,19 @@ function clearFilters() {
       </template>
     </USlideover>
 
-    <USlideover v-model:open="slideoverOpen">
+    <UModal
+      v-model:open="slideoverOpen"
+      :ui="{ content: 'sm:max-w-2xl' }"
+    >
       <template #content>
-        <SippSlideover
-          :sipp="selectedSipp"
-          readonly
-          @close="slideoverOpen = false"
-        />
+        <div class="max-h-[85vh] overflow-y-auto">
+          <SippSlideover
+            :sipp="selectedSipp"
+            readonly
+            @close="slideoverOpen = false"
+          />
+        </div>
       </template>
-    </USlideover>
+    </UModal>
   </div>
 </template>

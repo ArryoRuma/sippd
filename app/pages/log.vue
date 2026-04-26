@@ -892,16 +892,21 @@ function updateDeleteConfirmOpen(value: boolean) {
       </template>
     </USlideover>
 
-    <USlideover v-model:open="slideoverOpen">
+    <UModal
+      v-model:open="slideoverOpen"
+      :ui="{ content: 'sm:max-w-2xl' }"
+    >
       <template #content>
-        <SippSlideover
-          :sipp="selectedSipp"
-          :readonly="viewMode"
-          @close="slideoverOpen = false"
-          @saved="onSaved"
-        />
+        <div class="max-h-[85vh] overflow-y-auto">
+          <SippSlideover
+            :sipp="selectedSipp"
+            :readonly="viewMode"
+            @close="slideoverOpen = false"
+            @saved="onSaved"
+          />
+        </div>
       </template>
-    </USlideover>
+    </UModal>
 
     <ConfirmActionModal
       :open="confirmDeleteState.isOpen.value"
