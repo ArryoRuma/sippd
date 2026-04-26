@@ -454,6 +454,7 @@ function updateDeleteConfirmOpen(value: boolean) {
               label="New Sipp"
               icon="i-lucide-plus"
               color="primary"
+              class="hidden sm:inline-flex"
               @click="openNew"
             />
           </template>
@@ -532,6 +533,15 @@ function updateDeleteConfirmOpen(value: boolean) {
                     class="w-full lg:w-32"
                   />
                 </div>
+              </div>
+
+              <div class="flex justify-center sm:hidden">
+                <UButton
+                  label="New Sipp"
+                  icon="i-lucide-plus"
+                  color="primary"
+                  @click="openNew"
+                />
               </div>
             </div>
           </template>
