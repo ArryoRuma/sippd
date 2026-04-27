@@ -226,7 +226,6 @@ onMounted(() => {
       >
         <template #top>
           <Motion v-bind="staggerMotion(0)" />
-
         </template>
 
         <template #headline>

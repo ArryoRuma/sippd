@@ -18,7 +18,7 @@ const toast = useToast()
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const loadError = ref<string | null>(null)
-const { createSelectOptions, createSortHeader, formatDashboardDate, searchableText } = useDashboardTable()
+const { createSelectOptions, createSortHeader, searchableText } = useDashboardTable()
 const confirmDeleteState = useConfirmAction()
 
 const slideoverOpen = ref(false)
@@ -624,23 +624,11 @@ function updateDeleteConfirmOpen(value: boolean) {
             />
           </div>
 
-          <div class="mb-4 flex flex-wrap items-center gap-2 text-sm text-muted">
-            <UBadge
-              :label="`${totalSipps} loaded`"
-              color="neutral"
-              variant="subtle"
-            />
-            <UBadge
-              :label="`${filteredCount} visible`"
-              color="neutral"
-              variant="subtle"
-            />
-            <UBadge
-              :label="`${renderedRowCount} table rows`"
-              color="neutral"
-              variant="subtle"
-            />
-          </div>
+          <DashboardTableStats
+            :total="totalSipps"
+            :filtered="filteredCount"
+            :rendered="renderedRowCount"
+          />
 
           <UAlert
             v-if="!user"
@@ -712,29 +700,22 @@ function updateDeleteConfirmOpen(value: boolean) {
               class="w-full"
             >
               <template #roaster-cell="{ row }">
-                <button
-                  type="button"
-                  class="text-left font-semibold text-highlighted hover:text-primary transition-colors"
-                  @click="openView(row.original)"
-                >
-                  {{ row.original.roaster }}
-                </button>
-              </template>
-
-              <template #method-cell="{ row }">
-                <UBadge
-                  :label="row.original.method"
-                  variant="subtle"
+                <SippRoasterCell
+                  :roaster="row.original.roaster"
+                  @open="openView(row.original)"
                 />
               </template>
 
+              <template #method-cell="{ row }">
+                <SippMethodBadge :method="row.original.method" />
+              </template>
+
               <template #overall-cell="{ row }">
-                <span class="font-semibold text-primary">{{ row.original.overall }}</span>
-                <span class="text-xs text-muted">/50</span>
+                <SippOverallScore :score="row.original.overall" />
               </template>
 
               <template #created_at-cell="{ row }">
-                <span class="text-sm text-muted">{{ formatDashboardDate(row.original.created_at) }}</span>
+                <DashboardDateCell :date="row.original.created_at" />
               </template>
 
               <template #actions-cell="{ row }">
@@ -767,170 +748,108 @@ function updateDeleteConfirmOpen(value: boolean) {
               </template>
 
               <template #empty>
-                <div class="py-12 text-center">
-                  <UIcon
-                    name="i-lucide-coffee"
-                    class="size-10 text-muted mb-3"
-                  />
-                  <p class="text-sm text-muted mb-4">
-                    {{ totalSipps === 0 ? 'No sipps were returned for this account yet.' : 'No sipps match your current filters.' }}
-                  </p>
-                  <UButton
-                    :label="totalSipps === 0 ? 'Log a new sipp' : 'Clear filters'"
-                    color="neutral"
-                    variant="outline"
-                    @click="totalSipps === 0 ? openNew() : clearFilters()"
-                  />
-                </div>
+                <DashboardTableEmptyState
+                  icon="i-lucide-coffee"
+                  :message="totalSipps === 0 ? 'No sipps were returned for this account yet.' : 'No sipps match your current filters.'"
+                  :action-label="totalSipps === 0 ? 'Log a new sipp' : 'Clear filters'"
+                  @action="totalSipps === 0 ? openNew() : clearFilters()"
+                />
               </template>
             </UTable>
           </div>
 
-          <div class="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-muted">
-              {{ visibleTableRowCount }} row(s)
-            </p>
-
-            <UPagination
-              :page="currentPage"
-              :items-per-page="itemsPerPage"
-              :total="visibleTableRowCount"
-              @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
-            />
-          </div>
+          <DashboardTablePager
+            :current-page="currentPage"
+            :items-per-page="itemsPerPage"
+            :total="visibleTableRowCount"
+            @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
+          />
         </div>
       </template>
     </UDashboardPanel>
 
-    <USlideover v-model:open="mobileFiltersOpen">
-      <template #content>
-        <div class="flex h-full flex-col bg-default">
-          <div class="border-b border-default px-4 py-4">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <p class="text-sm font-semibold text-highlighted">
-                  Filters and columns
-                </p>
-                <p class="mt-1 text-sm text-muted">
-                  Refine your log without crowding the main table view.
-                </p>
-              </div>
-              <UButton
-                icon="i-lucide-x"
-                color="neutral"
-                variant="ghost"
-                square
-                aria-label="Close filters"
-                @click="mobileFiltersOpen = false"
-              />
-            </div>
-          </div>
-
-          <div class="flex-1 space-y-5 overflow-y-auto px-4 py-4">
-            <div class="space-y-3">
-              <p class="text-xs uppercase tracking-wide text-muted">
-                Filters
-              </p>
-              <USelect
-                v-model="methodFilter"
-                :items="methodOptions"
-                class="w-full"
-              />
-              <USelect
-                v-model="roastFilter"
-                :items="roastOptions"
-                class="w-full"
-              />
-              <USelect
-                v-model="originFilter"
-                :items="originOptions"
-                class="w-full"
-              />
-              <UInput
-                v-model="fromDate"
-                type="date"
-                class="w-full"
-              />
-              <UInput
-                v-model="toDate"
-                type="date"
-                class="w-full"
-              />
-              <div class="grid grid-cols-2 gap-3">
-                <UInput
-                  v-model="minOverall"
-                  type="number"
-                  :min="1"
-                  :max="50"
-                  placeholder="Min score"
-                  class="w-full"
-                />
-                <UInput
-                  v-model="maxOverall"
-                  type="number"
-                  :min="1"
-                  :max="50"
-                  placeholder="Max score"
-                  class="w-full"
-                />
-              </div>
-            </div>
-
-            <div class="space-y-3">
-              <p class="text-xs uppercase tracking-wide text-muted">
-                Visible columns
-              </p>
-              <div
-                v-for="column in columnToggleItems"
-                :key="column.key"
-                class="flex items-center justify-between gap-3 rounded-xl border border-default/70 bg-elevated/40 px-3 py-2.5"
-              >
-                <span class="text-sm capitalize text-default">{{ column.label }}</span>
-                <UCheckbox
-                  :model-value="column.visible"
-                  @update:model-value="toggleColumn(column.key, $event)"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="border-t border-default px-4 py-4">
-            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <UButton
-                label="Clear filters"
-                icon="i-lucide-x"
-                color="neutral"
-                variant="ghost"
-                :disabled="!hasActiveFilters"
-                @click="clearFilters"
-              />
-              <UButton
-                label="Done"
-                icon="i-lucide-check"
-                color="primary"
-                @click="mobileFiltersOpen = false"
-              />
-            </div>
-          </div>
-        </div>
-      </template>
-    </USlideover>
-
-    <UModal
-      v-model:open="slideoverOpen"
-      :ui="{ content: 'sm:max-w-2xl' }"
+    <DashboardMobileFilters
+      v-model:open="mobileFiltersOpen"
+      title="Filters and columns"
+      description="Refine your log without crowding the main table view."
+      :clear-disabled="!hasActiveFilters"
+      @clear="clearFilters"
     >
-      <template #content>
-        <div class="max-h-[85vh] overflow-y-auto">
-          <SippSlideover
-            :sipp="selectedSipp"
-            :readonly="viewMode"
-            @close="slideoverOpen = false"
-            @saved="onSaved"
+      <div class="space-y-5">
+        <div class="space-y-3">
+          <p class="text-xs uppercase tracking-wide text-muted">
+            Filters
+          </p>
+          <USelect
+            v-model="methodFilter"
+            :items="methodOptions"
+            class="w-full"
           />
+          <USelect
+            v-model="roastFilter"
+            :items="roastOptions"
+            class="w-full"
+          />
+          <USelect
+            v-model="originFilter"
+            :items="originOptions"
+            class="w-full"
+          />
+          <UInput
+            v-model="fromDate"
+            type="date"
+            class="w-full"
+          />
+          <UInput
+            v-model="toDate"
+            type="date"
+            class="w-full"
+          />
+          <div class="grid grid-cols-2 gap-3">
+            <UInput
+              v-model="minOverall"
+              type="number"
+              :min="1"
+              :max="50"
+              placeholder="Min score"
+              class="w-full"
+            />
+            <UInput
+              v-model="maxOverall"
+              type="number"
+              :min="1"
+              :max="50"
+              placeholder="Max score"
+              class="w-full"
+            />
+          </div>
         </div>
-      </template>
-    </UModal>
+
+        <div class="space-y-3">
+          <p class="text-xs uppercase tracking-wide text-muted">
+            Visible columns
+          </p>
+          <div
+            v-for="column in columnToggleItems"
+            :key="column.key"
+            class="flex items-center justify-between gap-3 rounded-xl border border-default/70 bg-elevated/40 px-3 py-2.5"
+          >
+            <span class="text-sm capitalize text-default">{{ column.label }}</span>
+            <UCheckbox
+              :model-value="column.visible"
+              @update:model-value="toggleColumn(column.key, $event)"
+            />
+          </div>
+        </div>
+      </div>
+    </DashboardMobileFilters>
+
+    <SippEntryModal
+      v-model:open="slideoverOpen"
+      :sipp="selectedSipp"
+      :readonly="viewMode"
+      @saved="onSaved"
+    />
 
     <ConfirmActionModal
       :open="confirmDeleteState.isOpen.value"

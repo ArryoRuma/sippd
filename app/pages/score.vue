@@ -16,7 +16,7 @@ const user = useSupabaseUser()
 const toast = useToast()
 const UButton = resolveComponent('UButton')
 const loadError = ref<string | null>(null)
-const { createSelectOptions, createSortHeader, formatDashboardDate, searchableText } = useDashboardTable()
+const { createSelectOptions, createSortHeader, searchableText } = useDashboardTable()
 
 const search = ref('')
 const methodFilter = ref('All')
@@ -279,23 +279,11 @@ function clearFilters() {
 
       <template #body>
         <div class="p-4 lg:p-6">
-          <div class="mb-4 flex flex-wrap items-center gap-2 text-sm text-muted">
-            <UBadge
-              :label="`${totalSipps} loaded`"
-              color="neutral"
-              variant="subtle"
-            />
-            <UBadge
-              :label="`${filteredCount} visible`"
-              color="neutral"
-              variant="subtle"
-            />
-            <UBadge
-              :label="`${renderedRowCount} table rows`"
-              color="neutral"
-              variant="subtle"
-            />
-          </div>
+          <DashboardTableStats
+            :total="totalSipps"
+            :filtered="filteredCount"
+            :rendered="renderedRowCount"
+          />
 
           <UAlert
             v-if="!user"
@@ -359,20 +347,14 @@ function clearFilters() {
             </template>
 
             <template #roaster-cell="{ row }">
-              <button
-                type="button"
-                class="text-left font-semibold text-highlighted hover:text-primary transition-colors"
-                @click="openView(row.original)"
-              >
-                {{ row.original.roaster }}
-              </button>
+              <SippRoasterCell
+                :roaster="row.original.roaster"
+                @open="openView(row.original)"
+              />
             </template>
 
             <template #method-cell="{ row }">
-              <UBadge
-                :label="row.original.method"
-                variant="subtle"
-              />
+              <SippMethodBadge :method="row.original.method" />
             </template>
 
             <template #roast_type-cell="{ row }">
@@ -380,12 +362,11 @@ function clearFilters() {
             </template>
 
             <template #overall-cell="{ row }">
-              <span class="font-semibold text-primary">{{ row.original.overall }}</span>
-              <span class="text-xs text-muted">/50</span>
+              <SippOverallScore :score="row.original.overall" />
             </template>
 
             <template #created_at-cell="{ row }">
-              <span class="text-sm text-muted">{{ formatDashboardDate(row.original.created_at) }}</span>
+              <DashboardDateCell :date="row.original.created_at" />
             </template>
 
             <template #actions-cell="{ row }">
@@ -399,106 +380,48 @@ function clearFilters() {
             </template>
 
             <template #empty>
-              <div class="py-12 text-center">
-                <UIcon
-                  name="i-lucide-star"
-                  class="size-10 text-muted mb-3"
-                />
-                <p class="text-sm text-muted">
-                  {{ totalSipps === 0 ? 'No scored sipps were returned for this account yet.' : 'No scores match your current filters.' }}
-                </p>
-              </div>
+              <DashboardTableEmptyState
+                icon="i-lucide-star"
+                :message="totalSipps === 0 ? 'No scored sipps were returned for this account yet.' : 'No scores match your current filters.'"
+              />
             </template>
           </UTable>
 
-          <div class="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-muted">
-              {{ visibleTableRowCount }} row(s)
-            </p>
-
-            <UPagination
-              :page="currentPage"
-              :items-per-page="itemsPerPage"
-              :total="visibleTableRowCount"
-              @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
-            />
-          </div>
+          <DashboardTablePager
+            :current-page="currentPage"
+            :items-per-page="itemsPerPage"
+            :total="visibleTableRowCount"
+            @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
+          />
         </div>
       </template>
     </UDashboardPanel>
 
-    <USlideover v-model:open="mobileFiltersOpen">
-      <template #content>
-        <div class="flex h-full flex-col bg-default">
-          <div class="border-b border-default px-4 py-4">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <p class="text-sm font-semibold text-highlighted">
-                  Ranking filters
-                </p>
-                <p class="mt-1 text-sm text-muted">
-                  Narrow the leaderboard without crowding the header.
-                </p>
-              </div>
-              <UButton
-                icon="i-lucide-x"
-                color="neutral"
-                variant="ghost"
-                square
-                aria-label="Close filters"
-                @click="mobileFiltersOpen = false"
-              />
-            </div>
-          </div>
-
-          <div class="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-            <USelect
-              v-model="methodFilter"
-              :items="methodOptions"
-              class="w-full"
-            />
-            <USelect
-              v-model="roastFilter"
-              :items="roastOptions"
-              class="w-full"
-            />
-          </div>
-
-          <div class="border-t border-default px-4 py-4">
-            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <UButton
-                label="Clear filters"
-                icon="i-lucide-x"
-                color="neutral"
-                variant="ghost"
-                :disabled="!hasActiveFilters"
-                @click="clearFilters"
-              />
-              <UButton
-                label="Done"
-                icon="i-lucide-check"
-                color="primary"
-                @click="mobileFiltersOpen = false"
-              />
-            </div>
-          </div>
-        </div>
-      </template>
-    </USlideover>
-
-    <UModal
-      v-model:open="slideoverOpen"
-      :ui="{ content: 'sm:max-w-2xl' }"
+    <DashboardMobileFilters
+      v-model:open="mobileFiltersOpen"
+      title="Ranking filters"
+      description="Narrow the leaderboard without crowding the header."
+      :clear-disabled="!hasActiveFilters"
+      @clear="clearFilters"
     >
-      <template #content>
-        <div class="max-h-[85vh] overflow-y-auto">
-          <SippSlideover
-            :sipp="selectedSipp"
-            readonly
-            @close="slideoverOpen = false"
-          />
-        </div>
-      </template>
-    </UModal>
+      <div class="space-y-3">
+        <USelect
+          v-model="methodFilter"
+          :items="methodOptions"
+          class="w-full"
+        />
+        <USelect
+          v-model="roastFilter"
+          :items="roastOptions"
+          class="w-full"
+        />
+      </div>
+    </DashboardMobileFilters>
+
+    <SippEntryModal
+      v-model:open="slideoverOpen"
+      :sipp="selectedSipp"
+      readonly
+    />
   </div>
 </template>

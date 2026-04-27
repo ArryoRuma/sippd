@@ -16,7 +16,7 @@ const user = useSupabaseUser()
 const toast = useToast()
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
-const { createSortHeader, formatDashboardDate } = useDashboardTable()
+const { createSortHeader } = useDashboardTable()
 const confirmDeleteState = useConfirmAction()
 
 const isMobile = ref(false)
@@ -472,7 +472,7 @@ function updateDeleteConfirmOpen(value: boolean) {
             </template>
 
             <template #created_at-cell="{ row }">
-              <span class="text-sm text-muted">{{ formatDashboardDate(row.original.created_at) }}</span>
+              <DashboardDateCell :date="row.original.created_at" />
             </template>
 
             <template #actions-cell="{ row }">
@@ -501,26 +501,20 @@ function updateDeleteConfirmOpen(value: boolean) {
             </template>
 
             <template #empty>
-              <div class="py-12 text-center">
-                <UIcon
-                  name="i-lucide-list-todo"
-                  class="size-10 text-muted mb-3"
-                />
-                <p class="text-sm text-muted">
-                  No wishlist items match your filters.
-                </p>
-              </div>
+              <DashboardTableEmptyState
+                icon="i-lucide-list-todo"
+                message="No wishlist items match your filters."
+              />
             </template>
           </UTable>
 
-          <div class="flex justify-end">
-            <UPagination
-              :page="currentPage"
-              :items-per-page="itemsPerPage"
-              :total="visibleTableRowCount"
-              @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
-            />
-          </div>
+          <DashboardTablePager
+            :current-page="currentPage"
+            :items-per-page="itemsPerPage"
+            :total="visibleTableRowCount"
+            justify="end"
+            @update:page="(page) => table?.tableApi?.setPageIndex(page - 1)"
+          />
         </div>
       </template>
     </UDashboardPanel>
