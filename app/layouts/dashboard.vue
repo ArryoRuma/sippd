@@ -43,6 +43,15 @@ const links = [[{
   }
 },
 {
+  label: 'Settings',
+  icon: 'i-lucide-settings-2',
+  to: '/settings',
+  exact: true,
+  onSelect: () => {
+    open.value = false
+  }
+},
+{
   label: 'My Sipps',
   to: '/my-sipps',
   icon: 'i-lucide-coffee',
@@ -96,6 +105,30 @@ const groups = computed(() => [{
   id: 'links',
   label: 'Go to',
   items: links.flat()
+}, {
+  id: 'settings',
+  label: 'Settings',
+  items: [{
+    id: 'settings-overview',
+    label: 'Open settings',
+    icon: 'i-lucide-settings-2',
+    to: '/settings'
+  }, {
+    id: 'settings-profile',
+    label: 'Jump to profile',
+    icon: 'i-lucide-user-round',
+    to: '/settings#profile'
+  }, {
+    id: 'settings-preferences',
+    label: 'Jump to preferences',
+    icon: 'i-lucide-sliders-horizontal',
+    to: '/settings#preferences'
+  }, {
+    id: 'settings-taste',
+    label: 'Jump to taste profile',
+    icon: 'i-lucide-sparkles',
+    to: '/settings#taste'
+  }]
 }, {
   id: 'code',
   label: 'Code',

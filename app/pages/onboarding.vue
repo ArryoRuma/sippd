@@ -13,6 +13,14 @@ const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 const toast = useToast()
 const { trackFunnelEvent } = useFunnelEvents()
+const {
+  brewFrequencyOptions,
+  onboardingGoalOptions,
+  brewMethodOptions,
+  roastPreferenceOptions,
+  flavorNoteOptions,
+  originOptions
+} = useProfilePreferences()
 
 const loading = ref(false)
 const loadingProfile = ref(false)
@@ -24,38 +32,6 @@ const roastPreference = ref('')
 const flavorNotes = ref<string[]>([])
 const preferredOrigins = ref<string[]>([])
 const logReminders = ref(false)
-
-const brewFrequencyOptions = [
-  'Daily',
-  'Multiple times daily',
-  'A few times a week',
-  'Weekends mostly',
-  'Occasionally'
-]
-
-const onboardingGoalOptions = [
-  'Track favorites',
-  'Discover new beans',
-  'Improve brewing',
-  'Keep a coffee journal'
-]
-
-const brewMethodOptions = [
-  'Pour Over',
-  'Espresso',
-  'AeroPress',
-  'French Press',
-  'Drip',
-  'Cold Brew',
-  'Moka Pot',
-  'Other'
-]
-
-const roastPreferenceOptions = ['Light', 'Medium', 'Dark', 'No preference']
-
-const flavorNoteOptions = ['Chocolate', 'Citrus', 'Berry', 'Floral', 'Nutty', 'Caramel', 'Stone fruit', 'Spice']
-
-const originOptions = ['Ethiopia', 'Kenya', 'Colombia', 'Guatemala', 'Brazil', 'Costa Rica', 'Panama', 'Other']
 
 watchEffect(() => {
   if (!user.value) {

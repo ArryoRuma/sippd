@@ -27,6 +27,16 @@ async function handleLogout() {
         {{ user?.email }}
       </span>
       <UButton
+        icon="i-lucide-settings-2"
+        color="neutral"
+        variant="ghost"
+        size="xs"
+        square
+        class="rounded-lg text-muted hover:bg-warning/12 hover:text-primary"
+        aria-label="Settings"
+        to="/settings"
+      />
+      <UButton
         icon="i-lucide-log-out"
         color="neutral"
         variant="ghost"

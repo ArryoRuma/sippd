@@ -1,5 +1,5 @@
 const AUTH_PAGES = new Set(['/login', '/signup', '/confirm'])
-const PROTECTED_PAGES = new Set(['/dashboard', '/log', '/score', '/insights', '/wanna-sipp'])
+const PROTECTED_PAGES = new Set(['/dashboard', '/log', '/score', '/insights', '/wanna-sipp', '/settings'])
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const user = useSupabaseUser()
