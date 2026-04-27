@@ -106,6 +106,20 @@ metrics:
     - value: "∞"
       label: Great coffees remembered
       class: text-warning
+appPreview:
+  headline: See it in action
+  title: Your coffee memory, beautifully organized.
+  description: Log a sip in seconds. See your scores, notes, and favorites at a glance. Every cup, always remembered.
+  features:
+    - icon: i-lucide-zap
+      title: Log in under 10 seconds
+      description: Name, roaster, score, and tasting notes — captured instantly with no friction.
+    - icon: i-lucide-star
+      title: Smart Sip Score
+      description: Your personal rating system surfaces the coffees worth coming back to.
+    - icon: i-lucide-history
+      title: Full sip history
+      description: Every cup you have ever had, searchable and beautifully organized.
 cta:
   title: "Happy birthday, TK!\nHere's to many more sips together."
   description: Happy birthday TK! May the wiggler always wig out for you and I pray that you have the best year yet. Thank you for being such a great brother-in-law and for always making us laugh, I hope you enjoy all the coffee and that your reviews are raving, we love you! --Han | TK! So glad to have you in the family and to be able to share a love of coffee with you. I hope this year brings you as much joy as you bring to everyone around you. Happy birthday, and may your sip log be filled with amazing coffees and even better memories! --Larryon 
