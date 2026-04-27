@@ -60,7 +60,17 @@ export const collections = {
         description: z.string().nonempty(),
         command: z.string().nonempty(),
         links: z.array(createLinkSchema())
-      })
+      }),
+      appPreview: z.object({
+        headline: z.string().optional(),
+        title: z.string().nonempty(),
+        description: z.string().nonempty(),
+        features: z.array(z.object({
+          icon: z.string(),
+          title: z.string().nonempty(),
+          description: z.string().nonempty()
+        }))
+      }).optional()
     })
   })
 }
