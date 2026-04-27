@@ -1,9 +1,16 @@
+<!-- dashboard.vue
+     Main analytics overview. Fetches aggregated stats via Supabase RPC
+     functions, maps the results into typed local shapes, and renders
+     KPI cards, an activity chart, method mix, taste profile, and top origins.
+     The `selectedRange` ref controls all data fetches reactively. -->
 <script setup lang="ts">
 import { useDashboardTable } from '~/composables/useDashboardTable'
 import type { Database } from '~/types/database.types'
 
 definePageMeta({ layout: 'dashboard' })
 
+// TypeScript type aliases extracted from the auto-generated database types.
+// Keeping them here avoids re-importing the full schema downstream.
 type Sipp = Database['public']['Tables']['sipps']['Row']
 type DashboardSummaryRow = Database['public']['Functions']['dashboard_summary']['Returns'][number]
 type DashboardActivityRow = Database['public']['Functions']['dashboard_activity']['Returns'][number]
@@ -79,12 +86,16 @@ const emptyDashboardStats: DashboardStats = {
   previousAverage: 0
 }
 
+// Palette shared across method-mix chart bars. Index order matches the
+// order Supabase returns rows, so bar colors stay stable across re-fetches.
 const methodPalette = ['#00c3ff', '#fb7b04', '#a9d316', '#004e66']
 
 const supabase = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 const toast = useToast()
 const loadError = ref<string | null>(null)
+// selectedRange drives all data queries; changing it triggers useAsyncData
+// to re-run via its `watch` option.
 const selectedRange = ref<DashboardRange>('30d')
 const { formatDashboardDate } = useDashboardTable()
 
@@ -168,6 +179,8 @@ const activityDays = computed(() => {
   return 30
 })
 
+// toNumber safely coerces values that Supabase may return as strings or null
+// (a common artifact of numeric aggregation over SQL functions via JSON).
 function toNumber(value: unknown, fallback = 0): number {
   const parsed = Number(value)
   return Number.isFinite(parsed) ? parsed : fallback
@@ -184,6 +197,8 @@ function toIsoDayRange(dayDate: string) {
   }
 }
 
+// Each map* function transforms a raw RPC return row into a typed local
+// shape, isolating the conversion logic from rendering and computed properties.
 function mapSummaryRow(summary: DashboardSummaryRow | null): Pick<DashboardStats, 'total' | 'average' | 'completedThisWeek' | 'recentAverage' | 'previousAverage' | 'topSipp' | 'recentSipp'> {
   if (!summary) {
     return {
@@ -269,6 +284,8 @@ function mapTopOrigins(rows: DashboardTopOriginsRow[]): OriginLeader[] {
   }))
 }
 
+// All five Supabase RPC calls fire in parallel via Promise.all to minimize
+// total wait time. A single error check surfaces the first failure.
 const dashboardAsyncData = await useAsyncData('dashboard-stats', async (): Promise<DashboardStats> => {
   loadError.value = null
 

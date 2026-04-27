@@ -1,3 +1,8 @@
+<!-- score.vue
+     Ranked leaderboard of all logged sipps, sorted by overall score.
+     Provides lightweight search and filter controls. Rank icons and colors
+     call out the top three entries. Entries open in the SippSlideover for
+     full detail. -->
 <script setup lang="ts">
 import { resolveComponent } from 'vue'
 import { useDashboardTable, useDashboardTableMetrics } from '~/composables/useDashboardTable'
@@ -42,6 +47,8 @@ const sorting = ref([
 ])
 
 type Sipp = Database['public']['Tables']['sipps']['Row']
+// Data is fetched once and filtered client-side, which is fast enough at
+// typical user log sizes and avoids a round-trip per filter change.
 const { data: sipps, status, refresh } = await useAsyncData('sipps-ranked', async () => {
   loadError.value = null
 
@@ -164,6 +171,8 @@ const columns: TableColumn<Sipp>[] = [
   }
 ]
 
+// Rank icons and colors follow a medal metaphor: trophy for 1st, medal for
+// 2nd, award for 3rd, muted text for all others.
 function getRankIcon(rank: number) {
   if (rank === 1) return 'i-lucide-trophy'
   if (rank === 2) return 'i-lucide-medal'

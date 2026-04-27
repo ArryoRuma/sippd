@@ -1,3 +1,7 @@
+<!-- insights.vue
+     Deep-dive analytics panel. Shares the same Supabase RPC functions as
+     dashboard.vue but surfaces more detail: full method distribution, full
+     taste profile, and top origins. The `range` ref controls all queries. -->
 <script setup lang="ts">
 import type { Database } from '~/types/database.types'
 
@@ -74,6 +78,8 @@ function toNumber(value: unknown, fallback = 0): number {
   return Number.isFinite(parsed) ? parsed : fallback
 }
 
+// getRangeBounds converts a user-facing range label into concrete ISO timestamps
+// that are passed as p_from / p_to params to every RPC call.
 function getRangeBounds(selected: InsightRange): { from: string | null, to: string | null, days: number } {
   const now = new Date()
 
@@ -141,6 +147,8 @@ function mapOrigins(rows: DashboardTopOriginsRow[]): InsightOrigin[] {
   }))
 }
 
+// The useAsyncData key is dynamic so that changing `range` creates a new
+// cache entry rather than reusing a stale one from a different time window.
 const asyncInsights = await useAsyncData(
   () => `insights-${range.value}`,
   async (): Promise<InsightsData> => {
@@ -201,6 +209,8 @@ const selectedBounds = computed(() => {
   }
 })
 
+// toLogWithRange builds a /log query object that pre-filters the log page
+// to the same date range currently selected in insights, enabling drill-through.
 function toLogWithRange(extra: Record<string, string | undefined> = {}) {
   return {
     path: '/log',

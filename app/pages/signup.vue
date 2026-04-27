@@ -1,3 +1,7 @@
+<!-- signup.vue
+     New account registration page. Creates a Supabase Auth user, tracks
+     funnel events at each step, and handles the email-verification flow
+     for environments where immediate sessions are not granted. -->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -12,8 +16,11 @@ const error = ref('')
 const successMessage = ref('')
 
 const toast = useToast()
+// useFunnelEvents is a project composable that logs conversion-funnel
+// milestones to the database, useful for measuring where users drop off.
 const { trackFunnelEvent } = useFunnelEvents()
 
+// Redirect any already-authenticated user straight to onboarding.
 watchEffect(() => {
   if (user.value) {
     navigateTo('/onboarding')
@@ -39,6 +46,8 @@ async function handleSignup() {
     hasEmail: Boolean(email.value.trim())
   })
 
+  // emailRedirectTo is the URL Supabase embeds in the verification email.
+  // import.meta.client guards against SSR where window is not defined.
   const emailRedirectTo = import.meta.client
     ? `${window.location.origin}/confirm`
     : undefined
@@ -63,6 +72,8 @@ async function handleSignup() {
     return
   }
 
+  // Supabase may return an immediate session (e.g., email confirmations disabled)
+  // or require the user to verify their email first.
   if (data.session) {
     await trackFunnelEvent('signup_succeeded', {
       immediateSession: true
@@ -84,6 +95,8 @@ async function handleSignup() {
   })
 }
 
+// Lets the user request a fresh verification email if the original expired or
+// landed in spam, without them needing to sign up again.
 async function handleResendVerification() {
   const normalizedEmail = email.value.trim()
 

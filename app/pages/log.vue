@@ -1,3 +1,7 @@
+<!-- log.vue
+     Filterable, paginated data table of all sipp entries. Supports full-text
+     search, multi-column filters, quick-filter chips, column visibility toggles,
+     bulk delete, CSV export, and inline edit/view via a slideover panel. -->
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue'
 import { useConfirmAction } from '~/composables/useConfirmAction'
@@ -36,8 +40,12 @@ type TableApi<T> = {
 }
 type TableRef<T> = { tableApi?: TableApi<T> }
 
+// The table component's internal API is exposed via a template ref so
+// JavaScript code can read selection state and trigger pagination.
 const table = ref<TableRef<Database['public']['Tables']['sipps']['Row']> | null>(null)
 const rowSelection = ref<Record<string, boolean>>({})
+// Filter state is initialized from URL query params so that shareable links
+// (e.g., from the dashboard method/origin quick-links) pre-populate the filters.
 const search = ref(typeof route.query.search === 'string' ? route.query.search : '')
 const methodFilter = ref(typeof route.query.method === 'string' ? route.query.method : 'All')
 const roastFilter = ref(typeof route.query.roast === 'string' ? route.query.roast : 'All')
@@ -201,6 +209,8 @@ const { currentPage, itemsPerPage, selectedRowCount, visibleTableRowCount } = us
   fallbackRowCount: filteredCount
 })
 
+// Column definitions use h() (Vue's render function) to embed reactive
+// components like UCheckbox and UButton directly in header and cell slots.
 const columns: TableColumn<Sipp>[] = [
   {
     id: 'select',
@@ -341,6 +351,8 @@ async function deleteSippNow(id: string) {
   }
 }
 
+// Bulk delete requests confirmation first via useConfirmAction to prevent
+// accidental data loss, then deletes using an `in` filter on Supabase.
 async function deleteSelected() {
   const selectedRows = table.value?.tableApi?.getFilteredSelectedRowModel().rows ?? []
   const selectedIds = selectedRows.map((row: { original: Sipp }) => row.original.id)
@@ -377,6 +389,8 @@ function toggleColumn(columnKey: string, visible: boolean | 'indeterminate') {
   }
 }
 
+// exportCsv reads the currently visible (filtered) rows from the table API
+// and serialises them as a downloadable CSV file using a Blob URL.
 function exportCsv() {
   const rows = table.value?.tableApi?.getFilteredRowModel().rows.map((row: { original: Sipp }) => row.original) ?? []
 

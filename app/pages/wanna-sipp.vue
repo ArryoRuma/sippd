@@ -1,6 +1,10 @@
+<!-- wanna-sipp.vue
+     Wishlist / to-try list. Users can add roasters they want to try,
+     mark entries as completed, and delete them individually or in bulk.
+     Completed entries are visually distinguished and sorted to the bottom
+     via the default Supabase query ordering. -->
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue'
-import { useConfirmAction } from '~/composables/useConfirmAction'
 import { useDashboardTable, useDashboardTableMetrics } from '~/composables/useDashboardTable'
 import type { TableColumn } from '@nuxt/ui'
 import type { Database } from '~/types/database.types'
@@ -86,6 +90,8 @@ const { data: items, status, refresh } = await useAsyncData('wanna-sipps', async
   return data
 })
 
+// getUser() re-validates the session at mutation time rather than relying
+// solely on the reactive user ref, which may reflect a stale cached state.
 async function addItem() {
   if (!newRoaster.value.trim()) return
   if (!user.value) {
@@ -132,6 +138,10 @@ async function toggleCompleted(id: string, current: boolean) {
   }
 }
 
+// deleteItem gates the destructive action behind useConfirmAction, which
+// renders a confirmation modal before calling the actual Supabase delete.
+// deleteItem gates the destructive action behind useConfirmAction, which
+// renders a confirmation modal before calling the actual Supabase delete.
 async function deleteItem(id: string) {
   confirmDeleteState.requestConfirmation({
     title: 'Delete this wishlist item?',

@@ -1,3 +1,9 @@
+<!-- onboarding.vue
+     First-run setup wizard. Collects user preferences (brew frequency, goal,
+     method, roast, flavors, origins) and writes them to the `profiles` table.
+     Uses upsert semantics (update then insert fallback) to handle both new
+     users and users who revisit before completing. Tracks completion via
+     useFunnelEvents for conversion analysis. -->
 <script setup lang="ts">
 import type { Database } from '~/types/database.types'
 
@@ -68,6 +74,8 @@ async function getAuthenticatedUser() {
   return data.user
 }
 
+// loadProfile runs on mount and when the user ref changes. If the profile
+// is already marked completed it redirects immediately, preventing re-onboarding.
 async function loadProfile() {
   if (!user.value) {
     return
@@ -118,6 +126,8 @@ watch(user, (nextUser) => {
   }
 }, { immediate: true })
 
+// toggleMultiChoice enforces a maximum of 3 selections per bucket (flavor/origin)
+// and provides an in-app warning rather than silently ignoring extra clicks.
 function toggleMultiChoice(bucket: 'flavor' | 'origin', option: string) {
   const target = bucket === 'flavor' ? flavorNotes : preferredOrigins
 
@@ -138,6 +148,9 @@ function toggleMultiChoice(bucket: 'flavor' | 'origin', option: string) {
   target.value = [...target.value, option]
 }
 
+// handleOnboardingComplete validates required fields client-side, then attempts
+// an UPDATE. If no row was modified (new user), it falls back to INSERT.
+// This avoids a separate existence check round-trip.
 async function handleOnboardingComplete() {
   if (!user.value || loading.value) {
     return

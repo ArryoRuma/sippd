@@ -1,3 +1,8 @@
+<!-- index.vue
+     Public landing page. Content is driven by the Nuxt Content collection at
+     content/index.yml, so copy and structure can be updated without touching
+     Vue code. Motion primitives add staggered entrance and scroll-triggered
+     reveal animations to reinforce the brand's purposeful-motion principle. -->
 <script setup lang="ts">
 type FeatureItem = {
   icon: string
@@ -22,6 +27,9 @@ type LandingSection = {
   items: Array<FeatureItem | MetricItem>
 }
 
+// useAsyncData fetches the CMS page record during SSR and caches it.
+// Falling back to queryCollection().first() handles the case where a root
+// path entry does not exist yet.
 const { data: page } = await useAsyncData('index', async () => {
   const rootPage = await queryCollection('content').path('/').first()
 
@@ -110,6 +118,9 @@ const sections = computed<LandingSection[]>(() => {
   ]
 })
 
+// enterMotion and scrollMotion produce @nuxt/motion props for entrance
+// and viewport-triggered animations respectively. Keeping them as helpers
+// prevents duplicating the same transition object across every element.
 function enterMotion(delay: number = 0) {
   return {
     initial: { opacity: 0, y: 16 },
@@ -127,6 +138,8 @@ function scrollMotion(delay: number = 0) {
   }
 }
 
+// staggerMotion offsets each item in a list by (index * 0.08s) so grid
+// children fade in sequentially rather than all at once.
 function staggerMotion(index: number = 0) {
   return {
     initial: { opacity: 0 },
@@ -151,8 +164,13 @@ function isFeatureItem(item: FeatureItem | MetricItem): item is FeatureItem {
   return 'icon' in item
 }
 
+// triggerCurtain plays the page-transition curtain animation before
+// navigating, keeping route changes visually smooth.
 const { triggerCurtain } = useCurtain()
 
+// ctaLinkProps strips `to` from a link object so it can be spread onto
+// UButton without UButton trying to render as a NuxtLink when we are
+// handling navigation manually via handleCtaClick.
 function ctaLinkProps(link: Record<string, unknown>) {
   const { to: _to, ...rest } = link
   return rest
@@ -165,6 +183,8 @@ function handleCtaClick(link: { label?: string, to?: string } & Record<string, u
   triggerCurtain(() => navigateTo(dest))
 }
 
+// SplashScreen is shown only once per browser session using sessionStorage
+// as a lightweight, non-persistent flag.
 const showSplash = ref(false)
 
 onMounted(() => {
