@@ -36,6 +36,17 @@ onMounted(() => {
         class="absolute inset-x-0 bottom-0 h-1/2 bg-cinnamon-wood-900"
         :class="{ 'splash-bottom-exit': exiting }"
       />
+      <!-- Logo centered at the panel split -->
+      <div
+        class="absolute inset-0 flex items-center justify-center"
+        :class="{ 'splash-logo-fade': exiting }"
+      >
+        <img
+          src="/logo-copy.svg"
+          alt="Sippd"
+          class="h-12 w-auto invert opacity-90 pointer-events-none select-none"
+        >
+      </div>
     </div>
   </Teleport>
 </template>
